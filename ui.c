@@ -87,11 +87,12 @@ bool ui_number_match(int no, const char *needle)
 }
 
 /* Up, Down, Left, Right, Page Up, Page Down, Home and End move along a list, unless a text field
- * takes the keys. sel is a position in the list. */
+ * takes the keys or a popup (a folder or kind list) is open over it. sel is a position in the
+ * list. */
 bool ui_nav_keys(int *sel, int count)
 {
 	ImGuiIO *io = igGetIO_Nil();
-	if (io->WantTextInput || count <= 0 || batch_running())
+	if (io->WantTextInput || count <= 0 || batch_running() || igIsPopupOpen_Str("", ImGuiPopupFlags_AnyPopup))
 		return false;
 	int s = *sel;
 	if (igIsKeyPressed_Bool(ImGuiKey_DownArrow, true) || igIsKeyPressed_Bool(ImGuiKey_RightArrow, true))

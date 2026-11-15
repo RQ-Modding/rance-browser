@@ -11,14 +11,23 @@
 static struct {
 	int kind;
 	char search[96];
-	int *idx, n;
-	bool dirty, scroll;
+	int *idx, n;      /* positions in G.kinds[idx_kind].e that the search keeps */
+	int idx_kind;     /* the kind idx was made for */
+	bool dirty, scroll, top;
 	int sel;
-} N = { .dirty = true, .sel = -1 };
+} N = { .dirty = true, .sel = -1, .idx_kind = -1 };
 
+/* idx follows the kind: a row reads G.kinds[N.kind].e[idx[r]], so idx is made again as soon as the
+ * kind changes, before any row is drawn. */
 static void refilter(void)
 {
-	if (!N.dirty || N.kind >= G.nkinds)
+	if (N.kind < 0 || N.kind >= G.nkinds)
+		return;
+	if (N.kind != N.idx_kind) {
+		N.dirty = true;
+		N.top = true;
+	}
+	if (!N.dirty)
 		return;
 	struct id_kind *k = &G.kinds[N.kind];
 	free(N.idx);
@@ -30,6 +39,7 @@ static void refilter(void)
 		    ui_match(e->key, N.search) || ui_match(e->detail, N.search))
 			N.idx[N.n++] = i;
 	}
+	N.idx_kind = N.kind;
 	N.dirty = false;
 }
 
@@ -43,18 +53,16 @@ static int pos_of(int entry)
 
 static void list(void)
 {
-	struct id_kind *k = &G.kinds[N.kind];
 	igSetNextItemWidth(-1);
 	char preview[160];
-	snprintf(preview, sizeof preview, "%s (%d)", k->title, k->n);
+	snprintf(preview, sizeof preview, "%s (%d)", G.kinds[N.kind].title, G.kinds[N.kind].n);
 	if (igBeginCombo("##kind", preview, ImGuiComboFlags_HeightLarge)) {
 		for (int i = 0; i < G.nkinds; i++) {
 			char label[160];
 			snprintf(label, sizeof label, "%s (%d)   rq.ids.%s", G.kinds[i].title, G.kinds[i].n, G.kinds[i].kind);
-			if (igSelectable_Bool(label, N.kind == i, 0, v2(0, 0))) {
+			if (igSelectable_Bool(label, N.kind == i, 0, v2(0, 0)) && N.kind != i) {
 				N.kind = i;
 				N.sel = -1;
-				N.dirty = true;
 			}
 		}
 		igEndCombo();
@@ -65,6 +73,9 @@ static void list(void)
 	if (strcmp(before, N.search))
 		N.dirty = true;
 	refilter();
+	/* Read after the combo and refilter: the kind may have changed this frame, and the rows below
+	 * index its entries. */
+	struct id_kind *k = &G.kinds[N.kind];
 	igPushTextWrapPos(0);
 	igTextDisabled("rq.ids.%s: %s", k->kind, k->what);
 	igPopTextWrapPos();
@@ -72,6 +83,11 @@ static void list(void)
 	if (!igBeginTable("ids", 5, ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Resizable,
 			  v2(0, 0), 0))
 		return;
+	/* Another kind starts at its first row, not where the last one was scrolled to. */
+	if (N.top) {
+		igSetScrollY_Float(0);
+		N.top = false;
+	}
 	igTableSetupScrollFreeze(0, 1);
 	igTableSetupColumn("No", ImGuiTableColumnFlags_WidthFixed, S(60), 0);
 	igTableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, rh, 0);
@@ -87,6 +103,8 @@ static void list(void)
 	while (ImGuiListClipper_Step(clip)) {
 		for (int r = clip->DisplayStart; r < clip->DisplayEnd; r++) {
 			int i = N.idx[r];
+			if (i < 0 || i >= k->n)
+				continue;
 			struct id_entry *e = &k->e[i];
 			igTableNextRow(0, rh);
 			igTableNextColumn();

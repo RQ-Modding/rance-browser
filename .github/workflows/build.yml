@@ -32,8 +32,11 @@ jobs:
         uses: msys2/setup-msys2@v2
         with:
           update: true
+          # flex and bison build libsys4's ini parser. base-devel brought them until its 2026.11 update.
           install: >-
             base-devel
+            flex
+            bison
             git
             zip
             mingw-w64-x86_64-gcc

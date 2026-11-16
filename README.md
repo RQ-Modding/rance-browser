@@ -1,5 +1,8 @@
 # Rance Browser
 
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/57e9454a-48ce-4995-a33e-8c70f4307eca" />
+
+
 A window over the files of AliceSoft's System 4 games, for players, wiki writers and mod creators.
 Point it at a game you own and it lists the game's CGs, music, sounds and other pictures. You can look
 at each one, play it, and save it as PNG or OGG. It reads the game's archives without changing them

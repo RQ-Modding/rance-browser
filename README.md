@@ -6,7 +6,7 @@ at each one, play it, and save it as PNG or OGG. It reads the game's archives wi
 and needs neither the game running nor anything installed.
 
 It began as RQ Browser, the file browser of [RQ MOD](https://github.com/RQ-Modding/RQ-Mod) (a mod
-loader for Rance Quest Magnum), and still ships inside RQ MOD's package.
+loader for Rance Quest Magnum, not released yet), and RQ MOD's package will carry it too.
 
 Rance Browser is a fan project. It is not made or endorsed by AliceSoft or MangaGamer, and it
 contains nothing of their games: it reads the copy on your own computer.

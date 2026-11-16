@@ -1,0 +1,437 @@
+# The game's pictures for rq.ids' names, for the file browser (rq-browser's Names tab). Not part of rq.ids.
+# Written by tools/ids/extract.lua (scripts\ids-extract.ps1). kind, number, CG, use.
+item	1	6000	icon
+item	2	6324	icon
+item	3	6373	icon
+item	4	6415	icon
+item	5	6418	icon
+item	6	6365	icon
+item	7	6248	icon
+item	8	6001	icon
+item	9	6437	icon
+item	10	6372	icon
+item	11	6413	icon
+item	12	6437	icon
+item	13	6648	icon
+item	14	6002	icon
+item	15	6438	icon
+item	16	6422	icon
+item	17	6651	icon
+item	19	6003	icon
+item	20	6423	icon
+item	21	6638	icon
+item	22	6619	icon
+item	24	6625	icon
+item	25	6004	icon
+item	26	6436	icon
+item	27	6336	icon
+item	30	6005	icon
+item	31	6409	icon
+item	32	6417	icon
+item	33	6412	icon
+item	34	6448	icon
+item	36	6006	icon
+item	37	6410	icon
+item	38	6414	icon
+item	39	6627	icon
+item	40	6620	icon
+item	41	6635	icon
+item	42	6652	icon
+item	43	6007	icon
+item	46	6008	icon
+item	47	6405	icon
+item	48	6650	icon
+item	50	6009	icon
+item	51	6404	icon
+item	52	6621	icon
+item	53	6636	icon
+item	54	6626	icon
+item	55	6010	icon
+item	56	6649	icon
+item	57	6629	icon
+item	58	6011	icon
+item	59	6411	icon
+item	61	6012	icon
+item	62	6442	icon
+item	63	6637	icon
+item	64	6622	icon
+item	66	6100	icon
+item	67	6387	icon
+item	68	6101	icon
+item	69	6374	icon
+item	70	6249	icon
+item	71	6102	icon
+item	72	6388	icon
+item	74	6312	icon
+item	75	6103	icon
+item	76	6430	icon
+item	77	6390	icon
+item	78	6389	icon
+item	81	6104	icon
+item	82	6391	icon
+item	83	6612	icon
+item	84	6623	icon
+item	85	6639	icon
+item	86	6105	icon
+item	87	6392	icon
+item	88	6443	icon
+item	90	6106	icon
+item	91	6431	icon
+item	92	6394	icon
+item	93	6395	icon
+item	94	6394	icon
+item	95	6107	icon
+item	96	6396	icon
+item	97	6613	icon
+item	98	6640	icon
+item	99	6641	icon
+item	100	6323	icon
+item	101	6111	icon
+item	102	6370	icon
+item	103	6329	icon
+item	104	6111	icon
+item	106	6112	icon
+item	107	6432	icon
+item	108	6440	icon
+item	109	6439	icon
+item	110	6439	icon
+item	111	6113	icon
+item	112	6441	icon
+item	113	6329	icon
+item	114	6614	icon
+item	115	6642	icon
+item	117	6318	icon
+item	118	6375	icon
+item	119	6400	icon
+item	122	6319	icon
+item	123	6433	icon
+item	124	6446	icon
+item	125	6634	icon
+item	127	6320	icon
+item	128	6401	icon
+item	129	6615	icon
+item	130	6643	icon
+item	131	6447	icon
+item	133	6108	icon
+item	134	6397	icon
+item	135	6330	icon
+item	137	6109	icon
+item	138	6434	icon
+item	139	6398	icon
+item	140	6445	icon
+item	142	6110	icon
+item	143	6399	icon
+item	144	6616	icon
+item	145	6644	icon
+item	148	6114	icon
+item	149	6427	icon
+item	151	6115	icon
+item	152	6435	icon
+item	153	6428	icon
+item	155	6116	icon
+item	156	6429	icon
+item	157	6617	icon
+item	158	6645	icon
+item	160	6117	icon
+item	161	6402	icon
+item	163	6118	icon
+item	164	6444	icon
+item	165	6653	icon
+item	166	6119	icon
+item	167	6646	icon
+item	168	6618	icon
+item	169	6624	icon
+item	170	6321	icon
+item	171	6322	icon
+item	172	6654	icon
+item	178	6325	icon
+item	179	6337	icon
+item	180	6326	icon
+item	181	6200	icon
+item	182	6216	icon
+item	183	6217	icon
+item	184	6379	icon
+item	185	6201	icon
+item	186	6202	icon
+item	187	6203	icon
+item	188	6204	icon
+item	189	6209	icon
+item	190	6209	icon
+item	191	6206	icon
+item	192	6206	icon
+item	193	6205	icon
+item	194	6205	icon
+item	195	6207	icon
+item	196	6208	icon
+item	197	6208	icon
+item	198	6208	icon
+item	199	6384	icon
+item	200	6210	icon
+item	201	6211	icon
+item	202	6212	icon
+item	203	6213	icon
+item	204	6214	icon
+item	205	6250	icon
+item	206	6335	icon
+item	207	6333	icon
+item	208	6376	icon
+item	209	6380	icon
+item	210	6331	icon
+item	211	6406	icon
+item	212	6407	icon
+item	213	6408	icon
+item	214	6416	icon
+item	215	6312	icon
+item	216	6378	icon
+item	217	6378	icon
+item	218	6425	icon
+item	219	6251	icon
+item	220	6334	icon
+item	221	6334	icon
+item	222	6334	icon
+item	223	6334	icon
+item	224	6334	icon
+item	225	6334	icon
+item	226	6334	icon
+item	227	6500	icon
+item	228	6501	icon
+item	229	6502	icon
+item	230	6503	icon
+item	231	6504	icon
+item	232	6505	icon
+item	233	6506	icon
+item	234	6507	icon
+item	235	6508	icon
+item	236	6509	icon
+item	237	6510	icon
+item	238	6511	icon
+item	239	6512	icon
+item	240	6513	icon
+item	241	6514	icon
+item	242	6515	icon
+item	243	6516	icon
+item	244	6632	icon
+item	247	6655	icon
+item	248	6656	icon
+item	249	6657	icon
+item	250	6658	icon
+item	251	6659	icon
+item	252	6311	icon
+item	255	6215	icon
+item	256	6215	icon
+item	257	6215	icon
+item	258	6338	icon
+item	259	6361	icon
+item	260	6362	icon
+item	261	6363	icon
+item	262	6364	icon
+item	263	6365	icon
+item	265	6366	icon
+item	266	6367	icon
+item	267	6383	icon
+item	268	6385	icon
+item	269	6339	icon
+item	270	6300	icon
+item	271	6340	icon
+item	272	6341	icon
+item	273	6342	icon
+item	274	6301	icon
+item	275	6302	icon
+item	276	6343	icon
+item	277	6344	icon
+item	278	6345	icon
+item	279	6303	icon
+item	280	6346	icon
+item	281	6347	icon
+item	282	6304	icon
+item	283	6348	icon
+item	284	6354	icon
+item	285	6305	icon
+item	286	6307	icon
+item	287	6352	icon
+item	288	6353	icon
+item	289	6306	icon
+item	290	6349	icon
+item	291	6350	icon
+item	292	6351	icon
+item	293	6355	icon
+item	294	6356	icon
+item	295	6308	icon
+item	296	6357	icon
+item	297	6358	icon
+item	298	6309	icon
+item	299	6359	icon
+item	300	6360	icon
+item	301	6310	icon
+item	302	6349	icon
+item	303	6377	icon
+item	304	6311	icon
+item	305	6311	icon
+item	306	6381	icon
+item	307	6218	icon
+item	309	6386	icon
+item	310	6247	icon
+item	311	6313	icon
+item	312	6315	icon
+item	313	6368	icon
+item	314	6327	icon
+item	315	6314	icon
+item	316	6332	icon
+item	317	6426	icon
+item	318	6202	icon
+item	319	6321	icon
+item	320	6447	icon
+item	321	6448	icon
+item	322	6600	icon
+item	323	6601	icon
+item	324	6602	icon
+item	325	6603	icon
+item	326	6604	icon
+item	327	6605	icon
+item	328	6606	icon
+item	329	6607	icon
+item	330	6608	icon
+item	331	6609	icon
+item	332	6610	icon
+item	333	6611	icon
+item	334	6630	icon
+item	335	6647	icon
+item	336	6628	icon
+item	337	6629	icon
+item	338	6631	icon
+item	339	6426	icon
+item	340	6250	icon
+item	341	6407	icon
+item	342	6660	icon
+item	343	6335	icon
+chara	1	2000	face
+chara	3	2100	face
+chara	3	1100	standing picture
+chara	4	2120	face
+chara	4	1120	standing picture
+chara	5	2130	face
+chara	5	1130	standing picture
+chara	6	2300	face
+chara	6	1300	standing picture
+chara	7	2500	face
+chara	7	1500	standing picture
+chara	8	2948	face
+chara	9	2630	face
+chara	10	2560	face
+chara	10	1560	standing picture
+chara	11	2570	face
+chara	12	2580	face
+chara	12	1580	standing picture
+chara	13	2590	face
+chara	14	2943	face
+chara	15	2550	face
+chara	16	2963	face
+chara	17	2600	face
+chara	17	1600	standing picture
+chara	18	2610	face
+chara	19	2020	face
+chara	19	1020	standing picture
+chara	20	2110	face
+chara	20	1111	standing picture
+chara	21	2964	face
+chara	22	2030	face
+chara	22	1030	standing picture
+chara	23	2220	face
+chara	23	1220	standing picture
+chara	24	2090	face
+chara	24	1090	standing picture
+chara	25	2730	face
+chara	26	2050	face
+chara	26	1050	standing picture
+chara	27	2200	face
+chara	27	1200	standing picture
+chara	28	2690	face
+chara	29	2770	face
+chara	29	1770	standing picture
+chara	30	2680	face
+chara	31	2945	face
+chara	32	2540	face
+chara	32	1540	standing picture
+chara	33	2060	face
+chara	33	1060	standing picture
+chara	34	2160	face
+chara	34	1160	standing picture
+chara	35	2949	face
+chara	36	2720	face
+chara	38	2140	face
+chara	38	1140	standing picture
+chara	39	2650	face
+chara	39	1650	standing picture
+chara	40	2510	face
+chara	40	1510	standing picture
+chara	41	2530	face
+chara	41	1530	standing picture
+chara	42	2310	face
+chara	42	1310	standing picture
+chara	43	2670	face
+chara	43	1670	standing picture
+chara	44	2660	face
+chara	45	2947	face
+chara	46	2640	face
+chara	47	2210	face
+chara	47	1210	standing picture
+chara	48	2280	face
+chara	48	1280	standing picture
+chara	49	2946	face
+chara	50	2490	face
+chara	50	1490	standing picture
+chara	51	2620	face
+chara	51	1620	standing picture
+chara	52	2760	face
+chara	53	2965	face
+chara	54	2150	face
+chara	54	1150	standing picture
+chara	55	2290	face
+chara	55	1290	standing picture
+chara	56	2803	face
+chara	57	2180	face
+chara	57	1180	standing picture
+chara	58	2040	face
+chara	58	1040	standing picture
+chara	59	2944	face
+chara	60	2740	face
+chara	61	2750	face
+chara	62	2520	face
+chara	62	1521	standing picture
+chara	63	2936	face
+chara	64	2801	face
+chara	67	2085	face
+chara	67	1085	standing picture
+chara	68	2450	face
+chara	68	1450	standing picture
+chara	70	2196	face
+chara	71	2330	face
+chara	72	2230	face
+chara	73	2105	face
+chara	73	1105	standing picture
+chara	74	2991	face
+chara	75	2966	face
+chara	76	2966	face
+chara	77	2966	face
+chara	78	2966	face
+chara	79	2127	face
+chara	80	2325	face
+chara	80	1325	standing picture
+chara	81	2305	face
+chara	81	1305	standing picture
+chara	83	2160	face
+chara	83	1160	standing picture
+chara	84	2070	face
+chara	85	2795	face
+chara	85	1795	standing picture
+chara	86	2797	face
+chara	87	2996	face
+chara	88	2974	face
+chara	89	2995	face
+chara	90	2994	face
+chara	91	2811	face
+chara	92	2440	face
+chara	93	2948	face
+chara	94	2430	face
+chara	94	1430	standing picture
+chara	112	2500	face

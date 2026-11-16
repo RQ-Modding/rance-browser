@@ -7,11 +7,11 @@
 #include <string.h>
 
 #include "system4.h"
-#include "rqb.h"
+#include "browser.h"
 
 struct ui UI = { .scale = 1, .want_tab = -1, .shot_select = -1 };
 
-const char *const tab_keys[TAB_COUNT] = { "cgs", "flash", "music", "sounds", "textures", "names" };
+const char *const tab_keys[TAB_COUNT] = { "cgs", "flash", "music", "sounds", "textures", "pictures", "dungeons", "names" };
 
 void ui_status(const char *fmt, ...)
 {

@@ -1,13 +1,14 @@
-/* rq-browser.exe: the window, the tabs, and the command line.
+/* rance-browser.exe: the window, the tabs, and the command line.
  *
- *   rq-browser [--game DIR] [--scale F]      the window (--scale: the size of the text and layout,
+ *   rance-browser [--game DIR] [--scale F]   the window (--scale: the size of the text and layout,
  *                                            the display's scale by default)
- *   rq-browser --check [--out FILE]          read a sample of everything, print the counts as JSON
- *   rq-browser --shot TAB FILE.png [--select N] [--size WxH] [--scale F]
- *                                            draw one tab offscreen and save it (the guide's pictures)
+ *   rance-browser --check [--game DIR] [--out FILE]
+ *                                            read a sample of everything, print the counts as JSON
+ *   rance-browser --shot TAB FILE.png [--select N] [--grid] [--size WxH] [--scale F]
+ *                                            draw one tab offscreen and save it (the guides' pictures)
  *
- * The game folder: --game, else the folder above the program's own (the release puts it in the
- * game's xsystem4 folder), else the program's own folder, else the last one used, else a picker. */
+ * The game folder: --game, else the folder above the program's own (RQ MOD puts it in the game's
+ * xsystem4 folder), else the program's own folder, else the last one used, else a picker. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,7 +18,11 @@
 #include "system4.h"
 #include "system4/file.h"
 
-#include "rqb.h"
+#include "browser.h"
+
+#ifndef BROWSER_BUILD_NOTE
+#define BROWSER_BUILD_NOTE ""
+#endif
 
 SDL_Window *g_window;
 
@@ -28,6 +33,7 @@ static struct {
 	int shot_tab;
 	const char *shot_path;
 	int select;
+	bool grid;
 	int w, h;
 	bool size_given;
 	float scale;   /* --scale, or 0 */
@@ -36,11 +42,12 @@ static struct {
 static void usage(void)
 {
 	win_attach_console();
-	printf("RQ Browser " RQB_VERSION ": the game's files for mod creators.\n\n"
-	       "  rq-browser [--game DIR] [--scale F]\n"
-	       "  rq-browser --check [--game DIR] [--out FILE]\n"
-	       "  rq-browser --shot TAB FILE.png [--game DIR] [--select N] [--size WxH] [--scale F]\n"
-	       "      TAB: cgs, flash, music, sounds, textures or names\n"
+	printf(APP_NAME " " BROWSER_VERSION ": the files of AliceSoft's System 4 games.\n\n"
+	       "  " APP_EXE " [--game DIR] [--scale F]\n"
+	       "  " APP_EXE " --check [--game DIR] [--out FILE]\n"
+	       "  " APP_EXE " --shot TAB FILE.png [--game DIR] [--select N] [--grid] [--size WxH] [--scale F]\n"
+	       "      TAB: cgs, flash, music, sounds, textures, pictures, dungeons or names\n"
+	       "      --select N: the CG number (cgs), else the place in the list; --grid: the grid of pictures\n"
 	       "  --scale F: the size of the text and the layout, 1 to 4 (default: the display's scale;\n"
 	       "      1 for --shot)\n");
 }
@@ -51,7 +58,7 @@ static void on_error(const char *msg)
 		fprintf(stderr, "%s\n", msg);
 		return;
 	}
-	win_message("RQ Browser", msg);
+	win_message(APP_NAME, msg);
 }
 
 static void parent_of(char *dir)
@@ -60,6 +67,17 @@ static void parent_of(char *dir)
 	char *s = a > b ? a : b;
 	if (s)
 		*s = 0;
+}
+
+static bool pick_game(char *out, size_t n)
+{
+	while (win_pick_folder("Pick a game's folder (the one with System40.ini or AliceStart.ini)", out, n)) {
+		if (game_dir_ok(out))
+			return true;
+		win_message(APP_NAME, "That folder is not a System 4 game's: it needs System40.ini or AliceStart.ini "
+		            "and the game's CG archive (a .afa or .ald file named after the game). Pick the game's own folder.");
+	}
+	return false;
 }
 
 static bool find_game(char *out, size_t n)
@@ -89,12 +107,7 @@ static bool find_game(char *out, size_t n)
 	}
 	if (A.check || A.shot_path)
 		return false;
-	while (win_pick_folder("Pick your Rance Quest Magnum folder (the one with RanceQuestCG.afa)", out, n)) {
-		if (game_dir_ok(out))
-			return true;
-		win_message("RQ Browser", "That folder has no RanceQuestCG.afa. Pick the game's own folder.");
-	}
-	return false;
+	return pick_game(out, n);
 }
 
 static void parse_args(int argc, char **argv)
@@ -115,6 +128,8 @@ static void parse_args(int argc, char **argv)
 					A.shot_tab = t;
 		} else if (!strcmp(a, "--select") && i + 1 < argc) {
 			A.select = atoi(argv[++i]);
+		} else if (!strcmp(a, "--grid")) {
+			A.grid = true;
 		} else if (!strcmp(a, "--size") && i + 1 < argc) {
 			sscanf(argv[++i], "%dx%d", &A.w, &A.h);
 			A.size_given = true;
@@ -134,6 +149,13 @@ static void parse_args(int argc, char **argv)
 
 /* ---- the fonts ---- */
 
+/* The text: the game's own font when its profile names one (Rance Quest's), else Windows' Segoe
+ * UI. Glyphs it lacks (Japanese names) come from Windows' Japanese font. */
+static const char *ui_fonts[] = {
+	"C:/Windows/Fonts/segoeui.ttf",
+	"C:/Windows/Fonts/arial.ttf",
+};
+
 static const char *jp_fallbacks[] = {
 	"C:/Windows/Fonts/YuGothM.ttc",
 	"C:/Windows/Fonts/meiryo.ttc",
@@ -146,9 +168,11 @@ static void load_fonts(float size)
 	ImFont *font = NULL;
 	if (G.font[0])
 		font = ImFontAtlas_AddFontFromFileTTF(io->Fonts, G.font, size, NULL, NULL);
+	for (size_t i = 0; !font && i < sizeof ui_fonts / sizeof ui_fonts[0]; i++)
+		if (file_exists(ui_fonts[i]))
+			font = ImFontAtlas_AddFontFromFileTTF(io->Fonts, ui_fonts[i], size, NULL, NULL);
 	if (!font)
 		ImFontAtlas_AddFontDefault(io->Fonts, NULL);
-	/* Glyphs the game's font lacks come from Windows' Japanese font. */
 	for (size_t i = 0; i < sizeof jp_fallbacks / sizeof jp_fallbacks[0]; i++) {
 		if (!file_exists(jp_fallbacks[i]))
 			continue;
@@ -201,18 +225,71 @@ static float display_scale(int display)
 
 /* ---- one frame ---- */
 
-static const char *tab_labels[TAB_COUNT] = { "CGs", "Flash", "Music", "Sounds", "3D textures", "Names" };
-static void (*const tab_fns[TAB_COUNT])(void) = { tab_cgs, tab_flash, tab_music, tab_sounds, tab_textures, tab_names };
+static const char *tab_labels[TAB_COUNT] = { "CGs", "Flash", "Music", "Sounds", "3D textures", "Other pictures",
+                                             "Dungeon textures", "Names" };
+static void (*const tab_fns[TAB_COUNT])(void) = { tab_cgs, tab_flash, tab_music, tab_sounds, tab_textures,
+                                                  tab_alk, tab_dungeons, tab_names };
+
+bool tab_shown(int t)
+{
+	switch (t) {
+	case TAB_CGS: return true;
+	case TAB_FLASH: return G.nflash > 0;
+	case TAB_MUSIC: return G.nmusic > 0;
+	case TAB_SOUNDS: return G.nsounds > 0;
+	case TAB_TEXTURES: return G.sets[PK_TEX].n > 0;
+	case TAB_PICTURES: return G.sets[PK_ALK].n > 0;
+	case TAB_DUNGEONS: return G.sets[PK_DTX].n > 0;
+	case TAB_NAMES: return G.rq && G.nkinds > 0;
+	}
+	return false;
+}
+
+static void add_count(char *buf, size_t n, int count, const char *one, const char *many)
+{
+	if (!count)
+		return;
+	size_t len = strlen(buf);
+	snprintf(buf + len, n - len, "%s%d %s", len ? " · " : "", count, count == 1 ? one : many);
+}
 
 static void status_line(void)
 {
 	igSeparator();
+	if (igSmallButton("Open another game...")) {
+		char dir[1024];
+		if (pick_game(dir, sizeof dir)) {
+			settings_set("game", dir);
+			if (win_relaunch(dir))
+				exit(0);
+			ui_status("Could not start the program again; it opens that game next time");
+		}
+	}
+	igSameLine(0, S(12));
 	if (UI.status[0] && igGetTime() < UI.status_until) {
 		igTextColored(v4(1.0f, 0.85f, 0.4f, 1), "%s", UI.status);
 		return;
 	}
-	igTextDisabled("%s   ·   %d CGs · %d Flash files · %d tracks · %d sounds · %d textures · %d names with a picture",
-		G.dir, G.ncg, G.nflash, G.nmusic, G.nsounds, G.ntex, G.npictures);
+	char counts[512] = "";
+	add_count(counts, sizeof counts, G.ncg, "CG", "CGs");
+	add_count(counts, sizeof counts, G.nflash, "Flash file", "Flash files");
+	add_count(counts, sizeof counts, G.nmusic, "track", "tracks");
+	add_count(counts, sizeof counts, G.nsounds, "sound", "sounds");
+	add_count(counts, sizeof counts, G.sets[PK_TEX].n, "texture", "textures");
+	add_count(counts, sizeof counts, G.sets[PK_ALK].n, "other picture", "other pictures");
+	add_count(counts, sizeof counts, G.sets[PK_DTX].n, "dungeon texture", "dungeon textures");
+	if (G.rq)
+		add_count(counts, sizeof counts, G.npictures, "name with a picture", "names with a picture");
+	igText("%s", G.title);
+	if (!G.tested) {
+		igSameLine(0, S(8));
+		igTextColored(v4(1.0f, 0.75f, 0.35f, 1), "(not tested)");
+		if (igIsItemHovered(0))
+			igSetTooltip("The browser opens this game by the rules every System 4 game follows, but nobody has\n"
+			             "checked its files with it yet. Some kinds of file may be missing or read wrong.");
+	}
+	igSameLine(0, S(12));
+	igTextDisabled("%s   ·   %s", G.dir, counts);
 	if (G.errors[0]) {
 		igSameLine(0, S(16));
 		igTextColored(v4(1, 0.45f, 0.4f, 1), "%s", G.errors);
@@ -232,6 +309,8 @@ static void frame_ui(void)
 	static int shown = -1;
 	if (igBeginTabBar("tabs", 0)) {
 		for (int t = 0; t < TAB_COUNT; t++) {
+			if (!tab_shown(t))
+				continue;
 			char label[64];
 			snprintf(label, sizeof label, "%s###%s", tab_labels[t], tab_keys[t]);
 			if (igBeginTabItem(label, NULL, want == t ? ImGuiTabItemFlags_SetSelected : 0)) {
@@ -305,11 +384,13 @@ static bool shot_save(int w, int h, const char *path)
 static void select_for_shot(void)
 {
 	switch (A.shot_tab) {
-	case TAB_CGS: cgs_select_first(A.select); break;
+	case TAB_CGS: cgs_select_first(A.select); pictures_grid(PK_CG, A.grid); break;
 	case TAB_FLASH: flash_select(A.select); break;
 	case TAB_MUSIC: music_select(A.select); break;
 	case TAB_SOUNDS: sounds_select(A.select); break;
-	case TAB_TEXTURES: textures_select(A.select); break;
+	case TAB_TEXTURES: set_select(PK_TEX, A.select); pictures_grid(PK_TEX, A.grid); break;
+	case TAB_PICTURES: set_select(PK_ALK, A.select); pictures_grid(PK_ALK, A.grid); break;
+	case TAB_DUNGEONS: set_select(PK_DTX, A.select); pictures_grid(PK_DTX, A.grid); break;
 	case TAB_NAMES: names_select(A.select); break;
 	}
 	UI.want_tab = A.shot_tab;
@@ -331,7 +412,7 @@ int main(int argc, char **argv)
 		if (A.check)
 			return run_check(dir[0] ? dir : "(none)", A.out);
 		if (A.shot_path)
-			fprintf(stderr, "rq-browser: no game folder (use --game DIR)\n");
+			fprintf(stderr, APP_EXE ": no game folder (use --game DIR)\n");
 		return 1;
 	}
 	if (A.check)
@@ -354,13 +435,19 @@ int main(int argc, char **argv)
 		on_error(msg);
 		return 1;
 	}
+	if (A.shot_path && !tab_shown(A.shot_tab)) {
+		fprintf(stderr, APP_EXE ": %s has no %s tab\n", G.title, tab_keys[A.shot_tab]);
+		return 1;
+	}
 	settings_set("game", dir);
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	char title[1200];
-	snprintf(title, sizeof title, "RQ Browser " RQB_VERSION "  -  %s", dir);
+	char title[1600];
+	snprintf(title, sizeof title, APP_NAME " " BROWSER_VERSION "%s%s%s  -  %s%s  -  %s",
+	         BROWSER_BUILD_NOTE[0] ? " (" : "", BROWSER_BUILD_NOTE, BROWSER_BUILD_NOTE[0] ? ")" : "",
+	         G.title, G.tested ? "" : " (not tested)", dir);
 	Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
 	if (A.shot_path)
 		flags |= SDL_WINDOW_HIDDEN;
@@ -407,7 +494,7 @@ int main(int argc, char **argv)
 	if (A.shot_path) {
 		fbo = shot_fbo(A.w, A.h);
 		if (!fbo) {
-			fprintf(stderr, "rq-browser: no framebuffer for --shot\n");
+			fprintf(stderr, APP_EXE ": no framebuffer for --shot\n");
 			return 1;
 		}
 		select_for_shot();
@@ -449,7 +536,7 @@ int main(int argc, char **argv)
 			if ((UI.frame > 30 && quiet > 20) || UI.frame > 1500) {
 				code = shot_save(A.w, A.h, A.shot_path) ? 0 : 1;
 				if (code)
-					fprintf(stderr, "rq-browser: could not write %s\n", A.shot_path);
+					fprintf(stderr, APP_EXE ": could not write %s\n", A.shot_path);
 				run = false;
 			}
 			p_bind_fb(GL_FRAMEBUFFER, 0);

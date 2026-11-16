@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "system4.h"
-#include "rqb.h"
+#include "browser.h"
 #include "lua_lines.h"
 
 static struct {

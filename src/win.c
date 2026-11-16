@@ -1,5 +1,7 @@
 /* Windows: the folder and save dialogs, the program's own folder, a console for --check, and the
- * settings file beside the program (rq-browser.json: the game folder, the last save folder). */
+ * settings file beside the program (rance-browser.json: the game folder, the last save folder; an
+ * RQ Browser's rq-browser.json is read when it is the only one), and starting the program again on
+ * another game. */
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <windows.h>
@@ -15,7 +17,7 @@
 #include "system4/file.h"
 #include "cJSON.h"
 
-#include "rqb.h"
+#include "browser.h"
 
 extern SDL_Window *g_window;
 
@@ -68,9 +70,15 @@ void win_init(void)
 	char dir[1024];
 	if (!win_exe_dir(dir, sizeof dir))
 		return;
-	snprintf(settings_path, sizeof settings_path, "%s/rq-browser.json", dir);
+	snprintf(settings_path, sizeof settings_path, "%s/rance-browser.json", dir);
 	size_t size = 0;
 	uint8_t *raw = file_read(settings_path, &size);
+	if (!raw) {
+		/* RQ Browser, the name before 1.0.0, kept the same settings beside it. */
+		char old[1100];
+		snprintf(old, sizeof old, "%s/rq-browser.json", dir);
+		raw = file_read(old, &size);
+	}
 	if (raw) {
 		char *text = xmalloc(size + 1);
 		memcpy(text, raw, size);
@@ -83,6 +91,28 @@ void win_init(void)
 		cJSON_Delete(settings);
 		settings = cJSON_CreateObject();
 	}
+}
+
+bool win_relaunch(const char *game_dir)
+{
+	wchar_t exe[MAX_PATH * 2];
+	DWORD len = GetModuleFileNameW(NULL, exe, MAX_PATH * 2);
+	if (!len || len >= MAX_PATH * 2)
+		return false;
+	wchar_t *dir = wide(game_dir);
+	size_t n = wcslen(exe) + wcslen(dir) + 32;
+	wchar_t *cmd = xmalloc(n * sizeof(wchar_t));
+	_snwprintf(cmd, n, L"\"%ls\" --game \"%ls\"", exe, dir);
+	STARTUPINFOW si = { .cb = sizeof si };
+	PROCESS_INFORMATION pi;
+	bool ok = CreateProcessW(exe, cmd, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+	if (ok) {
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
+	free(cmd);
+	free(dir);
+	return ok;
 }
 
 const char *settings_get(const char *key)

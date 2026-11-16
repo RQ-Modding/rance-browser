@@ -1,0 +1,6 @@
+option('rq_ids_dir', type : 'string', value : '',
+       description : 'A folder with RQ MOD\'s ids.json and pictures.tsv (default: games/rq-ids)')
+option('rq_lua', type : 'string', value : '',
+       description : 'RQ MOD\'s rq.lua, to check the Lua lines against (default: not checked)')
+option('build_note', type : 'string', value : '',
+       description : 'A note shown after the version, such as "RQ MOD 2.55.1"')

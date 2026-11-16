@@ -1,0 +1,9790 @@
+{
+ "kinds": [
+  {
+   "kind": "chara",
+   "title": "Characters",
+   "what": "character numbers (`no`), not roster slots: `rq.chara.find(rq.ids.chara.KAORU_QUINCY)` gives the slot",
+   "entries": [
+    {
+     "no": 1,
+     "name": "Rance",
+     "detail": "Fighter",
+     "key": "RANCE"
+    },
+    {
+     "no": 3,
+     "name": "Alkanese Rize",
+     "detail": "Fighter",
+     "key": "ALKANESE_RIZE"
+    },
+    {
+     "no": 4,
+     "name": "Kenshin Uesugi",
+     "detail": "Fighter",
+     "key": "KENSHIN_UESUGI"
+    },
+    {
+     "no": 5,
+     "name": "Katsuko Uesugi",
+     "detail": "Fighter",
+     "key": "KATSUKO_UESUGI"
+    },
+    {
+     "no": 6,
+     "name": "Tilde Sharp",
+     "detail": "Fighter",
+     "key": "TILDE_SHARP"
+    },
+    {
+     "no": 7,
+     "name": "Arms Arc",
+     "detail": "Fighter",
+     "key": "ARMS_ARC_7",
+     "aliases": [
+      "ARMS_ARC"
+     ]
+    },
+    {
+     "no": 8,
+     "name": "Rick Addison",
+     "detail": "Fighter",
+     "key": "RICK_ADDISON_8"
+    },
+    {
+     "no": 9,
+     "name": "Teru Mouri",
+     "detail": "Guard",
+     "key": "TERU_MOURI"
+    },
+    {
+     "no": 10,
+     "name": "Elenoa Ran",
+     "detail": "Fighter",
+     "key": "ELENOA_RAN"
+    },
+    {
+     "no": 11,
+     "name": "Wichita Skate",
+     "detail": "Fighter",
+     "key": "WICHITA_SKATE"
+    },
+    {
+     "no": 12,
+     "name": "Rizna Lanfbit",
+     "detail": "Fighter",
+     "key": "RIZNA_LANFBIT"
+    },
+    {
+     "no": 13,
+     "name": "Nozomi Okita",
+     "detail": "Fighter",
+     "key": "NOZOMI_OKITA"
+    },
+    {
+     "no": 14,
+     "name": "Cessna Benville",
+     "detail": "Fighter",
+     "key": "CESSNA_BENVILLE"
+    },
+    {
+     "no": 15,
+     "name": "Yulan Mirage",
+     "detail": "Fighter",
+     "key": "YULAN_MIRAGE"
+    },
+    {
+     "no": 16,
+     "name": "Bernard Ceramit･",
+     "detail": "Fighter",
+     "key": "BERNARD_CERAMITE"
+    },
+    {
+     "no": 17,
+     "name": "Noir",
+     "detail": "Fighter",
+     "key": "NOIR"
+    },
+    {
+     "no": 18,
+     "name": "Tomato Pur･e",
+     "detail": "Fighter",
+     "key": "TOMATO_PUREE"
+    },
+    {
+     "no": 19,
+     "name": "Sachiko Senters",
+     "detail": "Guard",
+     "key": "SACHIKO_SENTERS"
+    },
+    {
+     "no": 20,
+     "name": "Kouhime",
+     "detail": "Guard",
+     "key": "KOUHIME"
+    },
+    {
+     "no": 21,
+     "name": "Rocky Bank",
+     "detail": "Guard",
+     "key": "ROCKY_BANK"
+    },
+    {
+     "no": 22,
+     "name": "Suzume",
+     "detail": "Ranger",
+     "key": "SUZUME"
+    },
+    {
+     "no": 23,
+     "name": "Crane",
+     "detail": "Ranger",
+     "key": "CRANE"
+    },
+    {
+     "no": 24,
+     "name": "Kanami Kentou",
+     "detail": "Ranger",
+     "key": "KANAMI_KENTOU"
+    },
+    {
+     "no": 25,
+     "name": "Karma Atlanger",
+     "detail": "Ranger",
+     "key": "KARMA_ATLANGER"
+    },
+    {
+     "no": 26,
+     "name": "Aegis Kalar",
+     "detail": "Gunner",
+     "key": "AEGIS_KALAR"
+    },
+    {
+     "no": 27,
+     "name": "Athena 2.0",
+     "detail": "Gunner",
+     "key": "ATHENA_2_0"
+    },
+    {
+     "no": 28,
+     "name": "Urza Pranaice",
+     "detail": "Gunner",
+     "key": "URZA_PRANAICE"
+    },
+    {
+     "no": 29,
+     "name": "Maria Custard",
+     "detail": "Gunner",
+     "key": "MARIA_CUSTARD"
+    },
+    {
+     "no": 30,
+     "name": "Yuzumi Yuzuhara",
+     "detail": "Gunner",
+     "key": "YUZUMI_YUZUHARA"
+    },
+    {
+     "no": 31,
+     "name": "Megadeth Moromi",
+     "detail": "Gunner",
+     "key": "MEGADETH_MOROMI"
+    },
+    {
+     "no": 32,
+     "name": "Zima Bakasko",
+     "detail": "Gunner",
+     "key": "ZIMA_BAKASKO"
+    },
+    {
+     "no": 33,
+     "name": "Crook Mofus",
+     "detail": "Healer",
+     "key": "CROOK_MOFUS"
+    },
+    {
+     "no": 34,
+     "name": "Maris Amaryllis",
+     "detail": "Healer",
+     "key": "MARIS_AMARYLLIS_34",
+     "aliases": [
+      "MARIS_AMARYLLIS"
+     ]
+    },
+    {
+     "no": 35,
+     "name": "Sel Curchgolf",
+     "detail": "Healer",
+     "key": "SEL_CURCHGOLF"
+    },
+    {
+     "no": 36,
+     "name": "Noah Hakobune",
+     "detail": "Healer",
+     "key": "NOAH_HAKOBUNE"
+    },
+    {
+     "no": 38,
+     "name": "Torako Uesugi",
+     "detail": "Sorcerer",
+     "key": "TORAKO_UESUGI"
+    },
+    {
+     "no": 39,
+     "name": "Shizuka Masou",
+     "detail": "Sorcerer",
+     "key": "SHIZUKA_MASOU"
+    },
+    {
+     "no": 40,
+     "name": "Aten Gnu",
+     "detail": "Sorcerer",
+     "key": "ATEN_GNU"
+    },
+    {
+     "no": 41,
+     "name": "Kapalla Uche",
+     "detail": "Sorcerer",
+     "key": "KAPALLA_UCHE"
+    },
+    {
+     "no": 42,
+     "name": "Magic The Gandhi",
+     "detail": "Sorcerer",
+     "key": "MAGIC_THE_GANDHI"
+    },
+    {
+     "no": 43,
+     "name": "Mill Yorks",
+     "detail": "Sorcerer",
+     "key": "MILL_YORKS"
+    },
+    {
+     "no": 44,
+     "name": "Emi Alphorne",
+     "detail": "Sorcerer",
+     "key": "EMI_ALPHORNE"
+    },
+    {
+     "no": 45,
+     "name": "Mahoko P. Masai",
+     "detail": "Sorcerer",
+     "key": "MAHOKO_P_MASAI"
+    },
+    {
+     "no": 46,
+     "name": "Shitomone Chappie",
+     "detail": "Sorcerer",
+     "key": "SHITOMONE_CHAPPIE"
+    },
+    {
+     "no": 47,
+     "name": "Matilda Mateuri",
+     "detail": "Brawler",
+     "key": "MATILDA_MATEURI"
+    },
+    {
+     "no": 48,
+     "name": "Tama",
+     "detail": "Brawler",
+     "key": "TAMA"
+    },
+    {
+     "no": 49,
+     "name": "Alexander",
+     "detail": "Brawler",
+     "key": "ALEXANDER"
+    },
+    {
+     "no": 50,
+     "name": "Kibako",
+     "detail": "Brawler",
+     "key": "KIBAKO"
+    },
+    {
+     "no": 51,
+     "name": "Caloria Cricket",
+     "detail": "Guard",
+     "key": "CALORIA_CRICKET"
+    },
+    {
+     "no": 52,
+     "name": "Kaoru Quincy",
+     "detail": "Brawler",
+     "key": "KAORU_QUINCY"
+    },
+    {
+     "no": 53,
+     "name": "Bear",
+     "detail": "Brawler",
+     "key": "BEAR"
+    },
+    {
+     "no": 54,
+     "name": "Lia P. Leazas",
+     "detail": "Civilian",
+     "key": "LIA_P_LEAZAS"
+    },
+    {
+     "no": 55,
+     "name": "Copandon Dot",
+     "detail": "Civilian",
+     "key": "COPANDON_DOT"
+    },
+    {
+     "no": 56,
+     "name": "Frostbyne",
+     "detail": "Healer",
+     "key": "FROSTBYNE"
+    },
+    {
+     "no": 57,
+     "name": "Meg Makibano",
+     "detail": "Civilian",
+     "key": "MEG_MAKIBANO"
+    },
+    {
+     "no": 58,
+     "name": "Atago Macatt",
+     "detail": "Civilian",
+     "key": "ATAGO_MACATT"
+    },
+    {
+     "no": 59,
+     "name": "Prima Hononoman",
+     "detail": "Civilian",
+     "key": "PRIMA_HONONOMAN"
+    },
+    {
+     "no": 60,
+     "name": "Merim Zahl",
+     "detail": "Civilian",
+     "key": "MERIM_ZAHL"
+    },
+    {
+     "no": 61,
+     "name": "Arlcoate Marius",
+     "detail": "Civilian",
+     "key": "ARLCOATE_MARIUS"
+    },
+    {
+     "no": 62,
+     "name": "Onoha Mespos",
+     "detail": "Civilian",
+     "key": "ONOHA_MESPOS"
+    },
+    {
+     "no": 63,
+     "name": "Nopel",
+     "detail": "Civilian",
+     "key": "NOPEL"
+    },
+    {
+     "no": 64,
+     "name": "Doessky",
+     "detail": "Civilian",
+     "key": "DOESSKY"
+    },
+    {
+     "no": 67,
+     "name": "Hikari mi Blanc",
+     "detail": "Healer",
+     "key": "HIKARI_MI_BLANC"
+    },
+    {
+     "no": 68,
+     "name": "Biscuitta Berns",
+     "detail": "Brawler",
+     "key": "BISCUITTA_BERNS"
+    },
+    {
+     "no": 70,
+     "name": "Carolie Mate",
+     "detail": "Ranger",
+     "key": "CAROLIE_MATE"
+    },
+    {
+     "no": 71,
+     "name": "Sanakia Drelshkaf",
+     "detail": "Fighter",
+     "key": "SANAKIA_DRELSHKAF"
+    },
+    {
+     "no": 72,
+     "name": "Reset Kalar",
+     "detail": "Gunner",
+     "key": "RESET_KALAR"
+    },
+    {
+     "no": 73,
+     "name": "Caf･ Artful",
+     "detail": "Healer",
+     "key": "CAFE_ARTFUL"
+    },
+    {
+     "no": 74,
+     "name": "Alex Valse",
+     "detail": "Sorcerer",
+     "key": "ALEX_VALSE"
+    },
+    {
+     "no": 75,
+     "name": "Zethan Soldier A",
+     "detail": "Sorcerer",
+     "key": "ZETHAN_SOLDIER_A"
+    },
+    {
+     "no": 76,
+     "name": "Zethan Soldier B",
+     "detail": "Sorcerer",
+     "key": "ZETHAN_SOLDIER_B"
+    },
+    {
+     "no": 77,
+     "name": "Zethan Soldier C",
+     "detail": "Sorcerer",
+     "key": "ZETHAN_SOLDIER_C"
+    },
+    {
+     "no": 78,
+     "name": "Zethan Soldier D",
+     "detail": "Sorcerer",
+     "key": "ZETHAN_SOLDIER_D"
+    },
+    {
+     "no": 79,
+     "name": "Souun Houjou",
+     "detail": "Sorcerer",
+     "key": "SOUUN_HOUJOU"
+    },
+    {
+     "no": 80,
+     "name": "Kisara Copley",
+     "detail": "Brawler",
+     "key": "KISARA_COPLEY"
+    },
+    {
+     "no": 81,
+     "name": "Rebecca Copley",
+     "detail": "Civilian",
+     "key": "REBECCA_COPLEY"
+    },
+    {
+     "no": 83,
+     "name": "Maris Amaryllis",
+     "detail": "Healer",
+     "key": "MARIS_AMARYLLIS_83"
+    },
+    {
+     "no": 84,
+     "name": "Pastel Kalar",
+     "detail": "Sorcerer",
+     "key": "PASTEL_KALAR"
+    },
+    {
+     "no": 85,
+     "name": "Chinu Kobayakawa",
+     "detail": "Healer",
+     "key": "CHINU_KOBAYAKAWA"
+    },
+    {
+     "no": 86,
+     "name": "Kiku Kikkawa",
+     "detail": "Ranger",
+     "key": "KIKU_KIKKAWA"
+    },
+    {
+     "no": 87,
+     "name": "Eisaku",
+     "detail": "Fighter",
+     "key": "EISAKU"
+    },
+    {
+     "no": 88,
+     "name": "Toby",
+     "detail": "Ranger",
+     "key": "TOBY"
+    },
+    {
+     "no": 89,
+     "name": "Marcie",
+     "detail": "Healer",
+     "key": "MARCIE"
+    },
+    {
+     "no": 90,
+     "name": "Andy",
+     "detail": "Guard",
+     "key": "ANDY"
+    },
+    {
+     "no": 91,
+     "name": "Kojika Yamanaka",
+     "detail": "Fighter",
+     "key": "KOJIKA_YAMANAKA"
+    },
+    {
+     "no": 92,
+     "name": "Dark Rance",
+     "detail": "Fighter",
+     "key": "DARK_RANCE"
+    },
+    {
+     "no": 93,
+     "name": "Rick Addison",
+     "detail": "Fighter",
+     "key": "RICK_ADDISON_93",
+     "aliases": [
+      "RICK_ADDISON"
+     ]
+    },
+    {
+     "no": 94,
+     "name": "Am Yisael",
+     "detail": "Healer",
+     "key": "AM_YISAEL"
+    },
+    {
+     "no": 112,
+     "name": "Arms Arc",
+     "detail": "Fighter",
+     "key": "ARMS_ARC_112"
+    }
+   ]
+  },
+  {
+   "kind": "chara_type",
+   "title": "Character types",
+   "what": "character type values (`タイプ`), as in `rq.chara.get(iic).type`",
+   "entries": [
+    {
+     "no": 16,
+     "name": "Flying",
+     "detail": "",
+     "key": "FLYING"
+    },
+    {
+     "no": 17,
+     "name": "Breakable",
+     "detail": "",
+     "key": "BREAKABLE"
+    },
+    {
+     "no": 19,
+     "name": "Mollusc",
+     "detail": "",
+     "key": "MOLLUSC"
+    },
+    {
+     "no": 20,
+     "name": "Spirit",
+     "detail": "",
+     "key": "SPIRIT"
+    },
+    {
+     "no": 21,
+     "name": "Zombie",
+     "detail": "",
+     "key": "ZOMBIE"
+    },
+    {
+     "no": 22,
+     "name": "Humanoid",
+     "detail": "",
+     "key": "HUMANOID"
+    }
+   ]
+  },
+  {
+   "kind": "class",
+   "title": "Classes",
+   "what": "class numbers, as in `rq.chara.get(iic).class`",
+   "entries": [
+    {
+     "no": 1,
+     "name": "Fighter",
+     "detail": "",
+     "key": "FIGHTER"
+    },
+    {
+     "no": 2,
+     "name": "Guard",
+     "detail": "",
+     "key": "GUARD"
+    },
+    {
+     "no": 3,
+     "name": "Gunner",
+     "detail": "",
+     "key": "GUNNER"
+    },
+    {
+     "no": 4,
+     "name": "Sorcerer",
+     "detail": "",
+     "key": "SORCERER"
+    },
+    {
+     "no": 5,
+     "name": "Healer",
+     "detail": "",
+     "key": "HEALER"
+    },
+    {
+     "no": 6,
+     "name": "Ranger",
+     "detail": "",
+     "key": "RANGER"
+    },
+    {
+     "no": 7,
+     "name": "Brawler",
+     "detail": "",
+     "key": "BRAWLER"
+    },
+    {
+     "no": 8,
+     "name": "Civilian",
+     "detail": "",
+     "key": "CIVILIAN"
+    }
+   ]
+  },
+  {
+   "kind": "element",
+   "title": "Elements",
+   "what": "element numbers (`属性`), as in a skill's `element` and `rq.chara.get(iic).weak_element`",
+   "entries": [
+    {
+     "no": 0,
+     "name": "Nothing",
+     "detail": "",
+     "key": "NOTHING"
+    },
+    {
+     "no": 1,
+     "name": "Light",
+     "detail": "",
+     "key": "LIGHT"
+    },
+    {
+     "no": 2,
+     "name": "Darkness",
+     "detail": "",
+     "key": "DARKNESS"
+    },
+    {
+     "no": 3,
+     "name": "Electric",
+     "detail": "",
+     "key": "ELECTRIC"
+    },
+    {
+     "no": 4,
+     "name": "Ice",
+     "detail": "",
+     "key": "ICE"
+    },
+    {
+     "no": 5,
+     "name": "Fire",
+     "detail": "",
+     "key": "FIRE"
+    }
+   ]
+  },
+  {
+   "kind": "item",
+   "title": "Items",
+   "what": "item numbers, not instances: `rq.item.give(rq.ids.item.SKILL_AGAIN)` makes one",
+   "entries": [
+    {
+     "no": 1,
+     "name": "Adventurer Outfit",
+     "detail": "armor",
+     "key": "ADVENTURER_OUTFIT"
+    },
+    {
+     "no": 2,
+     "name": "Stealth Suit",
+     "detail": "armor",
+     "key": "STEALTH_SUIT"
+    },
+    {
+     "no": 3,
+     "name": "Tarampi Suit",
+     "detail": "armor",
+     "key": "TARAMPI_SUIT"
+    },
+    {
+     "no": 4,
+     "name": "Miko Outfit",
+     "detail": "armor",
+     "key": "MIKO_OUTFIT"
+    },
+    {
+     "no": 5,
+     "name": "T-Shirt",
+     "detail": "armor",
+     "key": "T_SHIRT"
+    },
+    {
+     "no": 6,
+     "name": "Maid Outfit",
+     "detail": "armor",
+     "key": "MAID_OUTFIT"
+    },
+    {
+     "no": 7,
+     "name": "Lia's Clothes",
+     "detail": "armor",
+     "key": "LIAS_CLOTHES"
+    },
+    {
+     "no": 8,
+     "name": "Leather Armor",
+     "detail": "armor",
+     "key": "LEATHER_ARMOR"
+    },
+    {
+     "no": 9,
+     "name": "Leather Armor XA",
+     "detail": "armor",
+     "key": "LEATHER_ARMOR_XA"
+    },
+    {
+     "no": 10,
+     "name": "Sailor Uniform",
+     "detail": "armor",
+     "key": "SAILOR_UNIFORM"
+    },
+    {
+     "no": 11,
+     "name": "Ninja Outfit",
+     "detail": "armor",
+     "key": "NINJA_OUTFIT"
+    },
+    {
+     "no": 12,
+     "name": "Resist Armor",
+     "detail": "armor",
+     "key": "RESIST_ARMOR"
+    },
+    {
+     "no": 13,
+     "name": "High Grade Adventurer Outfit",
+     "detail": "armor",
+     "key": "HIGH_GRADE_ADVENTURER_OUTFIT"
+    },
+    {
+     "no": 14,
+     "name": "Tough Leather Armor",
+     "detail": "armor",
+     "key": "TOUGH_LEATHER_ARMOR"
+    },
+    {
+     "no": 15,
+     "name": "Tough Leather Armor XB",
+     "detail": "armor",
+     "key": "TOUGH_LEATHER_ARMOR_XB"
+    },
+    {
+     "no": 16,
+     "name": "Cultux",
+     "detail": "armor",
+     "key": "CULTUX"
+    },
+    {
+     "no": 17,
+     "name": "Quintessential Ninja",
+     "detail": "armor",
+     "key": "QUINTESSENTIAL_NINJA"
+    },
+    {
+     "no": 19,
+     "name": "Composite Leather Armor",
+     "detail": "armor",
+     "key": "COMPOSITE_LEATHER_ARMOR"
+    },
+    {
+     "no": 20,
+     "name": "DR Leather Armor",
+     "detail": "armor",
+     "key": "DR_LEATHER_ARMOR"
+    },
+    {
+     "no": 21,
+     "name": "Modified Composite Leather Armor",
+     "detail": "armor",
+     "key": "MODIFIED_COMPOSITE_LEATHER_ARMOR"
+    },
+    {
+     "no": 22,
+     "name": "Sacred Tree Armor",
+     "detail": "armor",
+     "key": "SACRED_TREE_ARMOR"
+    },
+    {
+     "no": 24,
+     "name": "Emperor's Armor",
+     "detail": "armor",
+     "key": "EMPERORS_ARMOR"
+    },
+    {
+     "no": 25,
+     "name": "Light Armor",
+     "detail": "armor",
+     "key": "LIGHT_ARMOR"
+    },
+    {
+     "no": 26,
+     "name": "Light Armor XA",
+     "detail": "armor",
+     "key": "LIGHT_ARMOR_XA"
+    },
+    {
+     "no": 27,
+     "name": "Oda Armor",
+     "detail": "armor",
+     "key": "ODA_ARMOR"
+    },
+    {
+     "no": 30,
+     "name": "Iron Armor",
+     "detail": "armor",
+     "key": "IRON_ARMOR"
+    },
+    {
+     "no": 31,
+     "name": "Iron Armor X",
+     "detail": "armor",
+     "key": "IRON_ARMOR_X"
+    },
+    {
+     "no": 32,
+     "name": "Crystal Armor",
+     "detail": "armor",
+     "key": "CRYSTAL_ARMOR"
+    },
+    {
+     "no": 33,
+     "name": "Warrior Armor",
+     "detail": "armor",
+     "key": "WARRIOR_ARMOR"
+    },
+    {
+     "no": 34,
+     "name": "Leazas Red General Armor",
+     "detail": "armor",
+     "key": "LEAZAS_RED_GENERAL_ARMOR_34"
+    },
+    {
+     "no": 36,
+     "name": "Coarse Armor",
+     "detail": "armor",
+     "key": "COARSE_ARMOR"
+    },
+    {
+     "no": 37,
+     "name": "Hell Setter",
+     "detail": "armor",
+     "key": "HELL_SETTER"
+    },
+    {
+     "no": 38,
+     "name": "Heavy Armor",
+     "detail": "armor",
+     "key": "HEAVY_ARMOR"
+    },
+    {
+     "no": 39,
+     "name": "Bikini Armor",
+     "detail": "armor",
+     "key": "BIKINI_ARMOR"
+    },
+    {
+     "no": 40,
+     "name": "Champion",
+     "detail": "armor",
+     "key": "CHAMPION"
+    },
+    {
+     "no": 41,
+     "name": "Modified Coarse Armor",
+     "detail": "armor",
+     "key": "MODIFIED_COARSE_ARMOR"
+    },
+    {
+     "no": 42,
+     "name": "Sengoku Rance Armor",
+     "detail": "armor",
+     "key": "SENGOKU_RANCE_ARMOR"
+    },
+    {
+     "no": 43,
+     "name": "Prelan Robe",
+     "detail": "armor",
+     "key": "PRELAN_ROBE"
+    },
+    {
+     "no": 46,
+     "name": "Loose Robe",
+     "detail": "armor",
+     "key": "LOOSE_ROBE"
+    },
+    {
+     "no": 47,
+     "name": "Split Robe",
+     "detail": "armor",
+     "key": "SPLIT_ROBE"
+    },
+    {
+     "no": 48,
+     "name": "Holy Robe",
+     "detail": "armor",
+     "key": "HOLY_ROBE"
+    },
+    {
+     "no": 50,
+     "name": "High Grade Loose Robe",
+     "detail": "armor",
+     "key": "HIGH_GRADE_LOOSE_ROBE"
+    },
+    {
+     "no": 51,
+     "name": "Magic Idiot",
+     "detail": "armor",
+     "key": "MAGIC_IDIOT"
+    },
+    {
+     "no": 52,
+     "name": "Magic Minister",
+     "detail": "armor",
+     "key": "MAGIC_MINISTER"
+    },
+    {
+     "no": 53,
+     "name": "Black Robe",
+     "detail": "armor",
+     "key": "BLACK_ROBE"
+    },
+    {
+     "no": 54,
+     "name": "Orgarhythm",
+     "detail": "armor",
+     "key": "ORGARHYTHM"
+    },
+    {
+     "no": 55,
+     "name": "White Belt Gi",
+     "detail": "armor",
+     "key": "WHITE_BELT_GI"
+    },
+    {
+     "no": 56,
+     "name": "Commander's Uniform",
+     "detail": "armor",
+     "key": "COMMANDERS_UNIFORM"
+    },
+    {
+     "no": 57,
+     "name": "Strengthened Synthetic Clothes",
+     "detail": "armor",
+     "key": "STRENGTHENED_SYNTHETIC_CLOTHES"
+    },
+    {
+     "no": 58,
+     "name": "Black Belt Gi",
+     "detail": "armor",
+     "key": "BLACK_BELT_GI"
+    },
+    {
+     "no": 59,
+     "name": "China Dress",
+     "detail": "armor",
+     "key": "CHINA_DRESS"
+    },
+    {
+     "no": 61,
+     "name": "Red Belt Gi",
+     "detail": "armor",
+     "key": "RED_BELT_GI"
+    },
+    {
+     "no": 62,
+     "name": "Killer Gi",
+     "detail": "armor",
+     "key": "KILLER_GI"
+    },
+    {
+     "no": 63,
+     "name": "Initiation Clothes",
+     "detail": "armor",
+     "key": "INITIATION_CLOTHES"
+    },
+    {
+     "no": 64,
+     "name": "Ulaanbaatar",
+     "detail": "armor",
+     "key": "ULAANBAATAR"
+    },
+    {
+     "no": 66,
+     "name": "Dagger",
+     "detail": "weapon",
+     "key": "DAGGER"
+    },
+    {
+     "no": 67,
+     "name": "Accurate Dagger",
+     "detail": "weapon",
+     "key": "ACCURATE_DAGGER"
+    },
+    {
+     "no": 68,
+     "name": "Club",
+     "detail": "weapon",
+     "key": "CLUB"
+    },
+    {
+     "no": 69,
+     "name": "Omikuji Box",
+     "detail": "weapon",
+     "key": "OMIKUJI_BOX"
+    },
+    {
+     "no": 70,
+     "name": "Lia's Whip",
+     "detail": "weapon",
+     "key": "LIAS_WHIP"
+    },
+    {
+     "no": 71,
+     "name": "Shortsword",
+     "detail": "weapon",
+     "key": "SHORTSWORD"
+    },
+    {
+     "no": 72,
+     "name": "Ninja Knife",
+     "detail": "weapon",
+     "key": "NINJA_KNIFE"
+    },
+    {
+     "no": 74,
+     "name": "Two-handed Shield",
+     "detail": "weapon",
+     "key": "TWO_HANDED_SHIELD"
+    },
+    {
+     "no": 75,
+     "name": "Rapier",
+     "detail": "weapon",
+     "key": "RAPIER"
+    },
+    {
+     "no": 76,
+     "name": "Modified Rapier",
+     "detail": "weapon",
+     "key": "MODIFIED_RAPIER"
+    },
+    {
+     "no": 77,
+     "name": "Critical Knife",
+     "detail": "weapon",
+     "key": "CRITICAL_KNIFE"
+    },
+    {
+     "no": 78,
+     "name": "Compound Rapier",
+     "detail": "weapon",
+     "key": "COMPOUND_RAPIER"
+    },
+    {
+     "no": 81,
+     "name": "Villa Blade",
+     "detail": "weapon",
+     "key": "VILLA_BLADE"
+    },
+    {
+     "no": 82,
+     "name": "Cuckri",
+     "detail": "weapon",
+     "key": "CUCKRI"
+    },
+    {
+     "no": 83,
+     "name": "Uruncel Blade",
+     "detail": "weapon",
+     "key": "URUNCEL_BLADE"
+    },
+    {
+     "no": 84,
+     "name": "Decapitation Blade",
+     "detail": "weapon",
+     "key": "DECAPITATION_BLADE"
+    },
+    {
+     "no": 85,
+     "name": "Over Blade",
+     "detail": "weapon",
+     "key": "OVER_BLADE"
+    },
+    {
+     "no": 86,
+     "name": "Longsword",
+     "detail": "weapon",
+     "key": "LONGSWORD"
+    },
+    {
+     "no": 87,
+     "name": "Lightning Sword",
+     "detail": "weapon",
+     "key": "LIGHTNING_SWORD"
+    },
+    {
+     "no": 88,
+     "name": "Zombie Sword",
+     "detail": "weapon",
+     "key": "ZOMBIE_SWORD"
+    },
+    {
+     "no": 90,
+     "name": "Buster Sword",
+     "detail": "weapon",
+     "key": "BUSTER_SWORD"
+    },
+    {
+     "no": 91,
+     "name": "Modified Buster Sword",
+     "detail": "weapon",
+     "key": "MODIFIED_BUSTER_SWORD"
+    },
+    {
+     "no": 92,
+     "name": "Katana",
+     "detail": "weapon",
+     "key": "KATANA"
+    },
+    {
+     "no": 93,
+     "name": "Iceberg Sword",
+     "detail": "weapon",
+     "key": "ICEBERG_SWORD"
+    },
+    {
+     "no": 94,
+     "name": "Paper Cutter",
+     "detail": "weapon",
+     "key": "PAPER_CUTTER"
+    },
+    {
+     "no": 95,
+     "name": "Super Sword",
+     "detail": "weapon",
+     "key": "SUPER_SWORD"
+    },
+    {
+     "no": 96,
+     "name": "Hideo's Sword",
+     "detail": "weapon",
+     "key": "HIDEOS_SWORD"
+    },
+    {
+     "no": 97,
+     "name": "Persiom",
+     "detail": "weapon",
+     "key": "PERSIOM"
+    },
+    {
+     "no": 98,
+     "name": "Ultra Sword",
+     "detail": "weapon",
+     "key": "ULTRA_SWORD"
+    },
+    {
+     "no": 99,
+     "name": "Hero's Sword",
+     "detail": "weapon",
+     "key": "HEROS_SWORD"
+    },
+    {
+     "no": 100,
+     "name": "Chaos the Darksword",
+     "detail": "weapon",
+     "key": "CHAOS_THE_DARKSWORD"
+    },
+    {
+     "no": 101,
+     "name": "Strongman Hammer",
+     "detail": "weapon",
+     "key": "STRONGMAN_HAMMER"
+    },
+    {
+     "no": 102,
+     "name": "Dewdrop Axe",
+     "detail": "weapon",
+     "key": "DEWDROP_AXE"
+    },
+    {
+     "no": 103,
+     "name": "Priest's Mace",
+     "detail": "weapon",
+     "key": "PRIESTS_MACE"
+    },
+    {
+     "no": 104,
+     "name": "Killer Hammer",
+     "detail": "weapon",
+     "key": "KILLER_HAMMER"
+    },
+    {
+     "no": 106,
+     "name": "Hammer B",
+     "detail": "weapon",
+     "key": "HAMMER_B"
+    },
+    {
+     "no": 107,
+     "name": "Modified Hammer B",
+     "detail": "weapon",
+     "key": "MODIFIED_HAMMER_B"
+    },
+    {
+     "no": 108,
+     "name": "Mollusc Crusher",
+     "detail": "weapon",
+     "key": "MOLLUSC_CRUSHER"
+    },
+    {
+     "no": 109,
+     "name": "Pastor's Mace",
+     "detail": "weapon",
+     "key": "PASTORS_MACE"
+    },
+    {
+     "no": 110,
+     "name": "Pastor's Mace D",
+     "detail": "weapon",
+     "key": "PASTORS_MACE_D"
+    },
+    {
+     "no": 111,
+     "name": "Big Hammer",
+     "detail": "weapon",
+     "key": "BIG_HAMMER"
+    },
+    {
+     "no": 112,
+     "name": "Becky",
+     "detail": "weapon",
+     "key": "BECKY"
+    },
+    {
+     "no": 113,
+     "name": "Bishop's Mace",
+     "detail": "weapon",
+     "key": "BISHOPS_MACE"
+    },
+    {
+     "no": 114,
+     "name": "Comet",
+     "detail": "weapon",
+     "key": "COMET"
+    },
+    {
+     "no": 115,
+     "name": "10-Ton Hammer",
+     "detail": "weapon",
+     "key": "N_10_TON_HAMMER"
+    },
+    {
+     "no": 117,
+     "name": "Warrior's Spear",
+     "detail": "weapon",
+     "key": "WARRIORS_SPEAR"
+    },
+    {
+     "no": 118,
+     "name": "Poison Dango",
+     "detail": "weapon",
+     "key": "POISON_DANGO"
+    },
+    {
+     "no": 119,
+     "name": "Flame Spear",
+     "detail": "weapon",
+     "key": "FLAME_SPEAR"
+    },
+    {
+     "no": 122,
+     "name": "Spear",
+     "detail": "weapon",
+     "key": "SPEAR"
+    },
+    {
+     "no": 123,
+     "name": "Modified Spear",
+     "detail": "weapon",
+     "key": "MODIFIED_SPEAR"
+    },
+    {
+     "no": 124,
+     "name": "Light Spear",
+     "detail": "weapon",
+     "key": "LIGHT_SPEAR"
+    },
+    {
+     "no": 125,
+     "name": "Naginata",
+     "detail": "weapon",
+     "key": "NAGINATA"
+    },
+    {
+     "no": 127,
+     "name": "Halberd",
+     "detail": "weapon",
+     "key": "HALBERD"
+    },
+    {
+     "no": 128,
+     "name": "Anguirus",
+     "detail": "weapon",
+     "key": "ANGUIRUS"
+    },
+    {
+     "no": 129,
+     "name": "Terror Spear",
+     "detail": "weapon",
+     "key": "TERROR_SPEAR"
+    },
+    {
+     "no": 130,
+     "name": "Halberd S",
+     "detail": "weapon",
+     "key": "HALBERD_S"
+    },
+    {
+     "no": 131,
+     "name": "By Road",
+     "detail": "weapon",
+     "key": "BY_ROAD_131"
+    },
+    {
+     "no": 133,
+     "name": "Shortbow",
+     "detail": "weapon",
+     "key": "SHORTBOW"
+    },
+    {
+     "no": 134,
+     "name": "Elite Kalar Bow",
+     "detail": "weapon",
+     "key": "ELITE_KALAR_BOW"
+    },
+    {
+     "no": 135,
+     "name": "Ear-hunter Boomerang",
+     "detail": "weapon",
+     "key": "EAR_HUNTER_BOOMERANG"
+    },
+    {
+     "no": 137,
+     "name": "Longbow",
+     "detail": "weapon",
+     "key": "LONGBOW"
+    },
+    {
+     "no": 138,
+     "name": "Modified Longbow",
+     "detail": "weapon",
+     "key": "MODIFIED_LONGBOW"
+    },
+    {
+     "no": 139,
+     "name": "Insect-killer Bow",
+     "detail": "weapon",
+     "key": "INSECT_KILLER_BOW"
+    },
+    {
+     "no": 140,
+     "name": "Ancient-hunter Bow",
+     "detail": "weapon",
+     "key": "ANCIENT_HUNTER_BOW"
+    },
+    {
+     "no": 142,
+     "name": "Power Attack Bow",
+     "detail": "weapon",
+     "key": "POWER_ATTACK_BOW"
+    },
+    {
+     "no": 143,
+     "name": "Artisan's Bow",
+     "detail": "weapon",
+     "key": "ARTISANS_BOW"
+    },
+    {
+     "no": 144,
+     "name": "Stronger",
+     "detail": "weapon",
+     "key": "STRONGER"
+    },
+    {
+     "no": 145,
+     "name": "Giga Attack Bow",
+     "detail": "weapon",
+     "key": "GIGA_ATTACK_BOW"
+    },
+    {
+     "no": 148,
+     "name": "Glove",
+     "detail": "weapon",
+     "key": "GLOVE"
+    },
+    {
+     "no": 149,
+     "name": "Good Will Punch",
+     "detail": "weapon",
+     "key": "GOOD_WILL_PUNCH"
+    },
+    {
+     "no": 151,
+     "name": "Knuckle",
+     "detail": "weapon",
+     "key": "KNUCKLE"
+    },
+    {
+     "no": 152,
+     "name": "Modified Knuckle",
+     "detail": "weapon",
+     "key": "MODIFIED_KNUCKLE"
+    },
+    {
+     "no": 153,
+     "name": "Config",
+     "detail": "weapon",
+     "key": "CONFIG"
+    },
+    {
+     "no": 155,
+     "name": "Metal Glove",
+     "detail": "weapon",
+     "key": "METAL_GLOVE"
+    },
+    {
+     "no": 156,
+     "name": "Killfig",
+     "detail": "weapon",
+     "key": "KILLFIG"
+    },
+    {
+     "no": 157,
+     "name": "Dragon Gloves",
+     "detail": "weapon",
+     "key": "DRAGON_GLOVES"
+    },
+    {
+     "no": 158,
+     "name": "Veteran Glove",
+     "detail": "weapon",
+     "key": "VETERAN_GLOVE"
+    },
+    {
+     "no": 160,
+     "name": "Haies Staff",
+     "detail": "weapon",
+     "key": "HAIES_STAFF"
+    },
+    {
+     "no": 161,
+     "name": "Magic Ice Stick",
+     "detail": "weapon",
+     "key": "MAGIC_ICE_STICK"
+    },
+    {
+     "no": 163,
+     "name": "Sylph Staff",
+     "detail": "weapon",
+     "key": "SYLPH_STAFF"
+    },
+    {
+     "no": 164,
+     "name": "Shining LED Staff",
+     "detail": "weapon",
+     "key": "SHINING_LED_STAFF"
+    },
+    {
+     "no": 165,
+     "name": "Queen's Staff",
+     "detail": "weapon",
+     "key": "QUEENS_STAFF"
+    },
+    {
+     "no": 166,
+     "name": "Gaia Staff",
+     "detail": "weapon",
+     "key": "GAIA_STAFF"
+    },
+    {
+     "no": 167,
+     "name": "Boss's Staff",
+     "detail": "weapon",
+     "key": "BOSSS_STAFF"
+    },
+    {
+     "no": 168,
+     "name": "Buddha",
+     "detail": "weapon",
+     "key": "BUDDHA"
+    },
+    {
+     "no": 169,
+     "name": "Crystal Rod",
+     "detail": "weapon",
+     "key": "CRYSTAL_ROD"
+    },
+    {
+     "no": 170,
+     "name": "Arquebus",
+     "detail": "weapon",
+     "key": "ARQUEBUS"
+    },
+    {
+     "no": 171,
+     "name": "Tulip 1",
+     "detail": "weapon",
+     "key": "TULIP_1"
+    },
+    {
+     "no": 172,
+     "name": "Super Resistance Ring",
+     "detail": "item",
+     "key": "SUPER_RESISTANCE_RING"
+    },
+    {
+     "no": 178,
+     "name": "Puncher",
+     "detail": "weapon",
+     "key": "PUNCHER"
+    },
+    {
+     "no": 179,
+     "name": "Stealth Device",
+     "detail": "item",
+     "key": "STEALTH_DEVICE"
+    },
+    {
+     "no": 180,
+     "name": "Harumaki",
+     "detail": "item",
+     "key": "HARUMAKI"
+    },
+    {
+     "no": 181,
+     "name": "Ibeprofun Box",
+     "detail": "item",
+     "key": "IBEPROFUN_BOX"
+    },
+    {
+     "no": 182,
+     "name": "Ibeprofun EX Box",
+     "detail": "item",
+     "key": "IBEPROFUN_EX_BOX"
+    },
+    {
+     "no": 183,
+     "name": "Ibeprofun EX+ Box",
+     "detail": "item",
+     "key": "IBEPROFUN_EX_PLUS_BOX"
+    },
+    {
+     "no": 184,
+     "name": "Epinephrend",
+     "detail": "item",
+     "key": "EPINEPHREND"
+    },
+    {
+     "no": 185,
+     "name": "Magic Key",
+     "detail": "item",
+     "key": "MAGIC_KEY"
+    },
+    {
+     "no": 186,
+     "name": "Capture Rope",
+     "detail": "item",
+     "key": "CAPTURE_ROPE"
+    },
+    {
+     "no": 187,
+     "name": "Explosive Rounds",
+     "detail": "item",
+     "key": "EXPLOSIVE_ROUNDS"
+    },
+    {
+     "no": 188,
+     "name": "Hanny Zippo",
+     "detail": "item",
+     "key": "HANNY_ZIPPO"
+    },
+    {
+     "no": 189,
+     "name": "Resistance Ring",
+     "detail": "item",
+     "key": "RESISTANCE_RING_189"
+    },
+    {
+     "no": 190,
+     "name": "Resistance Ring",
+     "detail": "item",
+     "key": "RESISTANCE_RING_190"
+    },
+    {
+     "no": 191,
+     "name": "Evasion Boots",
+     "detail": "item",
+     "key": "EVASION_BOOTS_191"
+    },
+    {
+     "no": 192,
+     "name": "Evasion Boots",
+     "detail": "item",
+     "key": "EVASION_BOOTS_192"
+    },
+    {
+     "no": 193,
+     "name": "Resilience Necklace",
+     "detail": "item",
+     "key": "RESILIENCE_NECKLACE_193"
+    },
+    {
+     "no": 194,
+     "name": "Resilience Necklace",
+     "detail": "item",
+     "key": "RESILIENCE_NECKLACE_194"
+    },
+    {
+     "no": 195,
+     "name": "Poison Mask",
+     "detail": "item",
+     "key": "POISON_MASK"
+    },
+    {
+     "no": 196,
+     "name": "Additional Armor",
+     "detail": "item",
+     "key": "ADDITIONAL_ARMOR_196"
+    },
+    {
+     "no": 197,
+     "name": "Additional Armor",
+     "detail": "item",
+     "key": "ADDITIONAL_ARMOR_197"
+    },
+    {
+     "no": 198,
+     "name": "Additional Armor",
+     "detail": "item",
+     "key": "ADDITIONAL_ARMOR_198"
+    },
+    {
+     "no": 199,
+     "name": "Cardboard Armor",
+     "detail": "item",
+     "key": "CARDBOARD_ARMOR"
+    },
+    {
+     "no": 200,
+     "name": "Flame Charm",
+     "detail": "item",
+     "key": "FLAME_CHARM"
+    },
+    {
+     "no": 201,
+     "name": "Ice Charm",
+     "detail": "item",
+     "key": "ICE_CHARM"
+    },
+    {
+     "no": 202,
+     "name": "Electric Charm",
+     "detail": "item",
+     "key": "ELECTRIC_CHARM"
+    },
+    {
+     "no": 203,
+     "name": "Light Charm",
+     "detail": "item",
+     "key": "LIGHT_CHARM"
+    },
+    {
+     "no": 204,
+     "name": "Dark Charm",
+     "detail": "item",
+     "key": "DARK_CHARM"
+    },
+    {
+     "no": 205,
+     "name": "Accuracy Boots",
+     "detail": "item",
+     "key": "ACCURACY_BOOTS_205"
+    },
+    {
+     "no": 206,
+     "name": "Learning Device",
+     "detail": "item",
+     "key": "LEARNING_DEVICE"
+    },
+    {
+     "no": 207,
+     "name": "Box of Cakes",
+     "detail": "none",
+     "key": "BOX_OF_CAKES"
+    },
+    {
+     "no": 208,
+     "name": "Angel Mirror",
+     "detail": "item",
+     "key": "ANGEL_MIRROR"
+    },
+    {
+     "no": 209,
+     "name": "Soul Shackle",
+     "detail": "item",
+     "key": "SOUL_SHACKLE"
+    },
+    {
+     "no": 210,
+     "name": "FastPass",
+     "detail": "item",
+     "key": "FASTPASS"
+    },
+    {
+     "no": 211,
+     "name": "Pocketknife",
+     "detail": "item",
+     "key": "POCKETKNIFE"
+    },
+    {
+     "no": 212,
+     "name": "Pocket Hammer",
+     "detail": "item",
+     "key": "POCKET_HAMMER_212"
+    },
+    {
+     "no": 213,
+     "name": "Bloomers",
+     "detail": "item",
+     "key": "BLOOMERS"
+    },
+    {
+     "no": 214,
+     "name": "Hanny Goods",
+     "detail": "item",
+     "key": "HANNY_GOODS"
+    },
+    {
+     "no": 215,
+     "name": "Mr. Hiroshi",
+     "detail": "item",
+     "key": "MR_HIROSHI"
+    },
+    {
+     "no": 216,
+     "name": "Marble",
+     "detail": "item",
+     "key": "MARBLE"
+    },
+    {
+     "no": 217,
+     "name": "Orochi's Scale",
+     "detail": "item",
+     "key": "OROCHIS_SCALE"
+    },
+    {
+     "no": 218,
+     "name": "Portrait~",
+     "detail": "item",
+     "key": "PORTRAIT"
+    },
+    {
+     "no": 219,
+     "name": "Crystal",
+     "detail": "item",
+     "key": "CRYSTAL"
+    },
+    {
+     "no": 220,
+     "name": "Scroll (Elenoa)",
+     "detail": "item",
+     "key": "SCROLL_ELENOA"
+    },
+    {
+     "no": 221,
+     "name": "Scroll (Mill)",
+     "detail": "item",
+     "key": "SCROLL_MILL"
+    },
+    {
+     "no": 222,
+     "name": "Scroll (Nozomi)",
+     "detail": "item",
+     "key": "SCROLL_NOZOMI"
+    },
+    {
+     "no": 223,
+     "name": "Scroll (Karma)",
+     "detail": "item",
+     "key": "SCROLL_KARMA"
+    },
+    {
+     "no": 224,
+     "name": "Scroll (Shitomone)",
+     "detail": "item",
+     "key": "SCROLL_SHITOMONE"
+    },
+    {
+     "no": 225,
+     "name": "Scroll (Wichita)",
+     "detail": "item",
+     "key": "SCROLL_WICHITA"
+    },
+    {
+     "no": 226,
+     "name": "Scroll (Sel)",
+     "detail": "item",
+     "key": "SCROLL_SEL"
+    },
+    {
+     "no": 227,
+     "name": "Can Can",
+     "detail": "item",
+     "key": "CAN_CAN"
+    },
+    {
+     "no": 228,
+     "name": "97 Chi-Ha",
+     "detail": "item",
+     "key": "N_97_CHI_HA"
+    },
+    {
+     "no": 229,
+     "name": "Gecky",
+     "detail": "item",
+     "key": "GECKY"
+    },
+    {
+     "no": 230,
+     "name": "Magisco",
+     "detail": "item",
+     "key": "MAGISCO"
+    },
+    {
+     "no": 231,
+     "name": "Kraken",
+     "detail": "item",
+     "key": "KRAKEN"
+    },
+    {
+     "no": 232,
+     "name": "Crab Girl",
+     "detail": "item",
+     "key": "CRAB_GIRL"
+    },
+    {
+     "no": 233,
+     "name": "Splish-Splash",
+     "detail": "item",
+     "key": "SPLISH_SPLASH"
+    },
+    {
+     "no": 234,
+     "name": "Frog Lady",
+     "detail": "item",
+     "key": "FROG_LADY"
+    },
+    {
+     "no": 235,
+     "name": "Maid Lady",
+     "detail": "item",
+     "key": "MAID_LADY"
+    },
+    {
+     "no": 236,
+     "name": "Zashiki-Warashi",
+     "detail": "item",
+     "key": "ZASHIKI_WARASHI"
+    },
+    {
+     "no": 237,
+     "name": "Lantyrn",
+     "detail": "item",
+     "key": "LANTYRN"
+    },
+    {
+     "no": 238,
+     "name": "Tokko",
+     "detail": "item",
+     "key": "TOKKO"
+    },
+    {
+     "no": 239,
+     "name": "Majician",
+     "detail": "item",
+     "key": "MAJICIAN"
+    },
+    {
+     "no": 240,
+     "name": "Nekomatamata",
+     "detail": "item",
+     "key": "NEKOMATAMATA"
+    },
+    {
+     "no": 241,
+     "name": "Valkyrie",
+     "detail": "item",
+     "key": "VALKYRIE"
+    },
+    {
+     "no": 242,
+     "name": "Captain Vanilla",
+     "detail": "item",
+     "key": "CAPTAIN_VANILLA"
+    },
+    {
+     "no": 243,
+     "name": "Ralga's Cat",
+     "detail": "item",
+     "key": "RALGAS_CAT"
+    },
+    {
+     "no": 244,
+     "name": "Battle Booklet",
+     "detail": "item",
+     "key": "BATTLE_BOOKLET"
+    },
+    {
+     "no": 247,
+     "name": "Human Parts A",
+     "detail": "quest",
+     "key": "HUMAN_PARTS_A"
+    },
+    {
+     "no": 248,
+     "name": "Human Parts B",
+     "detail": "quest",
+     "key": "HUMAN_PARTS_B"
+    },
+    {
+     "no": 249,
+     "name": "Human Parts C",
+     "detail": "quest",
+     "key": "HUMAN_PARTS_C"
+    },
+    {
+     "no": 250,
+     "name": "Human Parts D",
+     "detail": "quest",
+     "key": "HUMAN_PARTS_D"
+    },
+    {
+     "no": 251,
+     "name": "Human Parts E",
+     "detail": "quest",
+     "key": "HUMAN_PARTS_E"
+    },
+    {
+     "no": 252,
+     "name": "Forbidden Talent - V",
+     "detail": "special",
+     "key": "FORBIDDEN_TALENT_V"
+    },
+    {
+     "no": 255,
+     "name": "Lotion A",
+     "detail": "none",
+     "key": "LOTION_A"
+    },
+    {
+     "no": 256,
+     "name": "Lotion B",
+     "detail": "none",
+     "key": "LOTION_B"
+    },
+    {
+     "no": 257,
+     "name": "Lotion C",
+     "detail": "none",
+     "key": "LOTION_C"
+    },
+    {
+     "no": 258,
+     "name": "Jewel",
+     "detail": "item",
+     "key": "JEWEL"
+    },
+    {
+     "no": 259,
+     "name": "Kugu Piece A",
+     "detail": "none",
+     "key": "KUGU_PIECE_A"
+    },
+    {
+     "no": 260,
+     "name": "Kugu Piece B",
+     "detail": "none",
+     "key": "KUGU_PIECE_B"
+    },
+    {
+     "no": 261,
+     "name": "Kugu Piece C",
+     "detail": "none",
+     "key": "KUGU_PIECE_C"
+    },
+    {
+     "no": 262,
+     "name": "Tama's Underwear",
+     "detail": "item",
+     "key": "TAMAS_UNDERWEAR"
+    },
+    {
+     "no": 263,
+     "name": "Tama's Dress",
+     "detail": "item",
+     "key": "TAMAS_DRESS"
+    },
+    {
+     "no": 265,
+     "name": "Mercenary Tama",
+     "detail": "item",
+     "key": "MERCENARY_TAMA"
+    },
+    {
+     "no": 266,
+     "name": "Mercenary Hag",
+     "detail": "item",
+     "key": "MERCENARY_HAG"
+    },
+    {
+     "no": 267,
+     "name": "Reddish Feather",
+     "detail": "item",
+     "key": "REDDISH_FEATHER"
+    },
+    {
+     "no": 268,
+     "name": "Character Ticket",
+     "detail": "item",
+     "key": "CHARACTER_TICKET"
+    },
+    {
+     "no": 269,
+     "name": "Manga Meat Bone",
+     "detail": "special",
+     "key": "MANGA_MEAT_BONE"
+    },
+    {
+     "no": 270,
+     "name": "Manga Meat",
+     "detail": "special",
+     "key": "MANGA_MEAT"
+    },
+    {
+     "no": 271,
+     "name": "Rabbit Stew",
+     "detail": "special",
+     "key": "RABBIT_STEW"
+    },
+    {
+     "no": 272,
+     "name": "Wooden Bear",
+     "detail": "special",
+     "key": "WOODEN_BEAR"
+    },
+    {
+     "no": 273,
+     "name": "Steel Bear",
+     "detail": "special",
+     "key": "STEEL_BEAR"
+    },
+    {
+     "no": 274,
+     "name": "Solid Gold Bear",
+     "detail": "special",
+     "key": "SOLID_GOLD_BEAR"
+    },
+    {
+     "no": 275,
+     "name": "Shiitake",
+     "detail": "special",
+     "key": "SHIITAKE"
+    },
+    {
+     "no": 276,
+     "name": "Protective Marimo",
+     "detail": "special",
+     "key": "PROTECTIVE_MARIMO"
+    },
+    {
+     "no": 277,
+     "name": "Protective God",
+     "detail": "special",
+     "key": "PROTECTIVE_GOD"
+    },
+    {
+     "no": 278,
+     "name": "Well-Boned Fish",
+     "detail": "special",
+     "key": "WELL_BONED_FISH"
+    },
+    {
+     "no": 279,
+     "name": "Dora Cat's Bell",
+     "detail": "special",
+     "key": "DORA_CATS_BELL"
+    },
+    {
+     "no": 280,
+     "name": "Common Seahorse",
+     "detail": "special",
+     "key": "COMMON_SEAHORSE"
+    },
+    {
+     "no": 281,
+     "name": "Stomachache Spirit",
+     "detail": "special",
+     "key": "STOMACHACHE_SPIRIT"
+    },
+    {
+     "no": 282,
+     "name": "Cowlick",
+     "detail": "special",
+     "key": "COWLICK"
+    },
+    {
+     "no": 283,
+     "name": "Love Pet",
+     "detail": "special",
+     "key": "LOVE_PET"
+    },
+    {
+     "no": 284,
+     "name": "Miss Stake",
+     "detail": "special",
+     "key": "MISS_STAKE"
+    },
+    {
+     "no": 285,
+     "name": "Nimble Feather",
+     "detail": "special",
+     "key": "NIMBLE_FEATHER"
+    },
+    {
+     "no": 286,
+     "name": "Dodgy Soup",
+     "detail": "special",
+     "key": "DODGY_SOUP"
+    },
+    {
+     "no": 287,
+     "name": "Ritchie Rod",
+     "detail": "special",
+     "key": "RITCHIE_ROD"
+    },
+    {
+     "no": 288,
+     "name": "Piggyback Pal",
+     "detail": "special",
+     "key": "PIGGYBACK_PAL"
+    },
+    {
+     "no": 289,
+     "name": "Moja Doll",
+     "detail": "special",
+     "key": "MOJA_DOLL"
+    },
+    {
+     "no": 290,
+     "name": "Inadequate Clock",
+     "detail": "special",
+     "key": "INADEQUATE_CLOCK"
+    },
+    {
+     "no": 291,
+     "name": "Quick, Strange Bug",
+     "detail": "special",
+     "key": "QUICK_STRANGE_BUG"
+    },
+    {
+     "no": 292,
+     "name": "Rocket Engine",
+     "detail": "special",
+     "key": "ROCKET_ENGINE"
+    },
+    {
+     "no": 293,
+     "name": "Scratched-Up CD",
+     "detail": "special",
+     "key": "SCRATCHED_UP_CD"
+    },
+    {
+     "no": 294,
+     "name": "Totally Broken Radio",
+     "detail": "special",
+     "key": "TOTALLY_BROKEN_RADIO"
+    },
+    {
+     "no": 295,
+     "name": "Watch & Game",
+     "detail": "special",
+     "key": "WATCH_AND_GAME"
+    },
+    {
+     "no": 296,
+     "name": "Melting Ice",
+     "detail": "special",
+     "key": "MELTING_ICE"
+    },
+    {
+     "no": 297,
+     "name": "Prizeless Snack",
+     "detail": "special",
+     "key": "PRIZELESS_SNACK"
+    },
+    {
+     "no": 298,
+     "name": "Shockwave Alberto Belt",
+     "detail": "special",
+     "key": "SHOCKWAVE_ALBERTO_BELT"
+    },
+    {
+     "no": 299,
+     "name": "Stretchy Noodles",
+     "detail": "special",
+     "key": "STRETCHY_NOODLES"
+    },
+    {
+     "no": 300,
+     "name": "Canned Air",
+     "detail": "special",
+     "key": "CANNED_AIR"
+    },
+    {
+     "no": 301,
+     "name": "Defiance Crown",
+     "detail": "special",
+     "key": "DEFIANCE_CROWN"
+    },
+    {
+     "no": 302,
+     "name": "Broken Clock",
+     "detail": "special",
+     "key": "BROKEN_CLOCK"
+    },
+    {
+     "no": 303,
+     "name": "God's Plan",
+     "detail": "special",
+     "key": "GODS_PLAN"
+    },
+    {
+     "no": 304,
+     "name": "Forbidden Talent",
+     "detail": "special",
+     "key": "FORBIDDEN_TALENT"
+    },
+    {
+     "no": 305,
+     "name": "Forbidden Talent - Weak",
+     "detail": "special",
+     "key": "FORBIDDEN_TALENT_WEAK"
+    },
+    {
+     "no": 306,
+     "name": "Skill Again",
+     "detail": "special",
+     "key": "SKILL_AGAIN"
+    },
+    {
+     "no": 307,
+     "name": "Gal Monster Tamer Handbook",
+     "detail": "special",
+     "key": "GAL_MONSTER_TAMER_HANDBOOK"
+    },
+    {
+     "no": 309,
+     "name": "Alice Coin",
+     "detail": "special",
+     "key": "ALICE_COIN"
+    },
+    {
+     "no": 310,
+     "name": "Rocky Chunk",
+     "detail": "special",
+     "key": "ROCKY_CHUNK"
+    },
+    {
+     "no": 311,
+     "name": "Grapes",
+     "detail": "quest",
+     "key": "GRAPES"
+    },
+    {
+     "no": 312,
+     "name": "Cow",
+     "detail": "quest",
+     "key": "COW"
+    },
+    {
+     "no": 313,
+     "name": "Bug",
+     "detail": "quest",
+     "key": "BUG"
+    },
+    {
+     "no": 314,
+     "name": "Ninja Glue",
+     "detail": "quest",
+     "key": "NINJA_GLUE"
+    },
+    {
+     "no": 315,
+     "name": "Lyrica",
+     "detail": "quest",
+     "key": "LYRICA"
+    },
+    {
+     "no": 316,
+     "name": "Appraiser's Ink",
+     "detail": "quest",
+     "key": "APPRAISERS_INK"
+    },
+    {
+     "no": 317,
+     "name": "Despair Key",
+     "detail": "quest",
+     "key": "DESPAIR_KEY"
+    },
+    {
+     "no": 318,
+     "name": "Strong Capture Rope",
+     "detail": "item",
+     "key": "STRONG_CAPTURE_ROPE"
+    },
+    {
+     "no": 319,
+     "name": "Modified Arquebus",
+     "detail": "weapon",
+     "key": "MODIFIED_ARQUEBUS"
+    },
+    {
+     "no": 320,
+     "name": "By Road",
+     "detail": "weapon",
+     "key": "BY_ROAD_320"
+    },
+    {
+     "no": 321,
+     "name": "Leazas Red General Armor",
+     "detail": "armor",
+     "key": "LEAZAS_RED_GENERAL_ARMOR_321"
+    },
+    {
+     "no": 322,
+     "name": "Poster Cylinder",
+     "detail": "item",
+     "key": "POSTER_CYLINDER"
+    },
+    {
+     "no": 323,
+     "name": "Health Up Set",
+     "detail": "special",
+     "key": "HEALTH_UP_SET"
+    },
+    {
+     "no": 324,
+     "name": "Attack Up Set",
+     "detail": "special",
+     "key": "ATTACK_UP_SET"
+    },
+    {
+     "no": 325,
+     "name": "Defense Up Set",
+     "detail": "special",
+     "key": "DEFENSE_UP_SET"
+    },
+    {
+     "no": 326,
+     "name": "Magic Up Set",
+     "detail": "special",
+     "key": "MAGIC_UP_SET"
+    },
+    {
+     "no": 327,
+     "name": "Resistance Up Set",
+     "detail": "special",
+     "key": "RESISTANCE_UP_SET"
+    },
+    {
+     "no": 328,
+     "name": "Evasion Up Set",
+     "detail": "special",
+     "key": "EVASION_UP_SET"
+    },
+    {
+     "no": 329,
+     "name": "Accuracy Up Set",
+     "detail": "special",
+     "key": "ACCURACY_UP_SET"
+    },
+    {
+     "no": 330,
+     "name": "Speed Up Set",
+     "detail": "special",
+     "key": "SPEED_UP_SET"
+    },
+    {
+     "no": 331,
+     "name": "Critical Up Set",
+     "detail": "special",
+     "key": "CRITICAL_UP_SET"
+    },
+    {
+     "no": 332,
+     "name": "Stun Up Set",
+     "detail": "special",
+     "key": "STUN_UP_SET"
+    },
+    {
+     "no": 333,
+     "name": "Resilience Up Set",
+     "detail": "special",
+     "key": "RESILIENCE_UP_SET"
+    },
+    {
+     "no": 334,
+     "name": "Lizard-Away",
+     "detail": "quest",
+     "key": "LIZARD_AWAY"
+    },
+    {
+     "no": 335,
+     "name": "Abnormal Bloomers",
+     "detail": "item",
+     "key": "ABNORMAL_BLOOMERS"
+    },
+    {
+     "no": 336,
+     "name": "White Nurse Outfit",
+     "detail": "armor",
+     "key": "WHITE_NURSE_OUTFIT"
+    },
+    {
+     "no": 337,
+     "name": "Black Nurse Outfit",
+     "detail": "armor",
+     "key": "BLACK_NURSE_OUTFIT"
+    },
+    {
+     "no": 338,
+     "name": "Blank Map",
+     "detail": "quest",
+     "key": "BLANK_MAP"
+    },
+    {
+     "no": 339,
+     "name": "Prison Key",
+     "detail": "quest",
+     "key": "PRISON_KEY"
+    },
+    {
+     "no": 340,
+     "name": "Accuracy Boots",
+     "detail": "item",
+     "key": "ACCURACY_BOOTS_340"
+    },
+    {
+     "no": 341,
+     "name": "Pocket Hammer",
+     "detail": "item",
+     "key": "POCKET_HAMMER_341"
+    },
+    {
+     "no": 342,
+     "name": "Hanny King's Crown",
+     "detail": "item",
+     "key": "HANNY_KINGS_CROWN"
+    },
+    {
+     "no": 343,
+     "name": "Modified Learning Device",
+     "detail": "item",
+     "key": "MODIFIED_LEARNING_DEVICE"
+    }
+   ]
+  },
+  {
+   "kind": "item_kind",
+   "title": "Item kinds",
+   "what": "item kinds (`種類詳細`): the weapon or armor kind, as in an item's `subtype`",
+   "entries": [
+    {
+     "no": 2,
+     "name": "Sword",
+     "detail": "",
+     "key": "SWORD"
+    },
+    {
+     "no": 3,
+     "name": "Shortsword",
+     "detail": "",
+     "key": "SHORTSWORD"
+    },
+    {
+     "no": 4,
+     "name": "Hammer",
+     "detail": "",
+     "key": "HAMMER"
+    },
+    {
+     "no": 5,
+     "name": "Bow",
+     "detail": "",
+     "key": "BOW"
+    },
+    {
+     "no": 6,
+     "name": "Firearm",
+     "detail": "",
+     "key": "FIREARM"
+    },
+    {
+     "no": 7,
+     "name": "Spear",
+     "detail": "",
+     "key": "SPEAR"
+    },
+    {
+     "no": 8,
+     "name": "Staff",
+     "detail": "",
+     "key": "STAFF"
+    },
+    {
+     "no": 9,
+     "name": "Glove",
+     "detail": "",
+     "key": "GLOVE"
+    },
+    {
+     "no": 10,
+     "name": "Blunt Weapon",
+     "detail": "",
+     "key": "BLUNT_WEAPON"
+    },
+    {
+     "no": 12,
+     "name": "Clothing",
+     "detail": "",
+     "key": "CLOTHING"
+    },
+    {
+     "no": 13,
+     "name": "Leather",
+     "detail": "",
+     "key": "LEATHER"
+    },
+    {
+     "no": 14,
+     "name": "Steel",
+     "detail": "",
+     "key": "STEEL"
+    },
+    {
+     "no": 15,
+     "name": "Cloth",
+     "detail": "",
+     "key": "CLOTH"
+    },
+    {
+     "no": 16,
+     "name": "Gi",
+     "detail": "",
+     "key": "GI"
+    },
+    {
+     "no": 18,
+     "name": "Scroll",
+     "detail": "",
+     "key": "SCROLL"
+    },
+    {
+     "no": 19,
+     "name": "Flag",
+     "detail": "",
+     "key": "FLAG"
+    },
+    {
+     "no": 20,
+     "name": "Familiar",
+     "detail": "",
+     "key": "FAMILIAR"
+    }
+   ]
+  },
+  {
+   "kind": "map_kind",
+   "title": "Map kinds",
+   "what": "map kinds (`◆ＭＡＰ基礎型`): the look of a quest's area, as in `rq.dungeon.on_area`'s `ctx.kind`. The game names none; these names are ours, after the picture the game gives each kind",
+   "entries": [
+    {
+     "no": 1,
+     "name": "Cave",
+     "detail": "Epiphany Cave, Cripple Dungeon, Despair",
+     "key": "CAVE"
+    },
+    {
+     "no": 2,
+     "name": "Forest",
+     "detail": "Kalar Forest, Mushroom Forest",
+     "key": "FOREST"
+    },
+    {
+     "no": 3,
+     "name": "Building",
+     "detail": "a department store, Hanny Secret Base, Zombie Room",
+     "key": "BUILDING"
+    },
+    {
+     "no": 4,
+     "name": "Snow",
+     "detail": "Mount Hakkoda, Yukihira, Prohibited Area",
+     "key": "SNOW"
+    },
+    {
+     "no": 5,
+     "name": "Castle",
+     "detail": "Curse Castle, Tringer's Castle, Peperon",
+     "key": "CASTLE"
+    },
+    {
+     "no": 6,
+     "name": "Field",
+     "detail": "Meg's Ranch, Clicquot Pasture, Hanny Village",
+     "key": "FIELD"
+    },
+    {
+     "no": 7,
+     "name": "Mountain",
+     "detail": "Rising Dragon Mountain",
+     "key": "MOUNTAIN"
+    },
+    {
+     "no": 8,
+     "name": "Ruins",
+     "detail": "a stone corridor: Lerolen, Wamasya, Abandoned Mine",
+     "key": "RUINS"
+    },
+    {
+     "no": 9,
+     "name": "Water Cave",
+     "detail": "Underwater Shrine, Squidsquidsquid Dungeon",
+     "key": "WATER_CAVE"
+    },
+    {
+     "no": 10,
+     "name": "Burning Forest",
+     "detail": "Kalar Forest on fire, in The Third Army of Helman",
+     "key": "BURNING_FOREST"
+    },
+    {
+     "no": 11,
+     "name": "Tower",
+     "detail": "Tower of Babel",
+     "key": "TOWER"
+    },
+    {
+     "no": 12,
+     "name": "Road",
+     "detail": "Route 11 to 13, Arizona, Mesopotamia",
+     "key": "ROAD"
+    },
+    {
+     "no": 13,
+     "name": "Waterside",
+     "detail": "Kawanakajima",
+     "key": "WATERSIDE"
+    },
+    {
+     "no": 14,
+     "name": "Malgrid",
+     "detail": "Malgrid Dungeon, strata 1 to 10",
+     "key": "MALGRID"
+    },
+    {
+     "no": 15,
+     "name": "Camp",
+     "detail": "Cidade North Yard",
+     "key": "CAMP"
+    },
+    {
+     "no": 16,
+     "name": "Abyss",
+     "detail": "The Abyss, Suspicious Okayu's Lair",
+     "key": "ABYSS"
+    },
+    {
+     "no": 17,
+     "name": "Dream World",
+     "detail": "Snicker World, Chortle World",
+     "key": "DREAM_WORLD"
+    },
+    {
+     "no": 18,
+     "name": "Kaiz Underground",
+     "detail": "Kaiz Underground 12F to 20F",
+     "key": "KAIZ_UNDERGROUND"
+    },
+    {
+     "no": 19,
+     "name": "Passageway",
+     "detail": "Acetal Passageway, Boarding Passageway",
+     "key": "PASSAGEWAY"
+    },
+    {
+     "no": 20,
+     "name": "Malgrid X",
+     "detail": "Malgrid Dungeon Xth Stratum, strata up to 15",
+     "key": "MALGRID_X"
+    },
+    {
+     "no": 21,
+     "name": "Malgrid X Deep",
+     "detail": "Malgrid Dungeon Xth Stratum, strata past 15",
+     "key": "MALGRID_X_DEEP"
+    },
+    {
+     "no": 22,
+     "name": "Secret Base",
+     "detail": "the Shepherds' Secret Base",
+     "key": "SECRET_BASE"
+    }
+   ]
+  },
+  {
+   "kind": "monster",
+   "title": "Monsters",
+   "what": "monster numbers, as `rq.battle.start` takes them and `rq.battle.snap()` gives them (`enemies[i].no`)",
+   "entries": [
+    {
+     "no": 113,
+     "name": "Chi-Ha Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "CHI_HA_FAMILIAR"
+    },
+    {
+     "no": 114,
+     "name": "Can Can Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "CAN_CAN_FAMILIAR"
+    },
+    {
+     "no": 115,
+     "name": "Gecky Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "GECKY_FAMILIAR"
+    },
+    {
+     "no": 116,
+     "name": "Magisco Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "MAGISCO_FAMILIAR"
+    },
+    {
+     "no": 117,
+     "name": "Kraken Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "KRAKEN_FAMILIAR"
+    },
+    {
+     "no": 118,
+     "name": "Crab Girl Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "CRAB_GIRL_FAMILIAR"
+    },
+    {
+     "no": 119,
+     "name": "Splish-Splash Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "SPLISH_SPLASH_FAMILIAR"
+    },
+    {
+     "no": 120,
+     "name": "Frog Lady Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "FROG_LADY_FAMILIAR"
+    },
+    {
+     "no": 121,
+     "name": "Maid Lady Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "MAID_LADY_FAMILIAR"
+    },
+    {
+     "no": 122,
+     "name": "Zashiki-Warashi Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "ZASHIKI_WARASHI_FAMILIAR"
+    },
+    {
+     "no": 123,
+     "name": "Lantyrn Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "LANTYRN_FAMILIAR"
+    },
+    {
+     "no": 124,
+     "name": "Tokko Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "TOKKO_FAMILIAR"
+    },
+    {
+     "no": 125,
+     "name": "Majician Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "MAJICIAN_FAMILIAR"
+    },
+    {
+     "no": 126,
+     "name": "Nekomatamata Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "NEKOMATAMATA_FAMILIAR"
+    },
+    {
+     "no": 127,
+     "name": "Valkyrie Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "VALKYRIE_FAMILIAR"
+    },
+    {
+     "no": 128,
+     "name": "Captain Vanilla Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "CAPTAIN_VANILLA_FAMILIAR"
+    },
+    {
+     "no": 129,
+     "name": "Battle Booklet Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "BATTLE_BOOKLET_FAMILIAR"
+    },
+    {
+     "no": 135,
+     "name": "Squidman",
+     "detail": "Lv 1, Guy Monster",
+     "key": "SQUIDMAN"
+    },
+    {
+     "no": 136,
+     "name": "Squidman (Love)",
+     "detail": "Lv 10, Guy Monster",
+     "key": "SQUIDMAN_LOVE"
+    },
+    {
+     "no": 137,
+     "name": "Ruronta",
+     "detail": "Lv 1, Guy Monster",
+     "key": "RURONTA"
+    },
+    {
+     "no": 138,
+     "name": "Doggy",
+     "detail": "Lv 1, Insect",
+     "key": "DOGGY"
+    },
+    {
+     "no": 139,
+     "name": "Roper",
+     "detail": "Lv 1, Guy Monster",
+     "key": "ROPER"
+    },
+    {
+     "no": 140,
+     "name": "Hanny",
+     "detail": "Lv 1, Hanny",
+     "key": "HANNY"
+    },
+    {
+     "no": 141,
+     "name": "Grape",
+     "detail": "Lv 2, Plant",
+     "key": "GRAPE"
+    },
+    {
+     "no": 142,
+     "name": "Can Can",
+     "detail": "Lv 1, Gal Monster",
+     "key": "CAN_CAN"
+    },
+    {
+     "no": 143,
+     "name": "Lucky Can Can",
+     "detail": "Lv 2, Gal Monster",
+     "key": "LUCKY_CAN_CAN"
+    },
+    {
+     "no": 144,
+     "name": "Yankee",
+     "detail": "Lv 5, Guy Monster",
+     "key": "YANKEE"
+    },
+    {
+     "no": 145,
+     "name": "Yankee (Braceleted)",
+     "detail": "Lv 5, Guy Monster",
+     "key": "YANKEE_BRACELETED"
+    },
+    {
+     "no": 146,
+     "name": "Goldfish",
+     "detail": "Lv 5, Plant",
+     "key": "GOLDFISH"
+    },
+    {
+     "no": 147,
+     "name": "Puryo",
+     "detail": "Lv 5, Guy Monster",
+     "key": "PURYO"
+    },
+    {
+     "no": 148,
+     "name": "Rust",
+     "detail": "Lv 5, Holy Shroud Warlord",
+     "key": "RUST"
+    },
+    {
+     "no": 149,
+     "name": "Meatball",
+     "detail": "Lv 5, Guy Monster",
+     "key": "MEATBALL"
+    },
+    {
+     "no": 150,
+     "name": "Blue Meatball",
+     "detail": "Lv 25, Guy Monster",
+     "key": "BLUE_MEATBALL"
+    },
+    {
+     "no": 151,
+     "name": "Uppy",
+     "detail": "Lv 5, Insect",
+     "key": "UPPY"
+    },
+    {
+     "no": 152,
+     "name": "Soil Pollution",
+     "detail": "Lv 5, Insect",
+     "key": "SOIL_POLLUTION"
+    },
+    {
+     "no": 153,
+     "name": "97 Chi-Ha",
+     "detail": "Lv 5, Gal Monster",
+     "key": "N_97_CHI_HA"
+    },
+    {
+     "no": 154,
+     "name": "Circle",
+     "detail": "Lv 10, Ancient",
+     "key": "CIRCLE"
+    },
+    {
+     "no": 155,
+     "name": "Polyman",
+     "detail": "Lv 10, Construct",
+     "key": "POLYMAN"
+    },
+    {
+     "no": 156,
+     "name": "Magball",
+     "detail": "Lv 10, Ancient",
+     "key": "MAGBALL"
+    },
+    {
+     "no": 157,
+     "name": "Wooden Boxen",
+     "detail": "Lv 10, Construct",
+     "key": "WOODEN_BOXEN"
+    },
+    {
+     "no": 158,
+     "name": "Green Hanny",
+     "detail": "Lv 10, Hanny",
+     "key": "GREEN_HANNY"
+    },
+    {
+     "no": 159,
+     "name": "Auntie Bat",
+     "detail": "Lv 10, Insect",
+     "key": "AUNTIE_BAT"
+    },
+    {
+     "no": 160,
+     "name": "Rotten Corpse",
+     "detail": "Lv 10, Guy Monster",
+     "key": "ROTTEN_CORPSE"
+    },
+    {
+     "no": 161,
+     "name": "Putrid Corpse",
+     "detail": "Lv 10, Guy Monster",
+     "key": "PUTRID_CORPSE"
+    },
+    {
+     "no": 162,
+     "name": "Giant Corpse",
+     "detail": "Lv 15, Guy Monster",
+     "key": "GIANT_CORPSE"
+    },
+    {
+     "no": 163,
+     "name": "Gates 95",
+     "detail": "Lv 10, Guy Monster",
+     "key": "GATES_95"
+    },
+    {
+     "no": 164,
+     "name": "Gecky",
+     "detail": "Lv 10, Gal Monster",
+     "key": "GECKY"
+    },
+    {
+     "no": 165,
+     "name": "Kraken",
+     "detail": "Lv 10, Gal Monster",
+     "key": "KRAKEN"
+    },
+    {
+     "no": 166,
+     "name": "Ham Bambara",
+     "detail": "Lv 15, Guy Monster",
+     "key": "HAM_BAMBARA"
+    },
+    {
+     "no": 167,
+     "name": "Giant Ham Bambara",
+     "detail": "Lv 35, Guy Monster",
+     "key": "GIANT_HAM_BAMBARA"
+    },
+    {
+     "no": 168,
+     "name": "Crab Girl",
+     "detail": "Lv 15, Gal Monster",
+     "key": "CRAB_GIRL"
+    },
+    {
+     "no": 169,
+     "name": "Ironhead",
+     "detail": "Lv 20, Guy Monster",
+     "key": "IRONHEAD"
+    },
+    {
+     "no": 170,
+     "name": "D. Shield",
+     "detail": "Lv 15, Guy Monster",
+     "key": "D_SHIELD"
+    },
+    {
+     "no": 171,
+     "name": "Crimson Eye",
+     "detail": "Lv 15, Guy Monster",
+     "key": "CRIMSON_EYE"
+    },
+    {
+     "no": 172,
+     "name": "Bonded Crimson Eye",
+     "detail": "Lv 25, Guy Monster",
+     "key": "BONDED_CRIMSON_EYE"
+    },
+    {
+     "no": 173,
+     "name": "Not Yet Horned Whale",
+     "detail": "Lv 15, Insect",
+     "key": "NOT_YET_HORNED_WHALE"
+    },
+    {
+     "no": 174,
+     "name": "Jar",
+     "detail": "Lv 15, Insect",
+     "key": "JAR"
+    },
+    {
+     "no": 175,
+     "name": "Splish-Splash",
+     "detail": "Lv 20, Gal Monster",
+     "key": "SPLISH_SPLASH"
+    },
+    {
+     "no": 176,
+     "name": "Odds",
+     "detail": "Lv 20, Guy Monster",
+     "key": "ODDS"
+    },
+    {
+     "no": 177,
+     "name": "Anton",
+     "detail": "Lv 20, Insect",
+     "key": "ANTON"
+    },
+    {
+     "no": 178,
+     "name": "Blue Hanny",
+     "detail": "Lv 20, Hanny",
+     "key": "BLUE_HANNY"
+    },
+    {
+     "no": 179,
+     "name": "Rommel",
+     "detail": "Lv 20, Holy Shroud Warlord",
+     "key": "ROMMEL"
+    },
+    {
+     "no": 180,
+     "name": "Hornet",
+     "detail": "Lv 20, Guy Monster",
+     "key": "HORNET"
+    },
+    {
+     "no": 181,
+     "name": "Japanese Soldier",
+     "detail": "Lv 20, Guy Monster",
+     "key": "JAPANESE_SOLDIER"
+    },
+    {
+     "no": 182,
+     "name": "Mechavalry Copter",
+     "detail": "Lv 20, Construct",
+     "key": "MECHAVALRY_COPTER"
+    },
+    {
+     "no": 183,
+     "name": "Scream Man",
+     "detail": "Lv 20, Guy Monster",
+     "key": "SCREAM_MAN"
+    },
+    {
+     "no": 184,
+     "name": "Lone Spirit",
+     "detail": "Lv 15, Guy Monster",
+     "key": "LONE_SPIRIT"
+    },
+    {
+     "no": 185,
+     "name": "Ghost",
+     "detail": "Lv 25, Guy Monster",
+     "key": "GHOST"
+    },
+    {
+     "no": 186,
+     "name": "Vevetar",
+     "detail": "Lv 20, Devil",
+     "key": "VEVETAR"
+    },
+    {
+     "no": 187,
+     "name": "Frog Lady",
+     "detail": "Lv 20, Gal Monster",
+     "key": "FROG_LADY"
+    },
+    {
+     "no": 188,
+     "name": "Maid Lady",
+     "detail": "Lv 20, Gal Monster",
+     "key": "MAID_LADY"
+    },
+    {
+     "no": 189,
+     "name": "Samera~i",
+     "detail": "Lv 25, Guy Monster",
+     "key": "SAMERAI"
+    },
+    {
+     "no": 190,
+     "name": "Mechavalry Metal",
+     "detail": "Lv 25, Construct",
+     "key": "MECHAVALRY_METAL"
+    },
+    {
+     "no": 191,
+     "name": "Lead Orb",
+     "detail": "Lv 25, Ancient",
+     "key": "LEAD_ORB"
+    },
+    {
+     "no": 192,
+     "name": "Iron Boxen",
+     "detail": "Lv 25, Construct",
+     "key": "IRON_BOXEN"
+    },
+    {
+     "no": 193,
+     "name": "Catpot",
+     "detail": "Lv 25, Guy Monster",
+     "key": "CATPOT"
+    },
+    {
+     "no": 194,
+     "name": "Happy",
+     "detail": "Lv 25, Insect",
+     "key": "HAPPY"
+    },
+    {
+     "no": 195,
+     "name": "Smile Man",
+     "detail": "Lv 25, Guy Monster",
+     "key": "SMILE_MAN"
+    },
+    {
+     "no": 196,
+     "name": "Asshole",
+     "detail": "Lv 25, Insect",
+     "key": "ASSHOLE"
+    },
+    {
+     "no": 197,
+     "name": "Magisco",
+     "detail": "Lv 25, Gal Monster",
+     "key": "MAGISCO"
+    },
+    {
+     "no": 198,
+     "name": "Zashiki-Warashi",
+     "detail": "Lv 25, Gal Monster",
+     "key": "ZASHIKI_WARASHI"
+    },
+    {
+     "no": 199,
+     "name": "Ralga's Cat",
+     "detail": "Lv 25, Gal Monster",
+     "key": "RALGAS_CAT"
+    },
+    {
+     "no": 200,
+     "name": "North Slug",
+     "detail": "Lv 30, Guy Monster",
+     "key": "NORTH_SLUG"
+    },
+    {
+     "no": 201,
+     "name": "Red Hanny",
+     "detail": "Lv 30, Hanny",
+     "key": "RED_HANNY"
+    },
+    {
+     "no": 202,
+     "name": "President Garter",
+     "detail": "Lv 30, Guy Monster",
+     "key": "PRESIDENT_GARTER"
+    },
+    {
+     "no": 203,
+     "name": "Ebony Eye",
+     "detail": "Lv 30, Guy Monster",
+     "key": "EBONY_EYE"
+    },
+    {
+     "no": 204,
+     "name": "Goering",
+     "detail": "Lv 30, Holy Shroud Warlord",
+     "key": "GOERING"
+    },
+    {
+     "no": 205,
+     "name": "Mechavalry Tank",
+     "detail": "Lv 30, Construct",
+     "key": "MECHAVALRY_TANK"
+    },
+    {
+     "no": 206,
+     "name": "Lantyrn",
+     "detail": "Lv 30, Gal Monster",
+     "key": "LANTYRN"
+    },
+    {
+     "no": 207,
+     "name": "NASU",
+     "detail": "Lv 30, Guy Monster",
+     "key": "NASU"
+    },
+    {
+     "no": 208,
+     "name": "Burner",
+     "detail": "Lv 30, Guy Monster",
+     "key": "BURNER"
+    },
+    {
+     "no": 209,
+     "name": "Ranken",
+     "detail": "Lv 35, Guy Monster",
+     "key": "RANKEN"
+    },
+    {
+     "no": 210,
+     "name": "Ice Boxen",
+     "detail": "Lv 30, Construct",
+     "key": "ICE_BOXEN"
+    },
+    {
+     "no": 211,
+     "name": "Hugant",
+     "detail": "Lv 35, Guy Monster",
+     "key": "HUGANT"
+    },
+    {
+     "no": 212,
+     "name": "Familiar Hugant",
+     "detail": "Lv 35, Guy Monster",
+     "key": "FAMILIAR_HUGANT"
+    },
+    {
+     "no": 213,
+     "name": "Mechavalry Submarine",
+     "detail": "Lv 35, Construct",
+     "key": "MECHAVALRY_SUBMARINE"
+    },
+    {
+     "no": 214,
+     "name": "Demonemone",
+     "detail": "Lv 35, Guy Monster",
+     "key": "DEMONEMONE"
+    },
+    {
+     "no": 215,
+     "name": "Horned Whale",
+     "detail": "Lv 35, Insect",
+     "key": "HORNED_WHALE"
+    },
+    {
+     "no": 216,
+     "name": "Blue Wand",
+     "detail": "Lv 35, Construct",
+     "key": "BLUE_WAND_216"
+    },
+    {
+     "no": 217,
+     "name": "Blue Wand",
+     "detail": "Lv 35, Construct",
+     "key": "BLUE_WAND_217"
+    },
+    {
+     "no": 218,
+     "name": "Circle MkII",
+     "detail": "Lv 35, Ancient",
+     "key": "CIRCLE_MKII"
+    },
+    {
+     "no": 219,
+     "name": "Bug",
+     "detail": "Lv 30, Guy Monster",
+     "key": "BUG"
+    },
+    {
+     "no": 220,
+     "name": "Captain Vanilla",
+     "detail": "Lv 35, Gal Monster",
+     "key": "CAPTAIN_VANILLA_220"
+    },
+    {
+     "no": 221,
+     "name": "Captain Vanilla",
+     "detail": "Lv 35, Gal Monster",
+     "key": "CAPTAIN_VANILLA_221"
+    },
+    {
+     "no": 222,
+     "name": "Animated Armor",
+     "detail": "Lv 40, Guy Monster",
+     "key": "ANIMATED_ARMOR"
+    },
+    {
+     "no": 223,
+     "name": "Black Hanny",
+     "detail": "Lv 40, Hanny",
+     "key": "BLACK_HANNY"
+    },
+    {
+     "no": 224,
+     "name": "Stone Guardian",
+     "detail": "Lv 40, Guy Monster",
+     "key": "STONE_GUARDIAN"
+    },
+    {
+     "no": 225,
+     "name": "Love Me Tender",
+     "detail": "Lv 40, Guy Monster",
+     "key": "LOVE_ME_TENDER"
+    },
+    {
+     "no": 226,
+     "name": "Thunderfish",
+     "detail": "Lv 35, Insect",
+     "key": "THUNDERFISH"
+    },
+    {
+     "no": 227,
+     "name": "Night Horror",
+     "detail": "Lv 40, Guy Monster",
+     "key": "NIGHT_HORROR"
+    },
+    {
+     "no": 228,
+     "name": "Nyo~",
+     "detail": "Lv 35, Guy Monster",
+     "key": "NYO"
+    },
+    {
+     "no": 229,
+     "name": "Himmler",
+     "detail": "Lv 40, Holy Shroud Warlord",
+     "key": "HIMMLER"
+    },
+    {
+     "no": 230,
+     "name": "Majician",
+     "detail": "Lv 40, Gal Monster",
+     "key": "MAJICIAN"
+    },
+    {
+     "no": 231,
+     "name": "Tokko",
+     "detail": "Lv 40, Gal Monster",
+     "key": "TOKKO"
+    },
+    {
+     "no": 232,
+     "name": "Rad Diviner",
+     "detail": "Lv 40, Plant",
+     "key": "RAD_DIVINER"
+    },
+    {
+     "no": 233,
+     "name": "Bigfoot",
+     "detail": "Lv 70, Guy Monster",
+     "key": "BIGFOOT"
+    },
+    {
+     "no": 234,
+     "name": "Former President Garter",
+     "detail": "Lv 45, Guy Monster",
+     "key": "FORMER_PRESIDENT_GARTER"
+    },
+    {
+     "no": 235,
+     "name": "Dark Chippy",
+     "detail": "Lv 70, Guy Monster",
+     "key": "DARK_CHIPPY"
+    },
+    {
+     "no": 237,
+     "name": "Super Hanny",
+     "detail": "Lv 60, Hanny",
+     "key": "SUPER_HANNY"
+    },
+    {
+     "no": 238,
+     "name": "Golden Orb",
+     "detail": "Lv 50, Ancient",
+     "key": "GOLDEN_ORB"
+    },
+    {
+     "no": 239,
+     "name": "Nekomatamata",
+     "detail": "Lv 45, Gal Monster",
+     "key": "NEKOMATAMATA"
+    },
+    {
+     "no": 240,
+     "name": "Valkyrie",
+     "detail": "Lv 60, Gal Monster",
+     "key": "VALKYRIE"
+    },
+    {
+     "no": 241,
+     "name": "Aimameyas",
+     "detail": "Lv 45, Construct",
+     "key": "AIMAMEYAS"
+    },
+    {
+     "no": 242,
+     "name": "Cranium Flower",
+     "detail": "Lv 45, Plant",
+     "key": "CRANIUM_FLOWER"
+    },
+    {
+     "no": 244,
+     "name": "Shadow",
+     "detail": "Lv 50, Guy Monster",
+     "key": "SHADOW"
+    },
+    {
+     "no": 245,
+     "name": "Swortoad",
+     "detail": "Lv 0, Guy Monster",
+     "key": "SWORTOAD"
+    },
+    {
+     "no": 246,
+     "name": "Armored Anton",
+     "detail": "Lv 45, Insect",
+     "key": "ARMORED_ANTON"
+    },
+    {
+     "no": 247,
+     "name": "The Invincible Iron Bird",
+     "detail": "Lv 60, Guy Monster",
+     "key": "THE_INVINCIBLE_IRON_BIRD"
+    },
+    {
+     "no": 248,
+     "name": "Alabaster Eye",
+     "detail": "Lv 45, Guy Monster",
+     "key": "ALABASTER_EYE"
+    },
+    {
+     "no": 249,
+     "name": "Uncle Bat",
+     "detail": "Lv 45, Insect",
+     "key": "UNCLE_BAT"
+    },
+    {
+     "no": 250,
+     "name": "One-eyed Golem",
+     "detail": "Lv 45, Construct",
+     "key": "ONE_EYED_GOLEM"
+    },
+    {
+     "no": 251,
+     "name": "Polysaurus",
+     "detail": "Lv 50, Construct",
+     "key": "POLYSAURUS"
+    },
+    {
+     "no": 252,
+     "name": "Bone",
+     "detail": "Lv 20, Guy Monster",
+     "key": "BONE"
+    },
+    {
+     "no": 253,
+     "name": "Bone W",
+     "detail": "Lv 30, Guy Monster",
+     "key": "BONE_W"
+    },
+    {
+     "no": 254,
+     "name": "Bone K",
+     "detail": "Lv 40, Guy Monster",
+     "key": "BONE_K"
+    },
+    {
+     "no": 255,
+     "name": "Bone S",
+     "detail": "Lv 25, Guy Monster",
+     "key": "BONE_S"
+    },
+    {
+     "no": 256,
+     "name": "Bone M",
+     "detail": "Lv 35, Guy Monster",
+     "key": "BONE_M"
+    },
+    {
+     "no": 257,
+     "name": "Boss Bone",
+     "detail": "Lv 30, Guy Monster",
+     "key": "BOSS_BONE"
+    },
+    {
+     "no": 258,
+     "name": "Lion Soldier",
+     "detail": "Lv 5, Human",
+     "key": "LION_SOLDIER"
+    },
+    {
+     "no": 259,
+     "name": "Cheetah Soldier",
+     "detail": "Lv 10, Human",
+     "key": "CHEETAH_SOLDIER"
+    },
+    {
+     "no": 260,
+     "name": "Wrestler Sumo",
+     "detail": "Lv 5, Human",
+     "key": "WRESTLER_SUMO_260"
+    },
+    {
+     "no": 261,
+     "name": "Weak Fighter",
+     "detail": "Lv 4, Human",
+     "key": "WEAK_FIGHTER"
+    },
+    {
+     "no": 262,
+     "name": "Regular Fighter",
+     "detail": "Lv 10, Human",
+     "key": "REGULAR_FIGHTER"
+    },
+    {
+     "no": 263,
+     "name": "Skilled Fighter",
+     "detail": "Lv 20, Human",
+     "key": "SKILLED_FIGHTER"
+    },
+    {
+     "no": 264,
+     "name": "Strong Fighter",
+     "detail": "Lv 30, Human",
+     "key": "STRONG_FIGHTER"
+    },
+    {
+     "no": 265,
+     "name": "Famous Fighter",
+     "detail": "Lv 40, Human",
+     "key": "FAMOUS_FIGHTER"
+    },
+    {
+     "no": 266,
+     "name": "Weak Guard",
+     "detail": "Lv 4, Human",
+     "key": "WEAK_GUARD"
+    },
+    {
+     "no": 267,
+     "name": "Regular Guard",
+     "detail": "Lv 10, Human",
+     "key": "REGULAR_GUARD"
+    },
+    {
+     "no": 268,
+     "name": "Skilled Guard",
+     "detail": "Lv 20, Human",
+     "key": "SKILLED_GUARD"
+    },
+    {
+     "no": 269,
+     "name": "Strong Guard",
+     "detail": "Lv 30, Human",
+     "key": "STRONG_GUARD"
+    },
+    {
+     "no": 270,
+     "name": "Famous Guard",
+     "detail": "Lv 40, Human",
+     "key": "FAMOUS_GUARD"
+    },
+    {
+     "no": 271,
+     "name": "Weak Gunner",
+     "detail": "Lv 4, Human",
+     "key": "WEAK_GUNNER"
+    },
+    {
+     "no": 272,
+     "name": "Regular Gunner",
+     "detail": "Lv 10, Human",
+     "key": "REGULAR_GUNNER"
+    },
+    {
+     "no": 273,
+     "name": "Skilled Gunner",
+     "detail": "Lv 20, Human",
+     "key": "SKILLED_GUNNER"
+    },
+    {
+     "no": 274,
+     "name": "Strong Gunner",
+     "detail": "Lv 30, Human",
+     "key": "STRONG_GUNNER"
+    },
+    {
+     "no": 275,
+     "name": "Famous Gunner",
+     "detail": "Lv 40, Human",
+     "key": "FAMOUS_GUNNER"
+    },
+    {
+     "no": 276,
+     "name": "Weak Ranger",
+     "detail": "Lv 4, Human",
+     "key": "WEAK_RANGER"
+    },
+    {
+     "no": 277,
+     "name": "Regular Ranger",
+     "detail": "Lv 10, Human",
+     "key": "REGULAR_RANGER"
+    },
+    {
+     "no": 278,
+     "name": "Skilled Ranger",
+     "detail": "Lv 20, Human",
+     "key": "SKILLED_RANGER"
+    },
+    {
+     "no": 279,
+     "name": "Strong Ranger",
+     "detail": "Lv 30, Human",
+     "key": "STRONG_RANGER"
+    },
+    {
+     "no": 280,
+     "name": "Famous Ranger",
+     "detail": "Lv 40, Human",
+     "key": "FAMOUS_RANGER"
+    },
+    {
+     "no": 281,
+     "name": "Weak Sorcerer",
+     "detail": "Lv 4, Human",
+     "key": "WEAK_SORCERER"
+    },
+    {
+     "no": 282,
+     "name": "Regular Sorcerer",
+     "detail": "Lv 10, Human",
+     "key": "REGULAR_SORCERER"
+    },
+    {
+     "no": 283,
+     "name": "Skilled Sorcerer",
+     "detail": "Lv 20, Human",
+     "key": "SKILLED_SORCERER"
+    },
+    {
+     "no": 284,
+     "name": "Strong Sorcerer",
+     "detail": "Lv 30, Human",
+     "key": "STRONG_SORCERER"
+    },
+    {
+     "no": 285,
+     "name": "Famous Sorcerer",
+     "detail": "Lv 40, Human",
+     "key": "FAMOUS_SORCERER"
+    },
+    {
+     "no": 286,
+     "name": "Weak Brawler",
+     "detail": "Lv 4, Human",
+     "key": "WEAK_BRAWLER"
+    },
+    {
+     "no": 287,
+     "name": "Regular Brawler",
+     "detail": "Lv 10, Human",
+     "key": "REGULAR_BRAWLER"
+    },
+    {
+     "no": 288,
+     "name": "Skilled Brawler",
+     "detail": "Lv 20, Human",
+     "key": "SKILLED_BRAWLER"
+    },
+    {
+     "no": 289,
+     "name": "Strong Brawler",
+     "detail": "Lv 30, Human",
+     "key": "STRONG_BRAWLER"
+    },
+    {
+     "no": 290,
+     "name": "Famous Brawler",
+     "detail": "Lv 40, Human",
+     "key": "FAMOUS_BRAWLER"
+    },
+    {
+     "no": 291,
+     "name": "Weak Monster Tamer",
+     "detail": "Lv 4, Human",
+     "key": "WEAK_MONSTER_TAMER"
+    },
+    {
+     "no": 292,
+     "name": "Regular Monster Tamer",
+     "detail": "Lv 10, Human",
+     "key": "REGULAR_MONSTER_TAMER"
+    },
+    {
+     "no": 293,
+     "name": "Skilled Monster Tamer",
+     "detail": "Lv 20, Human",
+     "key": "SKILLED_MONSTER_TAMER"
+    },
+    {
+     "no": 294,
+     "name": "Strong Monster Tamer",
+     "detail": "Lv 30, Human",
+     "key": "STRONG_MONSTER_TAMER"
+    },
+    {
+     "no": 295,
+     "name": "Famous Monster Tamer",
+     "detail": "Lv 40, Human",
+     "key": "FAMOUS_MONSTER_TAMER"
+    },
+    {
+     "no": 296,
+     "name": "Leopold",
+     "detail": "Lv 15, Human",
+     "key": "LEOPOLD"
+    },
+    {
+     "no": 297,
+     "name": "Bonded Man",
+     "detail": "Lv 25, Human",
+     "key": "BONDED_MAN"
+    },
+    {
+     "no": 298,
+     "name": "Helmanian Soldier A",
+     "detail": "Lv 5, Human",
+     "key": "HELMANIAN_SOLDIER_A"
+    },
+    {
+     "no": 299,
+     "name": "Helmanian Knight",
+     "detail": "Lv 35, Human",
+     "key": "HELMANIAN_KNIGHT_299"
+    },
+    {
+     "no": 300,
+     "name": "Captain Org",
+     "detail": "Lv 35, Human",
+     "key": "CAPTAIN_ORG"
+    },
+    {
+     "no": 301,
+     "name": "Commander Isaac",
+     "detail": "Lv 35, Human",
+     "key": "COMMANDER_ISAAC"
+    },
+    {
+     "no": 302,
+     "name": "Amitos",
+     "detail": "Lv 40, Human",
+     "key": "AMITOS"
+    },
+    {
+     "no": 303,
+     "name": "Amitos (Weakened)",
+     "detail": "Lv 40, Human",
+     "key": "AMITOS_WEAKENED"
+    },
+    {
+     "no": 304,
+     "name": "Templar",
+     "detail": "Lv 25, Human",
+     "key": "TEMPLAR_304"
+    },
+    {
+     "no": 305,
+     "name": "Amazusa Employee",
+     "detail": "Lv 0, Human",
+     "key": "AMAZUSA_EMPLOYEE"
+    },
+    {
+     "no": 306,
+     "name": "Crystal Robo",
+     "detail": "Lv 25, Construct",
+     "key": "CRYSTAL_ROBO_306"
+    },
+    {
+     "no": 307,
+     "name": "Crystal Robo",
+     "detail": "Lv 30, Construct",
+     "key": "CRYSTAL_ROBO_307"
+    },
+    {
+     "no": 308,
+     "name": "Kalar",
+     "detail": "Lv 5, Kalar",
+     "key": "KALAR"
+    },
+    {
+     "no": 309,
+     "name": "Kalar Commander",
+     "detail": "Lv 5, Kalar",
+     "key": "KALAR_COMMANDER"
+    },
+    {
+     "no": 310,
+     "name": "Elite Kalar",
+     "detail": "Lv 30, Kalar",
+     "key": "ELITE_KALAR_310"
+    },
+    {
+     "no": 311,
+     "name": "Elite Kalar",
+     "detail": "Lv 30, Kalar",
+     "key": "ELITE_KALAR_311"
+    },
+    {
+     "no": 312,
+     "name": "Sanuki Aloe",
+     "detail": "Lv 5, Plant",
+     "key": "SANUKI_ALOE"
+    },
+    {
+     "no": 313,
+     "name": "South American Aloe",
+     "detail": "Lv 15, Plant",
+     "key": "SOUTH_AMERICAN_ALOE"
+    },
+    {
+     "no": 314,
+     "name": "Emperor Aloe",
+     "detail": "Lv 35, Plant",
+     "key": "EMPEROR_ALOE"
+    },
+    {
+     "no": 315,
+     "name": "Attack Spirit",
+     "detail": "Lv 45, Construct",
+     "key": "ATTACK_SPIRIT"
+    },
+    {
+     "no": 316,
+     "name": "Defense Spirit",
+     "detail": "Lv 45, Construct",
+     "key": "DEFENSE_SPIRIT"
+    },
+    {
+     "no": 317,
+     "name": "Healing Spirit",
+     "detail": "Lv 45, Construct",
+     "key": "HEALING_SPIRIT"
+    },
+    {
+     "no": 318,
+     "name": "Magic Spirit",
+     "detail": "Lv 45, Construct",
+     "key": "MAGIC_SPIRIT"
+    },
+    {
+     "no": 319,
+     "name": "Pastel",
+     "detail": "Lv 45, Kalar",
+     "key": "PASTEL_319"
+    },
+    {
+     "no": 320,
+     "name": "Modern",
+     "detail": "Lv 45, Kalar",
+     "key": "MODERN"
+    },
+    {
+     "no": 321,
+     "name": "Vivid",
+     "detail": "Lv 45, Kalar",
+     "key": "VIVID"
+    },
+    {
+     "no": 322,
+     "name": "Full",
+     "detail": "Lv 45, Kalar",
+     "key": "FULL"
+    },
+    {
+     "no": 323,
+     "name": "Matilda (LV 15)",
+     "detail": "Lv 15, Human",
+     "key": "MATILDA_LV_15"
+    },
+    {
+     "no": 324,
+     "name": "Matilda (LV 22)",
+     "detail": "Lv 22, Human",
+     "key": "MATILDA_LV_22"
+    },
+    {
+     "no": 325,
+     "name": "Matilda (LV 35)",
+     "detail": "Lv 35, Human",
+     "key": "MATILDA_LV_35"
+    },
+    {
+     "no": 326,
+     "name": "Matilda (LV 38)",
+     "detail": "Lv 38, Human",
+     "key": "MATILDA_LV_38"
+    },
+    {
+     "no": 327,
+     "name": "Matilda (X)",
+     "detail": "Lv 39, Human",
+     "key": "MATILDA_X"
+    },
+    {
+     "no": 328,
+     "name": "Dark Matilda",
+     "detail": "Lv 39, Human",
+     "key": "DARK_MATILDA_328"
+    },
+    {
+     "no": 329,
+     "name": "Lord of the Abyss",
+     "detail": "Lv 30, Guy Monster",
+     "key": "LORD_OF_THE_ABYSS"
+    },
+    {
+     "no": 330,
+     "name": "Masuzoe",
+     "detail": "Lv 50, Fiend",
+     "key": "MASUZOE"
+    },
+    {
+     "no": 331,
+     "name": "Green Dragon",
+     "detail": "Lv 25, Ancient",
+     "key": "GREEN_DRAGON"
+    },
+    {
+     "no": 333,
+     "name": "Alkanese",
+     "detail": "Lv 35, Human",
+     "key": "ALKANESE"
+    },
+    {
+     "no": 334,
+     "name": "Alkanese (Weakened)",
+     "detail": "Lv 35, Human",
+     "key": "ALKANESE_WEAKENED"
+    },
+    {
+     "no": 335,
+     "name": "Alkanese Copy",
+     "detail": "Lv 10, Guy Monster",
+     "key": "ALKANESE_COPY"
+    },
+    {
+     "no": 336,
+     "name": "Aegis",
+     "detail": "Lv 35, Kalar",
+     "key": "AEGIS"
+    },
+    {
+     "no": 337,
+     "name": "Silbarrel",
+     "detail": "Lv 20, Human",
+     "key": "SILBARREL"
+    },
+    {
+     "no": 338,
+     "name": "Snowy Mountain Japanese Soldier",
+     "detail": "Lv 30, Guy Monster",
+     "key": "SNOWY_MOUNTAIN_JAPANESE_SOLDIER"
+    },
+    {
+     "no": 339,
+     "name": "Yudain",
+     "detail": "Lv 10, Guy Monster",
+     "key": "YUDAIN"
+    },
+    {
+     "no": 340,
+     "name": "Burglar Leader",
+     "detail": "Lv 5, Human",
+     "key": "BURGLAR_LEADER"
+    },
+    {
+     "no": 341,
+     "name": "Washed-Up Assassin",
+     "detail": "Lv 5, Human",
+     "key": "WASHED_UP_ASSASSIN"
+    },
+    {
+     "no": 342,
+     "name": "Stray Archer",
+     "detail": "Lv 5, Human",
+     "key": "STRAY_ARCHER"
+    },
+    {
+     "no": 343,
+     "name": "Helmanian Monster Tamer",
+     "detail": "Lv 20, Human",
+     "key": "HELMANIAN_MONSTER_TAMER"
+    },
+    {
+     "no": 344,
+     "name": "Hopeful",
+     "detail": "Lv 42, Human",
+     "key": "HOPEFUL"
+    },
+    {
+     "no": 345,
+     "name": "Nirote Guma",
+     "detail": "Lv 25, Contaminated",
+     "key": "NIROTE_GUMA"
+    },
+    {
+     "no": 346,
+     "name": "Ralga's Cat Familiar",
+     "detail": "Lv 0, Familiar",
+     "key": "RALGAS_CAT_FAMILIAR"
+    },
+    {
+     "no": 347,
+     "name": "Pocky Rock",
+     "detail": "Lv 10, Ancient",
+     "key": "POCKY_ROCK"
+    },
+    {
+     "no": 348,
+     "name": "Fighter in Training",
+     "detail": "Lv 1, Human",
+     "key": "FIGHTER_IN_TRAINING"
+    },
+    {
+     "no": 349,
+     "name": "Gunner in Training",
+     "detail": "Lv 1, Human",
+     "key": "GUNNER_IN_TRAINING"
+    },
+    {
+     "no": 350,
+     "name": "Bird",
+     "detail": "Lv 20, Human",
+     "key": "BIRD"
+    },
+    {
+     "no": 351,
+     "name": "Snatcher",
+     "detail": "Lv 10, Insect",
+     "key": "SNATCHER"
+    },
+    {
+     "no": 352,
+     "name": "Giant Soil Pollution",
+     "detail": "Lv 5, Insect",
+     "key": "GIANT_SOIL_POLLUTION"
+    },
+    {
+     "no": 353,
+     "name": "Helmanian Knight",
+     "detail": "Lv 35, Human",
+     "key": "HELMANIAN_KNIGHT_353"
+    },
+    {
+     "no": 354,
+     "name": "Hanny King",
+     "detail": "Lv 60, race 0",
+     "key": "HANNY_KING"
+    },
+    {
+     "no": 355,
+     "name": "Helmanian Soldier",
+     "detail": "Lv 20, Human",
+     "key": "HELMANIAN_SOLDIER"
+    },
+    {
+     "no": 356,
+     "name": "Wrestler Sumo",
+     "detail": "Lv 30, Human",
+     "key": "WRESTLER_SUMO_356"
+    },
+    {
+     "no": 357,
+     "name": "Tofu Ghost",
+     "detail": "Lv 4, Guy Monster",
+     "key": "TOFU_GHOST"
+    },
+    {
+     "no": 358,
+     "name": "Cockroach",
+     "detail": "Lv 15, Insect",
+     "key": "COCKROACH"
+    },
+    {
+     "no": 359,
+     "name": "Rad Actor",
+     "detail": "Lv 40, Plant",
+     "key": "RAD_ACTOR"
+    },
+    {
+     "no": 360,
+     "name": "Huge Goldfish",
+     "detail": "Lv 40, Plant",
+     "key": "HUGE_GOLDFISH"
+    },
+    {
+     "no": 361,
+     "name": "Abnormal Squidman",
+     "detail": "Lv 30, Guy Monster",
+     "key": "ABNORMAL_SQUIDMAN"
+    },
+    {
+     "no": 362,
+     "name": "Abnormal Bone",
+     "detail": "Lv 30, Guy Monster",
+     "key": "ABNORMAL_BONE"
+    },
+    {
+     "no": 363,
+     "name": "Contaminated Fighter",
+     "detail": "Lv 40, Contaminated",
+     "key": "CONTAMINATED_FIGHTER"
+    },
+    {
+     "no": 364,
+     "name": "Contaminated Guard",
+     "detail": "Lv 40, Contaminated",
+     "key": "CONTAMINATED_GUARD"
+    },
+    {
+     "no": 365,
+     "name": "Contaminated Gunner",
+     "detail": "Lv 40, Contaminated",
+     "key": "CONTAMINATED_GUNNER"
+    },
+    {
+     "no": 366,
+     "name": "Contaminated Sorcerer",
+     "detail": "Lv 40, Contaminated",
+     "key": "CONTAMINATED_SORCERER"
+    },
+    {
+     "no": 367,
+     "name": "Contaminated Ranger",
+     "detail": "Lv 40, Contaminated",
+     "key": "CONTAMINATED_RANGER"
+    },
+    {
+     "no": 368,
+     "name": "Dark Rance",
+     "detail": "Lv 40, Devil",
+     "key": "DARK_RANCE"
+    },
+    {
+     "no": 369,
+     "name": "Goblin",
+     "detail": "Lv 45, Guy Monster",
+     "key": "GOBLIN"
+    },
+    {
+     "no": 370,
+     "name": "Red Dragon",
+     "detail": "Lv 35, Ancient",
+     "key": "RED_DRAGON"
+    },
+    {
+     "no": 371,
+     "name": "Blue Dragon",
+     "detail": "Lv 45, Ancient",
+     "key": "BLUE_DRAGON"
+    },
+    {
+     "no": 372,
+     "name": "Black Dragon",
+     "detail": "Lv 60, Ancient",
+     "key": "BLACK_DRAGON"
+    },
+    {
+     "no": 373,
+     "name": "Healcinth",
+     "detail": "Lv 50, Gal Monster",
+     "key": "HEALCINTH_373"
+    },
+    {
+     "no": 374,
+     "name": "Angel Knight Clone",
+     "detail": "Lv 60, Angel",
+     "key": "ANGEL_KNIGHT_CLONE"
+    },
+    {
+     "no": 375,
+     "name": "Pastel",
+     "detail": "Lv 45, Kalar",
+     "key": "PASTEL_375"
+    },
+    {
+     "no": 376,
+     "name": "Kaito",
+     "detail": "Lv 60, Fiend",
+     "key": "KAITO_376"
+    },
+    {
+     "no": 377,
+     "name": "Kaito",
+     "detail": "Lv 60, Fiend",
+     "key": "KAITO_377"
+    },
+    {
+     "no": 378,
+     "name": "Vecdran",
+     "detail": "Lv 50, Human",
+     "key": "VECDRAN"
+    },
+    {
+     "no": 379,
+     "name": "Seconaott",
+     "detail": "Lv 50, Human",
+     "key": "SECONAOTT"
+    },
+    {
+     "no": 380,
+     "name": "Salvenaott",
+     "detail": "Lv 50, Human",
+     "key": "SALVENAOTT"
+    },
+    {
+     "no": 381,
+     "name": "Paluott",
+     "detail": "Lv 50, Human",
+     "key": "PALUOTT"
+    },
+    {
+     "no": 382,
+     "name": "Contaott",
+     "detail": "Lv 50, Human",
+     "key": "CONTAOTT"
+    },
+    {
+     "no": 383,
+     "name": "BS",
+     "detail": "Lv 50, Human",
+     "key": "BS"
+    },
+    {
+     "no": 384,
+     "name": "Black Bird",
+     "detail": "Lv 20, Contaminated",
+     "key": "BLACK_BIRD"
+    },
+    {
+     "no": 386,
+     "name": "Hexapillar",
+     "detail": "Lv 60, Construct",
+     "key": "HEXAPILLAR"
+    },
+    {
+     "no": 387,
+     "name": "Z Guardian",
+     "detail": "Lv 50, Construct",
+     "key": "Z_GUARDIAN"
+    },
+    {
+     "no": 388,
+     "name": "Gunagan",
+     "detail": "Lv 70, Devil",
+     "key": "GUNAGAN"
+    },
+    {
+     "no": 389,
+     "name": "Larva",
+     "detail": "Lv 30, Plant",
+     "key": "LARVA"
+    },
+    {
+     "no": 390,
+     "name": "Goebbels",
+     "detail": "Lv 45, Holy Shroud Warlord",
+     "key": "GOEBBELS"
+    },
+    {
+     "no": 391,
+     "name": "Hitler",
+     "detail": "Lv 60, Holy Shroud Warlord",
+     "key": "HITLER"
+    },
+    {
+     "no": 392,
+     "name": "Conturtle",
+     "detail": "Lv 70, Guy Monster",
+     "key": "CONTURTLE"
+    },
+    {
+     "no": 393,
+     "name": "Serious Sumo",
+     "detail": "Lv 50, Guy Monster",
+     "key": "SERIOUS_SUMO"
+    },
+    {
+     "no": 394,
+     "name": "Crazy King",
+     "detail": "Lv 99, Guy Monster",
+     "key": "CRAZY_KING"
+    },
+    {
+     "no": 395,
+     "name": "King Squidman",
+     "detail": "Lv 45, Guy Monster",
+     "key": "KING_SQUIDMAN"
+    },
+    {
+     "no": 396,
+     "name": "Mechavalry Destroyer",
+     "detail": "Lv 45, Construct",
+     "key": "MECHAVALRY_DESTROYER"
+    },
+    {
+     "no": 397,
+     "name": "One-Fanged Puryo ",
+     "detail": "Lv 45, Guy Monster",
+     "key": "ONE_FANGED_PURYO"
+    },
+    {
+     "no": 398,
+     "name": "Animated Fine Armor",
+     "detail": "Lv 50, Guy Monster",
+     "key": "ANIMATED_FINE_ARMOR"
+    },
+    {
+     "no": 399,
+     "name": "Mechavalry Pillbox",
+     "detail": "Lv 40, Construct",
+     "key": "MECHAVALRY_PILLBOX"
+    },
+    {
+     "no": 400,
+     "name": "Hanny Cannon",
+     "detail": "Lv 50, Hanny",
+     "key": "HANNY_CANNON"
+    },
+    {
+     "no": 401,
+     "name": "Ngyo!",
+     "detail": "Lv 70, Guy Monster",
+     "key": "NGYO"
+    },
+    {
+     "no": 402,
+     "name": "Mr. Metaboly",
+     "detail": "Lv 50, Devil",
+     "key": "MR_METABOLY"
+    },
+    {
+     "no": 403,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_403"
+    },
+    {
+     "no": 404,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_404"
+    },
+    {
+     "no": 405,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_405"
+    },
+    {
+     "no": 406,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_406"
+    },
+    {
+     "no": 407,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_407"
+    },
+    {
+     "no": 408,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_408"
+    },
+    {
+     "no": 409,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_409"
+    },
+    {
+     "no": 410,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_410"
+    },
+    {
+     "no": 411,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_411"
+    },
+    {
+     "no": 412,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_412"
+    },
+    {
+     "no": 413,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_413"
+    },
+    {
+     "no": 414,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_414"
+    },
+    {
+     "no": 415,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_415"
+    },
+    {
+     "no": 416,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_416"
+    },
+    {
+     "no": 417,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_417"
+    },
+    {
+     "no": 418,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_418"
+    },
+    {
+     "no": 419,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_419"
+    },
+    {
+     "no": 420,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_420"
+    },
+    {
+     "no": 421,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_421"
+    },
+    {
+     "no": 422,
+     "name": "Billboard",
+     "detail": "Lv 0, Insect",
+     "key": "BILLBOARD_422"
+    },
+    {
+     "no": 423,
+     "name": "Crystal Robo",
+     "detail": "Lv 40, Construct",
+     "key": "CRYSTAL_ROBO_423"
+    },
+    {
+     "no": 424,
+     "name": "Flying Monitor Lizard",
+     "detail": "Lv 50, Guy Monster",
+     "key": "FLYING_MONITOR_LIZARD"
+    },
+    {
+     "no": 425,
+     "name": "Elastic Grape",
+     "detail": "Lv 40, Plant",
+     "key": "ELASTIC_GRAPE"
+    },
+    {
+     "no": 426,
+     "name": "Sorceror Hellbell",
+     "detail": "Lv 50, Human",
+     "key": "SORCEROR_HELLBELL"
+    },
+    {
+     "no": 427,
+     "name": "Assassin Paraly",
+     "detail": "Lv 50, Human",
+     "key": "ASSASSIN_PARALY"
+    },
+    {
+     "no": 428,
+     "name": "Warrior Gajel",
+     "detail": "Lv 50, Human",
+     "key": "WARRIOR_GAJEL"
+    },
+    {
+     "no": 429,
+     "name": "Magneball",
+     "detail": "Lv 45, Ancient",
+     "key": "MAGNEBALL"
+    },
+    {
+     "no": 430,
+     "name": "Am Yisael",
+     "detail": "Lv 60, Contaminated",
+     "key": "AM_YISAEL"
+    },
+    {
+     "no": 431,
+     "name": "Treasure Dango",
+     "detail": "Lv 10, Insect",
+     "key": "TREASURE_DANGO"
+    },
+    {
+     "no": 432,
+     "name": "Giant Hornet",
+     "detail": "Lv 45, Guy Monster",
+     "key": "GIANT_HORNET"
+    },
+    {
+     "no": 434,
+     "name": "Mechavalry Copter MkII",
+     "detail": "Lv 40, Construct",
+     "key": "MECHAVALRY_COPTER_MKII"
+    },
+    {
+     "no": 435,
+     "name": "Mechavalry Metal MkII",
+     "detail": "Lv 40, Construct",
+     "key": "MECHAVALRY_METAL_MKII"
+    },
+    {
+     "no": 436,
+     "name": "Mechavalry Tank MkII",
+     "detail": "Lv 50, Construct",
+     "key": "MECHAVALRY_TANK_MKII"
+    },
+    {
+     "no": 437,
+     "name": "Okayu Fever",
+     "detail": "Lv 40, Guy Monster",
+     "key": "OKAYU_FEVER"
+    },
+    {
+     "no": 438,
+     "name": "Fishball",
+     "detail": "Lv 5, Guy Monster",
+     "key": "FISHBALL"
+    },
+    {
+     "no": 439,
+     "name": "Tricerawhale",
+     "detail": "Lv 35, Insect",
+     "key": "TRICERAWHALE"
+    },
+    {
+     "no": 440,
+     "name": "Abnormal Samera~i",
+     "detail": "Lv 25, Guy Monster",
+     "key": "ABNORMAL_SAMERAI"
+    },
+    {
+     "no": 441,
+     "name": "Abnormal Ruronta",
+     "detail": "Lv 0, Guy Monster",
+     "key": "ABNORMAL_RURONTA_441"
+    },
+    {
+     "no": 442,
+     "name": "Abnormal Ruronta",
+     "detail": "Lv 0, Guy Monster",
+     "key": "ABNORMAL_RURONTA_442"
+    },
+    {
+     "no": 443,
+     "name": "Abnormal Ruronta",
+     "detail": "Lv 0, Guy Monster",
+     "key": "ABNORMAL_RURONTA_443"
+    },
+    {
+     "no": 444,
+     "name": "Abnormal Ruronta",
+     "detail": "Lv 0, Guy Monster",
+     "key": "ABNORMAL_RURONTA_444"
+    },
+    {
+     "no": 445,
+     "name": "Abnormal Ruronta",
+     "detail": "Lv 0, Guy Monster",
+     "key": "ABNORMAL_RURONTA_445"
+    },
+    {
+     "no": 446,
+     "name": "Abnormal Uppy",
+     "detail": "Lv 5, Insect",
+     "key": "ABNORMAL_UPPY"
+    },
+    {
+     "no": 448,
+     "name": "CopyPaste",
+     "detail": "Lv 0, Guy Monster",
+     "key": "COPYPASTE"
+    },
+    {
+     "no": 449,
+     "name": "King Squidman (Love)",
+     "detail": "Lv 45, Guy Monster",
+     "key": "KING_SQUIDMAN_LOVE"
+    },
+    {
+     "no": 450,
+     "name": "Contaminated Fighter (Weak)",
+     "detail": "Lv 20, Contaminated",
+     "key": "CONTAMINATED_FIGHTER_WEAK"
+    },
+    {
+     "no": 451,
+     "name": "Troll",
+     "detail": "Lv 45, Guy Monster",
+     "key": "TROLL"
+    },
+    {
+     "no": 452,
+     "name": "Templar",
+     "detail": "Lv 35, Human",
+     "key": "TEMPLAR_452"
+    },
+    {
+     "no": 453,
+     "name": "Bear",
+     "detail": "Lv 30, Guy Monster",
+     "key": "BEAR_453"
+    },
+    {
+     "no": 454,
+     "name": "Bear",
+     "detail": "Lv 50, Guy Monster",
+     "key": "BEAR_454"
+    },
+    {
+     "no": 455,
+     "name": "Goddess Alice",
+     "detail": "Lv 100, Angel",
+     "key": "GODDESS_ALICE"
+    },
+    {
+     "no": 456,
+     "name": "Battle Booklet",
+     "detail": "Lv 50, Gal Monster",
+     "key": "BATTLE_BOOKLET"
+    },
+    {
+     "no": 457,
+     "name": "Hanny (Shepherd)",
+     "detail": "Lv 0, Hanny",
+     "key": "HANNY_SHEPHERD"
+    },
+    {
+     "no": 458,
+     "name": "Super Silbarrel",
+     "detail": "Lv 50, Human",
+     "key": "SUPER_SILBARREL"
+    },
+    {
+     "no": 459,
+     "name": "Ammoth",
+     "detail": "Lv 70, Guy Monster",
+     "key": "AMMOTH"
+    },
+    {
+     "no": 460,
+     "name": "KIUWRI",
+     "detail": "Lv 70, Guy Monster",
+     "key": "KIUWRI"
+    },
+    {
+     "no": 461,
+     "name": "E. Shield",
+     "detail": "Lv 70, Guy Monster",
+     "key": "E_SHIELD"
+    },
+    {
+     "no": 462,
+     "name": "Giant Uppy",
+     "detail": "Lv 70, Guy Monster",
+     "key": "GIANT_UPPY"
+    },
+    {
+     "no": 463,
+     "name": "Giant Happy",
+     "detail": "Lv 70, Guy Monster",
+     "key": "GIANT_HAPPY"
+    },
+    {
+     "no": 464,
+     "name": "Philanthropist Gates",
+     "detail": "Lv 70, Guy Monster",
+     "key": "PHILANTHROPIST_GATES"
+    },
+    {
+     "no": 465,
+     "name": "Transparent Cockroach",
+     "detail": "Lv 70, Guy Monster",
+     "key": "TRANSPARENT_COCKROACH"
+    },
+    {
+     "no": 466,
+     "name": "Heroic Samera~i",
+     "detail": "Lv 70, Guy Monster",
+     "key": "HEROIC_SAMERAI"
+    },
+    {
+     "no": 467,
+     "name": "Unbreakable Jar",
+     "detail": "Lv 70, Guy Monster",
+     "key": "UNBREAKABLE_JAR"
+    },
+    {
+     "no": 468,
+     "name": "Ice Hugant",
+     "detail": "Lv 70, Guy Monster",
+     "key": "ICE_HUGANT"
+    },
+    {
+     "no": 469,
+     "name": "Space Burner",
+     "detail": "Lv 70, Guy Monster",
+     "key": "SPACE_BURNER"
+    },
+    {
+     "no": 470,
+     "name": "Blue Puryo",
+     "detail": "Lv 70, Guy Monster",
+     "key": "BLUE_PURYO"
+    },
+    {
+     "no": 471,
+     "name": "Hellhound",
+     "detail": "Lv 70, Guy Monster",
+     "key": "HELLHOUND"
+    },
+    {
+     "no": 472,
+     "name": "Gold Coin",
+     "detail": "Lv 70, Construct",
+     "key": "GOLD_COIN"
+    },
+    {
+     "no": 473,
+     "name": "Silbarrel, age 5",
+     "detail": "Lv 60, Human",
+     "key": "SILBARREL_AGE_5"
+    },
+    {
+     "no": 474,
+     "name": "Silbarrel, 80-years-old",
+     "detail": "Lv 70, Guy Monster",
+     "key": "SILBARREL_80_YEARS_OLD"
+    },
+    {
+     "no": 475,
+     "name": "Bone S MkII",
+     "detail": "Lv 70, Guy Monster",
+     "key": "BONE_S_MKII"
+    },
+    {
+     "no": 476,
+     "name": "Bone W MkII",
+     "detail": "Lv 70, Guy Monster",
+     "key": "BONE_W_MKII"
+    },
+    {
+     "no": 477,
+     "name": "Bone K MkII",
+     "detail": "Lv 70, Guy Monster",
+     "key": "BONE_K_MKII"
+    },
+    {
+     "no": 478,
+     "name": "Bone M MkII",
+     "detail": "Lv 70, Guy Monster",
+     "key": "BONE_M_MKII"
+    },
+    {
+     "no": 479,
+     "name": "Bone MkII",
+     "detail": "Lv 70, Guy Monster",
+     "key": "BONE_MKII"
+    },
+    {
+     "no": 480,
+     "name": "Iron Guardian",
+     "detail": "Lv 70, Guy Monster",
+     "key": "IRON_GUARDIAN"
+    },
+    {
+     "no": 481,
+     "name": "Glass Guardian",
+     "detail": "Lv 70, Guy Monster",
+     "key": "GLASS_GUARDIAN"
+    },
+    {
+     "no": 482,
+     "name": "Poisonous Goldfish",
+     "detail": "Lv 70, Guy Monster",
+     "key": "POISONOUS_GOLDFISH"
+    },
+    {
+     "no": 483,
+     "name": "Healcinth",
+     "detail": "Lv 50, Gal Monster",
+     "key": "HEALCINTH_483"
+    },
+    {
+     "no": 484,
+     "name": "Dark Matilda",
+     "detail": "Lv 39, Human",
+     "key": "DARK_MATILDA_484"
+    },
+    {
+     "no": 485,
+     "name": "Red Justice Person",
+     "detail": "Lv 70, Guy Monster",
+     "key": "RED_JUSTICE_PERSON"
+    },
+    {
+     "no": 486,
+     "name": "B Ranger",
+     "detail": "Lv 70, Guy Monster",
+     "key": "B_RANGER"
+    },
+    {
+     "no": 487,
+     "name": "C Ranger",
+     "detail": "Lv 70, Guy Monster",
+     "key": "C_RANGER"
+    },
+    {
+     "no": 488,
+     "name": "D Ranger",
+     "detail": "Lv 70, Guy Monster",
+     "key": "D_RANGER"
+    },
+    {
+     "no": 489,
+     "name": "E Ranger",
+     "detail": "Lv 70, Guy Monster",
+     "key": "E_RANGER"
+    },
+    {
+     "no": 491,
+     "name": "Data-less Ghost",
+     "detail": "Lv 4, Guy Monster",
+     "key": "DATA_LESS_GHOST_491"
+    },
+    {
+     "no": 492,
+     "name": "Data-less Ghost",
+     "detail": "Lv 4, Guy Monster",
+     "key": "DATA_LESS_GHOST_492"
+    },
+    {
+     "no": 493,
+     "name": "Data-less Ghost",
+     "detail": "Lv 4, Guy Monster",
+     "key": "DATA_LESS_GHOST_493"
+    },
+    {
+     "no": 494,
+     "name": "Data-less Ghost",
+     "detail": "Lv 4, Guy Monster",
+     "key": "DATA_LESS_GHOST_494"
+    },
+    {
+     "no": 495,
+     "name": "Data-less Ghost",
+     "detail": "Lv 4, Guy Monster",
+     "key": "DATA_LESS_GHOST_495"
+    },
+    {
+     "no": 496,
+     "name": "Zashiki-Warashi (5 Killer)",
+     "detail": "Lv 25, Gal Monster",
+     "key": "ZASHIKI_WARASHI_5_KILLER"
+    }
+   ]
+  },
+  {
+   "kind": "music",
+   "title": "Music",
+   "what": "music track numbers, as `rq.music.replace` and `rq.music.play` take them and `rq.music.current()` gives them",
+   "entries": [
+    {
+     "no": 1,
+     "name": "Indoor Crawl/R8",
+     "detail": "",
+     "key": "INDOOR_CRAWL_R8"
+    },
+    {
+     "no": 2,
+     "name": "Outdoor Crawl/R8",
+     "detail": "",
+     "key": "OUTDOOR_CRAWL_R8"
+    },
+    {
+     "no": 3,
+     "name": "Boss Crawl/R8",
+     "detail": "",
+     "key": "BOSS_CRAWL_R8"
+    },
+    {
+     "no": 4,
+     "name": "Infiltration Crawl/R8",
+     "detail": "",
+     "key": "INFILTRATION_CRAWL_R8"
+    },
+    {
+     "no": 5,
+     "name": "Free-For-All Crawl/R8",
+     "detail": "",
+     "key": "FREE_FOR_ALL_CRAWL_R8"
+    },
+    {
+     "no": 6,
+     "name": "Malgrid/R8",
+     "detail": "",
+     "key": "MALGRID_R8"
+    },
+    {
+     "no": 7,
+     "name": "Mystery Crawl/R8",
+     "detail": "",
+     "key": "MYSTERY_CRAWL_R8"
+    },
+    {
+     "no": 8,
+     "name": "Tower Crawl, Climb/R8",
+     "detail": "",
+     "key": "TOWER_CRAWL_CLIMB_R8"
+    },
+    {
+     "no": 9,
+     "name": "Tower Crawl, Climb Higher/R8",
+     "detail": "",
+     "key": "TOWER_CRAWL_CLIMB_HIGHER_R8"
+    },
+    {
+     "no": 10,
+     "name": "Tower Crawl, Climb Ever Higher/R8",
+     "detail": "",
+     "key": "TOWER_CRAWL_CLIMB_EVER_HIGHER_R8"
+    },
+    {
+     "no": 11,
+     "name": "Outdoor Crawl-Forest/R8",
+     "detail": "",
+     "key": "OUTDOOR_CRAWL_FOREST_R8"
+    },
+    {
+     "no": 12,
+     "name": "Outdoor Crawl-Mountain/R8",
+     "detail": "",
+     "key": "OUTDOOR_CRAWL_MOUNTAIN_R8"
+    },
+    {
+     "no": 13,
+     "name": "Indoor Crawl/Magnum",
+     "detail": "",
+     "key": "INDOOR_CRAWL_MAGNUM"
+    },
+    {
+     "no": 14,
+     "name": "Outdoor Crawl/Magnum",
+     "detail": "",
+     "key": "OUTDOOR_CRAWL_MAGNUM"
+    },
+    {
+     "no": 51,
+     "name": "Battle 1/R8",
+     "detail": "",
+     "key": "BATTLE_1_R8"
+    },
+    {
+     "no": 52,
+     "name": "Battle 2/R8",
+     "detail": "",
+     "key": "BATTLE_2_R8"
+    },
+    {
+     "no": 53,
+     "name": "Boss Battle/R8",
+     "detail": "",
+     "key": "BOSS_BATTLE_R8"
+    },
+    {
+     "no": 54,
+     "name": "Full Battle/R8",
+     "detail": "",
+     "key": "FULL_BATTLE_R8"
+    },
+    {
+     "no": 55,
+     "name": "TrnsBeat? (R5D)/R8",
+     "detail": "",
+     "key": "TRNSBEAT_R5D_R8"
+    },
+    {
+     "no": 56,
+     "name": "Lucky Can Can/R8",
+     "detail": "",
+     "key": "LUCKY_CAN_CAN_R8"
+    },
+    {
+     "no": 57,
+     "name": "Hanny/R8",
+     "detail": "",
+     "key": "HANNY_R8"
+    },
+    {
+     "no": 58,
+     "name": "Boss Boss Battle/R8",
+     "detail": "",
+     "key": "BOSS_BOSS_BATTLE_R8"
+    },
+    {
+     "no": 59,
+     "name": "Am Battle/Magnum",
+     "detail": "",
+     "key": "AM_BATTLE_MAGNUM"
+    },
+    {
+     "no": 60,
+     "name": "Battle/Magnum",
+     "detail": "",
+     "key": "BATTLE_MAGNUM"
+    },
+    {
+     "no": 71,
+     "name": "Everyday Conversation/R8",
+     "detail": "",
+     "key": "EVERYDAY_CONVERSATION_R8"
+    },
+    {
+     "no": 72,
+     "name": "Conversation with Girl/R8",
+     "detail": "",
+     "key": "CONVERSATION_WITH_GIRL_R8"
+    },
+    {
+     "no": 73,
+     "name": "An Erotic Mood/R8",
+     "detail": "",
+     "key": "AN_EROTIC_MOOD_R8"
+    },
+    {
+     "no": 74,
+     "name": "An Energetic Rance/R8",
+     "detail": "",
+     "key": "AN_ENERGETIC_RANCE_R8"
+    },
+    {
+     "no": 75,
+     "name": "No Good Everyday Conversation/R8",
+     "detail": "",
+     "key": "NO_GOOD_EVERYDAY_CONVERSATION_R8"
+    },
+    {
+     "no": 76,
+     "name": "Tense! Everyday Conversation/R8",
+     "detail": "",
+     "key": "TENSE_EVERYDAY_CONVERSATION_R8"
+    },
+    {
+     "no": 77,
+     "name": "Memories of Sill/R8",
+     "detail": "",
+     "key": "MEMORIES_OF_SILL_R8"
+    },
+    {
+     "no": 78,
+     "name": "Wrong Theme for Pastel/R8",
+     "detail": "",
+     "key": "WRONG_THEME_FOR_PASTEL_R8"
+    },
+    {
+     "no": 79,
+     "name": "Inside the Church/R8",
+     "detail": "",
+     "key": "INSIDE_THE_CHURCH_R8"
+    },
+    {
+     "no": 82,
+     "name": "Trouble/R8",
+     "detail": "",
+     "key": "TROUBLE_R8"
+    },
+    {
+     "no": 83,
+     "name": "Overwhelmed and Intimidated/R8",
+     "detail": "",
+     "key": "OVERWHELMED_AND_INTIMIDATED_R8"
+    },
+    {
+     "no": 84,
+     "name": "Alice's Mansion/R8",
+     "detail": "",
+     "key": "ALICES_MANSION_R8"
+    },
+    {
+     "no": 85,
+     "name": "Tragedy Sob Sob/R8",
+     "detail": "",
+     "key": "TRAGEDY_SOB_SOB_R8"
+    },
+    {
+     "no": 86,
+     "name": "Happy Everyday Conversation/R8",
+     "detail": "",
+     "key": "HAPPY_EVERYDAY_CONVERSATION_R8"
+    },
+    {
+     "no": 87,
+     "name": "Brutal Man's Daily Life (R7)/R8",
+     "detail": "",
+     "key": "BRUTAL_MANS_DAILY_LIFE_R7_R8"
+    },
+    {
+     "no": 88,
+     "name": "Mars (R7)/R8",
+     "detail": "",
+     "key": "MARS_R7_R8"
+    },
+    {
+     "no": 89,
+     "name": "Rance Castle/R8",
+     "detail": "",
+     "key": "RANCE_CASTLE_R8"
+    },
+    {
+     "no": 90,
+     "name": "Reset/R8",
+     "detail": "",
+     "key": "RESET_R8"
+    },
+    {
+     "no": 91,
+     "name": "Solemn/R8",
+     "detail": "",
+     "key": "SOLEMN_R8"
+    },
+    {
+     "no": 92,
+     "name": "Ero (Rance Theme Sad)/R8",
+     "detail": "",
+     "key": "ERO_RANCE_THEME_SAD_R8"
+    },
+    {
+     "no": 93,
+     "name": "Normal Everyday Conversation/R8",
+     "detail": "",
+     "key": "NORMAL_EVERYDAY_CONVERSATION_R8"
+    },
+    {
+     "no": 94,
+     "name": "Monthly Payment Plan/R8",
+     "detail": "",
+     "key": "MONTHLY_PAYMENT_PLAN_R8"
+    },
+    {
+     "no": 95,
+     "name": "The Contaminated/R8",
+     "detail": "",
+     "key": "THE_CONTAMINATED_R8"
+    },
+    {
+     "no": 96,
+     "name": "Epilogue/R8",
+     "detail": "",
+     "key": "EPILOGUE_R8"
+    },
+    {
+     "no": 97,
+     "name": "My Glory/R8",
+     "detail": "",
+     "key": "MY_GLORY_R8"
+    },
+    {
+     "no": 98,
+     "name": "Shepherds/R8",
+     "detail": "",
+     "key": "SHEPHERDS_R8"
+    },
+    {
+     "no": 99,
+     "name": "Outside the Church/R8",
+     "detail": "",
+     "key": "OUTSIDE_THE_CHURCH_R8"
+    },
+    {
+     "no": 101,
+     "name": "Copandon Cidade/R8",
+     "detail": "",
+     "key": "COPANDON_CIDADE_R8"
+    },
+    {
+     "no": 102,
+     "name": "Results/R8",
+     "detail": "",
+     "key": "RESULTS_R8"
+    },
+    {
+     "no": 103,
+     "name": "Opening/R8",
+     "detail": "",
+     "key": "OPENING_R8"
+    },
+    {
+     "no": 104,
+     "name": "Ending/R8",
+     "detail": "",
+     "key": "ENDING_R8"
+    },
+    {
+     "no": 105,
+     "name": "Go to the Brutal Man (R5D)/R8",
+     "detail": "",
+     "key": "GO_TO_THE_BRUTAL_MAN_R5D_R8"
+    },
+    {
+     "no": 106,
+     "name": "Copandon Cidade/Magnum",
+     "detail": "",
+     "key": "COPANDON_CIDADE_MAGNUM"
+    },
+    {
+     "no": 107,
+     "name": "Opening/Magnum",
+     "detail": "",
+     "key": "OPENING_MAGNUM"
+    },
+    {
+     "no": 108,
+     "name": "New Friend Theme",
+     "detail": "",
+     "key": "NEW_FRIEND_THEME"
+    }
+   ]
+  },
+  {
+   "kind": "party_state",
+   "title": "Party states",
+   "what": "where a character is (`登録状態`), as `rq.party.state` and `rq.chara.get(iic).state` give it and `rq.party.roster` takes it. The game names none; these names are ours, after its functions `キャラ_スタメン` to `キャラ_２軍`",
+   "entries": [
+    {
+     "no": 0,
+     "name": "None",
+     "detail": "not recruited",
+     "key": "NONE"
+    },
+    {
+     "no": 1,
+     "name": "Party",
+     "detail": "one of the five ranks (rq.party.get)",
+     "key": "PARTY"
+    },
+    {
+     "no": 2,
+     "name": "Reserve",
+     "detail": "the first army, free to join the party",
+     "key": "RESERVE"
+    },
+    {
+     "no": 3,
+     "name": "Used",
+     "detail": "the first army, switched out in this quest: not placed again until the quest ends",
+     "key": "USED"
+    },
+    {
+     "no": 4,
+     "name": "Second",
+     "detail": "the second army",
+     "key": "SECOND"
+    }
+   ]
+  },
+  {
+   "kind": "quest",
+   "title": "Quests",
+   "what": "quest numbers, as in `rq.quests()` and `rq.quests.start`",
+   "entries": [
+    {
+     "no": 10,
+     "name": "Debug (Various commands)",
+     "detail": "",
+     "key": "DEBUG_VARIOUS_COMMANDS"
+    },
+    {
+     "no": 11,
+     "name": "Favor: Survey",
+     "detail": "",
+     "key": "FAVOR_SURVEY"
+    },
+    {
+     "no": 13,
+     "name": "Alice's Mansion",
+     "detail": "",
+     "key": "ALICES_MANSION"
+    },
+    {
+     "no": 14,
+     "name": "Advance Worlds",
+     "detail": "",
+     "key": "ADVANCE_WORLDS"
+    },
+    {
+     "no": 16,
+     "name": "Scouting at the Bar",
+     "detail": "",
+     "key": "SCOUTING_AT_THE_BAR"
+    },
+    {
+     "no": 17,
+     "name": "Pollution Solution",
+     "detail": "",
+     "key": "POLLUTION_SOLUTION"
+    },
+    {
+     "no": 18,
+     "name": "Castle Pitch",
+     "detail": "",
+     "key": "CASTLE_PITCH"
+    },
+    {
+     "no": 19,
+     "name": "Rance Castle, Under Construction",
+     "detail": "",
+     "key": "RANCE_CASTLE_UNDER_CONSTRUCTION"
+    },
+    {
+     "no": 20,
+     "name": "Rance Castle, Complete",
+     "detail": "",
+     "key": "RANCE_CASTLE_COMPLETE"
+    },
+    {
+     "no": 21,
+     "name": "It's Noisy Next Door",
+     "detail": "",
+     "key": "ITS_NOISY_NEXT_DOOR"
+    },
+    {
+     "no": 22,
+     "name": "The Maids of Rance Castle",
+     "detail": "",
+     "key": "THE_MAIDS_OF_RANCE_CASTLE"
+    },
+    {
+     "no": 23,
+     "name": "Head Maid Service",
+     "detail": "",
+     "key": "HEAD_MAID_SERVICE"
+    },
+    {
+     "no": 24,
+     "name": "The Head Maid's School Uniform",
+     "detail": "",
+     "key": "THE_HEAD_MAIDS_SCHOOL_UNIFORM"
+    },
+    {
+     "no": 25,
+     "name": "Epiphany Cave's Master Author",
+     "detail": "",
+     "key": "EPIPHANY_CAVES_MASTER_AUTHOR"
+    },
+    {
+     "no": 26,
+     "name": "Retrieve Manuscript (and Editor)",
+     "detail": "",
+     "key": "RETRIEVE_MANUSCRIPT_AND_EDITOR"
+    },
+    {
+     "no": 27,
+     "name": "Sachiko's Spring Break",
+     "detail": "",
+     "key": "SACHIKOS_SPRING_BREAK"
+    },
+    {
+     "no": 28,
+     "name": "Master Author in Tow",
+     "detail": "",
+     "key": "MASTER_AUTHOR_IN_TOW"
+    },
+    {
+     "no": 29,
+     "name": "Parental Love Invasion",
+     "detail": "",
+     "key": "PARENTAL_LOVE_INVASION"
+    },
+    {
+     "no": 30,
+     "name": "Ninja Art: Dysfunction Treatment",
+     "detail": "",
+     "key": "NINJA_ART_DYSFUNCTION_TREATMENT"
+    },
+    {
+     "no": 31,
+     "name": "Runaway Ninja Fukiya",
+     "detail": "",
+     "key": "RUNAWAY_NINJA_FUKIYA"
+    },
+    {
+     "no": 32,
+     "name": "The Life Span of a Kunoichi",
+     "detail": "",
+     "key": "THE_LIFE_SPAN_OF_A_KUNOICHI"
+    },
+    {
+     "no": 33,
+     "name": "Kalar Incident",
+     "detail": "",
+     "key": "KALAR_INCIDENT"
+    },
+    {
+     "no": 34,
+     "name": "Amnesiac Girl",
+     "detail": "",
+     "key": "AMNESIAC_GIRL"
+    },
+    {
+     "no": 35,
+     "name": "Doing Aegis",
+     "detail": "",
+     "key": "DOING_AEGIS"
+    },
+    {
+     "no": 36,
+     "name": "Copandon Cidade",
+     "detail": "",
+     "key": "COPANDON_CIDADE"
+    },
+    {
+     "no": 37,
+     "name": "Escorting Copandon",
+     "detail": "",
+     "key": "ESCORTING_COPANDON"
+    },
+    {
+     "no": 38,
+     "name": "Copandon Joins",
+     "detail": "",
+     "key": "COPANDON_JOINS"
+    },
+    {
+     "no": 39,
+     "name": "Copandon's Birthday",
+     "detail": "",
+     "key": "COPANDONS_BIRTHDAY"
+    },
+    {
+     "no": 40,
+     "name": "Mount Hakkoda",
+     "detail": "",
+     "key": "MOUNT_HAKKODA"
+    },
+    {
+     "no": 41,
+     "name": "Kouhime Joins",
+     "detail": "",
+     "key": "KOUHIME_JOINS"
+    },
+    {
+     "no": 42,
+     "name": "KatsuTora Highway Marathon",
+     "detail": "",
+     "key": "KATSUTORA_HIGHWAY_MARATHON"
+    },
+    {
+     "no": 43,
+     "name": "Siege of Otate",
+     "detail": "",
+     "key": "SIEGE_OF_OTATE"
+    },
+    {
+     "no": 44,
+     "name": "Kenshin's Devotion",
+     "detail": "",
+     "key": "KENSHINS_DEVOTION"
+    },
+    {
+     "no": 45,
+     "name": "Walk in the Park",
+     "detail": "",
+     "key": "WALK_IN_THE_PARK"
+    },
+    {
+     "no": 46,
+     "name": "Incident at the Church",
+     "detail": "",
+     "key": "INCIDENT_AT_THE_CHURCH"
+    },
+    {
+     "no": 47,
+     "name": "Bomb Testing",
+     "detail": "",
+     "key": "BOMB_TESTING"
+    },
+    {
+     "no": 48,
+     "name": "The Contaminated",
+     "detail": "",
+     "key": "THE_CONTAMINATED"
+    },
+    {
+     "no": 49,
+     "name": "Changing Room View",
+     "detail": "",
+     "key": "CHANGING_ROOM_VIEW"
+    },
+    {
+     "no": 50,
+     "name": "The Young Royal Guard",
+     "detail": "",
+     "key": "THE_YOUNG_ROYAL_GUARD"
+    },
+    {
+     "no": 51,
+     "name": "Speed Hermit",
+     "detail": "",
+     "key": "SPEED_HERMIT"
+    },
+    {
+     "no": 52,
+     "name": "Wanted Beauty",
+     "detail": "",
+     "key": "WANTED_BEAUTY"
+    },
+    {
+     "no": 53,
+     "name": "Crane Returns a Favor",
+     "detail": "",
+     "key": "CRANE_RETURNS_A_FAVOR"
+    },
+    {
+     "no": 54,
+     "name": "Crane's Hideout",
+     "detail": "",
+     "key": "CRANES_HIDEOUT"
+    },
+    {
+     "no": 55,
+     "name": "Crane Pays Her Dues",
+     "detail": "",
+     "key": "CRANE_PAYS_HER_DUES"
+    },
+    {
+     "no": 56,
+     "name": "Ninja Expos･",
+     "detail": "",
+     "key": "NINJA_EXPOSE"
+    },
+    {
+     "no": 57,
+     "name": "Kanami's Determination",
+     "detail": "",
+     "key": "KANAMIS_DETERMINATION"
+    },
+    {
+     "no": 58,
+     "name": "The Reason Suzume Lingers",
+     "detail": "",
+     "key": "THE_REASON_SUZUME_LINGERS"
+    },
+    {
+     "no": 59,
+     "name": "Ninja Season",
+     "detail": "",
+     "key": "NINJA_SEASON"
+    },
+    {
+     "no": 60,
+     "name": "Lion Mind",
+     "detail": "",
+     "key": "LION_MIND"
+    },
+    {
+     "no": 61,
+     "name": "Cheetah Mind",
+     "detail": "",
+     "key": "CHEETAH_MIND"
+    },
+    {
+     "no": 62,
+     "name": "Zombie Room",
+     "detail": "",
+     "key": "ZOMBIE_ROOM"
+    },
+    {
+     "no": 63,
+     "name": "Leazish Horror Story",
+     "detail": "",
+     "key": "LEAZISH_HORROR_STORY"
+    },
+    {
+     "no": 64,
+     "name": "Visiting Magic",
+     "detail": "",
+     "key": "VISITING_MAGIC"
+    },
+    {
+     "no": 65,
+     "name": "Curse Eraser",
+     "detail": "",
+     "key": "CURSE_ERASER"
+    },
+    {
+     "no": 66,
+     "name": "Love Letter for a Kalar",
+     "detail": "",
+     "key": "LOVE_LETTER_FOR_A_KALAR"
+    },
+    {
+     "no": 67,
+     "name": "Invade the Kalar Village",
+     "detail": "",
+     "key": "INVADE_THE_KALAR_VILLAGE"
+    },
+    {
+     "no": 68,
+     "name": "Quest for Sex",
+     "detail": "",
+     "key": "QUEST_FOR_SEX"
+    },
+    {
+     "no": 69,
+     "name": "Amazusa Group Drill Field",
+     "detail": "",
+     "key": "AMAZUSA_GROUP_DRILL_FIELD"
+    },
+    {
+     "no": 70,
+     "name": "Once More to the Kalar Forest",
+     "detail": "",
+     "key": "ONCE_MORE_TO_THE_KALAR_FOREST"
+    },
+    {
+     "no": 71,
+     "name": "Kaito",
+     "detail": "",
+     "key": "KAITO"
+    },
+    {
+     "no": 72,
+     "name": "It's All Pastel's Fault",
+     "detail": "",
+     "key": "ITS_ALL_PASTELS_FAULT"
+    },
+    {
+     "no": 73,
+     "name": "The Girl Who Waits for Rance",
+     "detail": "",
+     "key": "THE_GIRL_WHO_WAITS_FOR_RANCE"
+    },
+    {
+     "no": 74,
+     "name": "Paternity Test",
+     "detail": "",
+     "key": "PATERNITY_TEST"
+    },
+    {
+     "no": 75,
+     "name": "Crypt of the Queens",
+     "detail": "",
+     "key": "CRYPT_OF_THE_QUEENS"
+    },
+    {
+     "no": 76,
+     "name": "The Third Army of Helman",
+     "detail": "",
+     "key": "THE_THIRD_ARMY_OF_HELMAN"
+    },
+    {
+     "no": 77,
+     "name": "Queen Pastel Kalar",
+     "detail": "",
+     "key": "QUEEN_PASTEL_KALAR"
+    },
+    {
+     "no": 78,
+     "name": "Drunk at the Bar",
+     "detail": "",
+     "key": "DRUNK_AT_THE_BAR"
+    },
+    {
+     "no": 79,
+     "name": "Here Come the Boobs",
+     "detail": "",
+     "key": "HERE_COME_THE_BOOBS"
+    },
+    {
+     "no": 80,
+     "name": "Gem Lady",
+     "detail": "",
+     "key": "GEM_LADY"
+    },
+    {
+     "no": 81,
+     "name": "The Miraculous Artificial Lifeform",
+     "detail": "",
+     "key": "THE_MIRACULOUS_ARTIFICIAL_LIFEFORM"
+    },
+    {
+     "no": 82,
+     "name": "Tama in Heat",
+     "detail": "",
+     "key": "TAMA_IN_HEAT"
+    },
+    {
+     "no": 83,
+     "name": "Grape Hunting and Grape Special",
+     "detail": "",
+     "key": "GRAPE_HUNTING_AND_GRAPE_SPECIAL"
+    },
+    {
+     "no": 84,
+     "name": "Rumor of the Dancer Lotion",
+     "detail": "",
+     "key": "RUMOR_OF_THE_DANCER_LOTION"
+    },
+    {
+     "no": 85,
+     "name": "Making the Dancer Lotion",
+     "detail": "",
+     "key": "MAKING_THE_DANCER_LOTION"
+    },
+    {
+     "no": 86,
+     "name": "Highway Yankees",
+     "detail": "",
+     "key": "HIGHWAY_YANKEES"
+    },
+    {
+     "no": 87,
+     "name": "Yankee Go Home",
+     "detail": "",
+     "key": "YANKEE_GO_HOME"
+    },
+    {
+     "no": 88,
+     "name": "Monster Tamer Pilgrimage",
+     "detail": "",
+     "key": "MONSTER_TAMER_PILGRIMAGE"
+    },
+    {
+     "no": 89,
+     "name": "Idol Mage",
+     "detail": "",
+     "key": "IDOL_MAGE"
+    },
+    {
+     "no": 90,
+     "name": "Shut-in Witch",
+     "detail": "",
+     "key": "SHUT_IN_WITCH"
+    },
+    {
+     "no": 91,
+     "name": "Wild Child of Ifo",
+     "detail": "",
+     "key": "WILD_CHILD_OF_IFO"
+    },
+    {
+     "no": 92,
+     "name": "Cursed Princess",
+     "detail": "",
+     "key": "CURSED_PRINCESS"
+    },
+    {
+     "no": 93,
+     "name": "Dragon Slayer",
+     "detail": "",
+     "key": "DRAGON_SLAYER"
+    },
+    {
+     "no": 94,
+     "name": "Queen of the Monsters",
+     "detail": "",
+     "key": "QUEEN_OF_THE_MONSTERS"
+    },
+    {
+     "no": 95,
+     "name": "Eroyac ALV",
+     "detail": "",
+     "key": "EROYAC_ALV"
+    },
+    {
+     "no": 96,
+     "name": "Squidman Courtship",
+     "detail": "",
+     "key": "SQUIDMAN_COURTSHIP"
+    },
+    {
+     "no": 97,
+     "name": "Monster Hunting Ground",
+     "detail": "",
+     "key": "MONSTER_HUNTING_GROUND"
+    },
+    {
+     "no": 98,
+     "name": "The Hannies without Arms",
+     "detail": "",
+     "key": "THE_HANNIES_WITHOUT_ARMS"
+    },
+    {
+     "no": 99,
+     "name": "Harvesting Season",
+     "detail": "",
+     "key": "HARVESTING_SEASON"
+    },
+    {
+     "no": 100,
+     "name": "Kick Master of Mushroom Forest",
+     "detail": "",
+     "key": "KICK_MASTER_OF_MUSHROOM_FOREST"
+    },
+    {
+     "no": 101,
+     "name": "Spring Picnic",
+     "detail": "",
+     "key": "SPRING_PICNIC"
+    },
+    {
+     "no": 102,
+     "name": "Summer Swimming",
+     "detail": "",
+     "key": "SUMMER_SWIMMING"
+    },
+    {
+     "no": 103,
+     "name": "Fall Super Sports Day",
+     "detail": "",
+     "key": "FALL_SUPER_SPORTS_DAY"
+    },
+    {
+     "no": 104,
+     "name": "Winter Hot Spring Reservation",
+     "detail": "",
+     "key": "WINTER_HOT_SPRING_RESERVATION"
+    },
+    {
+     "no": 106,
+     "name": "Dark Alice's Pay2Win Room",
+     "detail": "",
+     "key": "DARK_ALICES_PAY2WIN_ROOM"
+    },
+    {
+     "no": 108,
+     "name": "Bear Death Match",
+     "detail": "",
+     "key": "BEAR_DEATH_MATCH"
+    },
+    {
+     "no": 109,
+     "name": "Bear Death Match Cont.",
+     "detail": "",
+     "key": "BEAR_DEATH_MATCH_CONT"
+    },
+    {
+     "no": 111,
+     "name": "Gal M Loan 1",
+     "detail": "",
+     "key": "GAL_M_LOAN_1"
+    },
+    {
+     "no": 112,
+     "name": "Gal M Loan 2",
+     "detail": "",
+     "key": "GAL_M_LOAN_2"
+    },
+    {
+     "no": 113,
+     "name": "Gal M Loan 3",
+     "detail": "",
+     "key": "GAL_M_LOAN_3"
+    },
+    {
+     "no": 114,
+     "name": "Lord of the Abyss",
+     "detail": "",
+     "key": "LORD_OF_THE_ABYSS"
+    },
+    {
+     "no": 115,
+     "name": "True Lord of the Abyss",
+     "detail": "",
+     "key": "TRUE_LORD_OF_THE_ABYSS_115"
+    },
+    {
+     "no": 116,
+     "name": "Chi-Ha Tank Battalion",
+     "detail": "",
+     "key": "CHI_HA_TANK_BATTALION"
+    },
+    {
+     "no": 117,
+     "name": "Using the Kugu Torture Device",
+     "detail": "",
+     "key": "USING_THE_KUGU_TORTURE_DEVICE"
+    },
+    {
+     "no": 118,
+     "name": "Torture Device, Attempt #2",
+     "detail": "",
+     "key": "TORTURE_DEVICE_ATTEMPT_2"
+    },
+    {
+     "no": 119,
+     "name": "Torture Device, Attempt #3",
+     "detail": "",
+     "key": "TORTURE_DEVICE_ATTEMPT_3"
+    },
+    {
+     "no": 120,
+     "name": "Cripple Dungeon",
+     "detail": "",
+     "key": "CRIPPLE_DUNGEON"
+    },
+    {
+     "no": 121,
+     "name": "Malgrid Dungeon 1st Stratum",
+     "detail": "",
+     "key": "MALGRID_DUNGEON_1ST_STRATUM"
+    },
+    {
+     "no": 122,
+     "name": "Malgrid Dungeon 2nd Stratum",
+     "detail": "",
+     "key": "MALGRID_DUNGEON_2ND_STRATUM"
+    },
+    {
+     "no": 123,
+     "name": "Malgrid Dungeon 3rd Stratum",
+     "detail": "",
+     "key": "MALGRID_DUNGEON_3RD_STRATUM"
+    },
+    {
+     "no": 124,
+     "name": "Malgrid Dungeon 4th Stratum",
+     "detail": "",
+     "key": "MALGRID_DUNGEON_4TH_STRATUM"
+    },
+    {
+     "no": 125,
+     "name": "Malgrid Dungeon 5th Stratum",
+     "detail": "",
+     "key": "MALGRID_DUNGEON_5TH_STRATUM"
+    },
+    {
+     "no": 126,
+     "name": "Malgrid Dungeon 6th Stratum",
+     "detail": "",
+     "key": "MALGRID_DUNGEON_6TH_STRATUM"
+    },
+    {
+     "no": 127,
+     "name": "Malgrid Dungeon 7th Stratum",
+     "detail": "",
+     "key": "MALGRID_DUNGEON_7TH_STRATUM"
+    },
+    {
+     "no": 128,
+     "name": "Malgrid Dungeon 8th Stratum",
+     "detail": "",
+     "key": "MALGRID_DUNGEON_8TH_STRATUM"
+    },
+    {
+     "no": 129,
+     "name": "Alice's Guest",
+     "detail": "",
+     "key": "ALICES_GUEST"
+    },
+    {
+     "no": 130,
+     "name": "Character Relations",
+     "detail": "",
+     "key": "CHARACTER_RELATIONS"
+    },
+    {
+     "no": 131,
+     "name": "True Lord of the Abyss?",
+     "detail": "",
+     "key": "TRUE_LORD_OF_THE_ABYSS_131"
+    },
+    {
+     "no": 132,
+     "name": "True Lord of the Abyss??",
+     "detail": "",
+     "key": "TRUE_LORD_OF_THE_ABYSS_132"
+    },
+    {
+     "no": 134,
+     "name": "A Day in Cidade",
+     "detail": "",
+     "key": "A_DAY_IN_CIDADE"
+    },
+    {
+     "no": 135,
+     "name": "Hanny Secret Base",
+     "detail": "",
+     "key": "HANNY_SECRET_BASE"
+    },
+    {
+     "no": 136,
+     "name": "Cockroach Commotion",
+     "detail": "",
+     "key": "COCKROACH_COMMOTION"
+    },
+    {
+     "no": 137,
+     "name": "Cockroach Commotion Cont.",
+     "detail": "",
+     "key": "COCKROACH_COMMOTION_CONT"
+    },
+    {
+     "no": 138,
+     "name": "Biscuitta Joins",
+     "detail": "",
+     "key": "BISCUITTA_JOINS"
+    },
+    {
+     "no": 139,
+     "name": "Exterminate the Strange Squidmen",
+     "detail": "",
+     "key": "EXTERMINATE_THE_STRANGE_SQUIDMEN"
+    },
+    {
+     "no": 140,
+     "name": "Exterminate the Strange Bones",
+     "detail": "",
+     "key": "EXTERMINATE_THE_STRANGE_BONES"
+    },
+    {
+     "no": 141,
+     "name": "Exterminate the Strange Rurontas",
+     "detail": "",
+     "key": "EXTERMINATE_THE_STRANGE_RURONTAS"
+    },
+    {
+     "no": 142,
+     "name": "Exterminate the Strange Uppies",
+     "detail": "",
+     "key": "EXTERMINATE_THE_STRANGE_UPPIES"
+    },
+    {
+     "no": 143,
+     "name": "Strange Hive",
+     "detail": "",
+     "key": "STRANGE_HIVE"
+    },
+    {
+     "no": 145,
+     "name": "Malgrid Dungeon 9th Stratum",
+     "detail": "",
+     "key": "MALGRID_DUNGEON_9TH_STRATUM"
+    },
+    {
+     "no": 146,
+     "name": "Malgrid Dungeon 10th Stratum",
+     "detail": "",
+     "key": "MALGRID_DUNGEON_10TH_STRATUM"
+    },
+    {
+     "no": 147,
+     "name": "Malgrid Dungeon Xth Stratum",
+     "detail": "",
+     "key": "MALGRID_DUNGEON_XTH_STRATUM"
+    },
+    {
+     "no": 148,
+     "name": "Body Natto",
+     "detail": "",
+     "key": "BODY_NATTO"
+    },
+    {
+     "no": 149,
+     "name": "Her Reason to Live",
+     "detail": "",
+     "key": "HER_REASON_TO_LIVE"
+    },
+    {
+     "no": 150,
+     "name": "The Three Ice Flame Girls",
+     "detail": "",
+     "key": "THE_THREE_ICE_FLAME_GIRLS"
+    },
+    {
+     "no": 151,
+     "name": "Let's Play with the Emperor's Armor",
+     "detail": "",
+     "key": "LETS_PLAY_WITH_THE_EMPERORS_ARMOR"
+    },
+    {
+     "no": 152,
+     "name": "Let's Play with the Orgarhythm",
+     "detail": "",
+     "key": "LETS_PLAY_WITH_THE_ORGARHYTHM"
+    },
+    {
+     "no": 153,
+     "name": "Days at the Macatt Bar",
+     "detail": "",
+     "key": "DAYS_AT_THE_MACATT_BAR"
+    },
+    {
+     "no": 154,
+     "name": "Relaxing Bust",
+     "detail": "",
+     "key": "RELAXING_BUST"
+    },
+    {
+     "no": 155,
+     "name": "Looking for a Lucklady?",
+     "detail": "",
+     "key": "LOOKING_FOR_A_LUCKLADY"
+    },
+    {
+     "no": 156,
+     "name": "The Father's Present",
+     "detail": "",
+     "key": "THE_FATHERS_PRESENT"
+    },
+    {
+     "no": 157,
+     "name": "Satella's Request",
+     "detail": "",
+     "key": "SATELLAS_REQUEST"
+    },
+    {
+     "no": 158,
+     "name": "Gal Monsters",
+     "detail": "",
+     "key": "GAL_MONSTERS"
+    },
+    {
+     "no": 164,
+     "name": "To Kawanakajima We Go",
+     "detail": "",
+     "key": "TO_KAWANAKAJIMA_WE_GO"
+    },
+    {
+     "no": 165,
+     "name": "Rumors of the Shepherds",
+     "detail": "",
+     "key": "RUMORS_OF_THE_SHEPHERDS"
+    },
+    {
+     "no": 166,
+     "name": "Gift Exchange at the Church",
+     "detail": "",
+     "key": "GIFT_EXCHANGE_AT_THE_CHURCH"
+    },
+    {
+     "no": 167,
+     "name": "Quest for Hikari",
+     "detail": "",
+     "key": "QUEST_FOR_HIKARI"
+    },
+    {
+     "no": 168,
+     "name": "Despair Gathering",
+     "detail": "",
+     "key": "DESPAIR_GATHERING"
+    },
+    {
+     "no": 169,
+     "name": "Obsidian Princess",
+     "detail": "",
+     "key": "OBSIDIAN_PRINCESS"
+    },
+    {
+     "no": 170,
+     "name": "The Leader of the Shepherds",
+     "detail": "",
+     "key": "THE_LEADER_OF_THE_SHEPHERDS"
+    },
+    {
+     "no": 171,
+     "name": "The Bishop's Trap",
+     "detail": "",
+     "key": "THE_BISHOPS_TRAP"
+    },
+    {
+     "no": 172,
+     "name": "Maria's Marriage Meeting",
+     "detail": "",
+     "key": "MARIAS_MARRIAGE_MEETING"
+    },
+    {
+     "no": 173,
+     "name": "Mula Test Part 1",
+     "detail": "",
+     "key": "MULA_TEST_PART_1"
+    },
+    {
+     "no": 174,
+     "name": "Mula Test Part 2",
+     "detail": "",
+     "key": "MULA_TEST_PART_2"
+    },
+    {
+     "no": 175,
+     "name": "Mula Test Part 3",
+     "detail": "",
+     "key": "MULA_TEST_PART_3"
+    },
+    {
+     "no": 176,
+     "name": "The Shepherds' Base",
+     "detail": "",
+     "key": "THE_SHEPHERDS_BASE"
+    },
+    {
+     "no": 177,
+     "name": "Tower of Babel",
+     "detail": "",
+     "key": "TOWER_OF_BABEL"
+    },
+    {
+     "no": 179,
+     "name": "The Crystal Rod",
+     "detail": "",
+     "key": "THE_CRYSTAL_ROD"
+    },
+    {
+     "no": 180,
+     "name": "Let's Use the Decapitation Blade!",
+     "detail": "",
+     "key": "LETS_USE_THE_DECAPITATION_BLADE"
+    },
+    {
+     "no": 181,
+     "name": "Challenging the Torture Device Part 4",
+     "detail": "",
+     "key": "CHALLENGING_THE_TORTURE_DEVICE_PART_4"
+    },
+    {
+     "no": 182,
+     "name": "Gay Fried Chicken",
+     "detail": "",
+     "key": "GAY_FRIED_CHICKEN"
+    },
+    {
+     "no": 183,
+     "name": "Late Night with Mill Yorks",
+     "detail": "",
+     "key": "LATE_NIGHT_WITH_MILL_YORKS"
+    },
+    {
+     "no": 185,
+     "name": "Shining Cock",
+     "detail": "",
+     "key": "SHINING_COCK"
+    },
+    {
+     "no": 186,
+     "name": "Erotech Hermit",
+     "detail": "",
+     "key": "EROTECH_HERMIT"
+    },
+    {
+     "no": 187,
+     "name": "Love Hermit",
+     "detail": "",
+     "key": "LOVE_HERMIT"
+    },
+    {
+     "no": 188,
+     "name": "The Bishops' Day",
+     "detail": "",
+     "key": "THE_BISHOPS_DAY"
+    },
+    {
+     "no": 189,
+     "name": "Kouhime's Tea Party",
+     "detail": "",
+     "key": "KOUHIMES_TEA_PARTY"
+    },
+    {
+     "no": 190,
+     "name": "The Shepherds and the Darksword",
+     "detail": "",
+     "key": "THE_SHEPHERDS_AND_THE_DARKSWORD"
+    },
+    {
+     "no": 191,
+     "name": "Matilda, Confined",
+     "detail": "",
+     "key": "MATILDA_CONFINED"
+    },
+    {
+     "no": 192,
+     "name": "Green Village",
+     "detail": "",
+     "key": "GREEN_VILLAGE"
+    },
+    {
+     "no": 193,
+     "name": "Papal Candidates",
+     "detail": "",
+     "key": "PAPAL_CANDIDATES"
+    },
+    {
+     "no": 194,
+     "name": "Papal Inauguration Ceremony",
+     "detail": "",
+     "key": "PAPAL_INAUGURATION_CEREMONY"
+    },
+    {
+     "no": 195,
+     "name": "Rance Castle's Otherworldly Visitor",
+     "detail": "",
+     "key": "RANCE_CASTLES_OTHERWORLDLY_VISITOR"
+    },
+    {
+     "no": 197,
+     "name": "Am's Experiment 1",
+     "detail": "",
+     "key": "AMS_EXPERIMENT_1"
+    },
+    {
+     "no": 198,
+     "name": "Am's Experiment 2",
+     "detail": "",
+     "key": "AMS_EXPERIMENT_2"
+    },
+    {
+     "no": 199,
+     "name": "Rising Dragon Mountain Summit",
+     "detail": "",
+     "key": "RISING_DRAGON_MOUNTAIN_SUMMIT"
+    },
+    {
+     "no": 200,
+     "name": "The Truth of the Goddess",
+     "detail": "",
+     "key": "THE_TRUTH_OF_THE_GODDESS"
+    },
+    {
+     "no": 201,
+     "name": "Angel Hunting",
+     "detail": "",
+     "key": "ANGEL_HUNTING"
+    },
+    {
+     "no": 202,
+     "name": "Lia's Atonement",
+     "detail": "",
+     "key": "LIAS_ATONEMENT"
+    },
+    {
+     "no": 203,
+     "name": "Divide and Conquer",
+     "detail": "",
+     "key": "DIVIDE_AND_CONQUER"
+    },
+    {
+     "no": 204,
+     "name": "Crook's Returns",
+     "detail": "",
+     "key": "CROOKS_RETURNS"
+    },
+    {
+     "no": 205,
+     "name": "Pencilcow Conference",
+     "detail": "",
+     "key": "PENCILCOW_CONFERENCE"
+    },
+    {
+     "no": 206,
+     "name": "Two Flames' Blazing Journey",
+     "detail": "",
+     "key": "TWO_FLAMES_BLAZING_JOURNEY"
+    },
+    {
+     "no": 207,
+     "name": "The Lord's Rebellion",
+     "detail": "",
+     "key": "THE_LORDS_REBELLION"
+    },
+    {
+     "no": 208,
+     "name": "Dangerous Fellatio",
+     "detail": "",
+     "key": "DANGEROUS_FELLATIO"
+    },
+    {
+     "no": 209,
+     "name": "Punishing the Pope",
+     "detail": "",
+     "key": "PUNISHING_THE_POPE"
+    },
+    {
+     "no": 210,
+     "name": "As a Priestess...",
+     "detail": "",
+     "key": "AS_A_PRIESTESS"
+    },
+    {
+     "no": 211,
+     "name": "Thunder Claus",
+     "detail": "",
+     "key": "THUNDER_CLAUS"
+    },
+    {
+     "no": 213,
+     "name": "Action Confirmation Version",
+     "detail": "",
+     "key": "ACTION_CONFIRMATION_VERSION"
+    },
+    {
+     "no": 214,
+     "name": "Letter from Nippon",
+     "detail": "",
+     "key": "LETTER_FROM_NIPPON"
+    },
+    {
+     "no": 215,
+     "name": "The Siblings' Day",
+     "detail": "",
+     "key": "THE_SIBLINGS_DAY"
+    },
+    {
+     "no": 221,
+     "name": "Hanny Quest 1",
+     "detail": "",
+     "key": "HANNY_QUEST_1"
+    },
+    {
+     "no": 222,
+     "name": "Hanny Quest 2",
+     "detail": "",
+     "key": "HANNY_QUEST_2"
+    },
+    {
+     "no": 223,
+     "name": "Hanny Quest 3",
+     "detail": "",
+     "key": "HANNY_QUEST_3"
+    },
+    {
+     "no": 224,
+     "name": "Hanny Quest 4",
+     "detail": "",
+     "key": "HANNY_QUEST_4"
+    },
+    {
+     "no": 225,
+     "name": "＊＊＊YY",
+     "detail": "",
+     "key": "YY"
+    },
+    {
+     "no": 227,
+     "name": "Boss 100",
+     "detail": "",
+     "key": "BOSS_100"
+    },
+    {
+     "no": 228,
+     "name": "Boss 200",
+     "detail": "",
+     "key": "BOSS_200"
+    },
+    {
+     "no": 229,
+     "name": "Red Death",
+     "detail": "",
+     "key": "RED_DEATH"
+    },
+    {
+     "no": 230,
+     "name": "She's Here Too",
+     "detail": "",
+     "key": "SHES_HERE_TOO"
+    }
+   ]
+  },
+  {
+   "kind": "race",
+   "title": "Races",
+   "what": "races (`種族`), as in `rq.chara.get(iic).race` and the damage hooks' `ctx.race`",
+   "entries": [
+    {
+     "no": 2,
+     "name": "Human",
+     "detail": "",
+     "key": "HUMAN"
+    },
+    {
+     "no": 3,
+     "name": "Gal Monster",
+     "detail": "",
+     "key": "GAL_MONSTER"
+    },
+    {
+     "no": 4,
+     "name": "Guy Monster",
+     "detail": "",
+     "key": "GUY_MONSTER_4"
+    },
+    {
+     "no": 5,
+     "name": "Guy Monster",
+     "detail": "",
+     "key": "GUY_MONSTER_5"
+    },
+    {
+     "no": 6,
+     "name": "Insect",
+     "detail": "",
+     "key": "INSECT"
+    },
+    {
+     "no": 7,
+     "name": "Plant",
+     "detail": "",
+     "key": "PLANT"
+    },
+    {
+     "no": 8,
+     "name": "Hanny",
+     "detail": "",
+     "key": "HANNY"
+    },
+    {
+     "no": 9,
+     "name": "Fiend",
+     "detail": "",
+     "key": "FIEND"
+    },
+    {
+     "no": 10,
+     "name": "Holy Shroud Warlord",
+     "detail": "",
+     "key": "HOLY_SHROUD_WARLORD"
+    },
+    {
+     "no": 11,
+     "name": "Ancient",
+     "detail": "",
+     "key": "ANCIENT"
+    },
+    {
+     "no": 12,
+     "name": "Construct",
+     "detail": "",
+     "key": "CONSTRUCT"
+    },
+    {
+     "no": 13,
+     "name": "Kalar",
+     "detail": "",
+     "key": "KALAR"
+    },
+    {
+     "no": 14,
+     "name": "Angel",
+     "detail": "",
+     "key": "ANGEL"
+    },
+    {
+     "no": 15,
+     "name": "Devil",
+     "detail": "",
+     "key": "DEVIL"
+    },
+    {
+     "no": 24,
+     "name": "Contaminated",
+     "detail": "",
+     "key": "CONTAMINATED"
+    },
+    {
+     "no": 60,
+     "name": "Familiar",
+     "detail": "",
+     "key": "FAMILIAR"
+    }
+   ]
+  },
+  {
+   "kind": "skill",
+   "title": "Skills",
+   "what": "skill numbers, as in `rq.skill.get`",
+   "entries": [
+    {
+     "no": 100,
+     "name": "Melee Attack 1",
+     "detail": "physical",
+     "key": "MELEE_ATTACK_1"
+    },
+    {
+     "no": 101,
+     "name": "Thrust Attack 1",
+     "detail": "physical",
+     "key": "THRUST_ATTACK_1"
+    },
+    {
+     "no": 102,
+     "name": "Melee Attack 2",
+     "detail": "physical",
+     "key": "MELEE_ATTACK_2"
+    },
+    {
+     "no": 103,
+     "name": "Thrust Attack 2",
+     "detail": "physical",
+     "key": "THRUST_ATTACK_2"
+    },
+    {
+     "no": 104,
+     "name": "Melee Attack 3",
+     "detail": "physical",
+     "key": "MELEE_ATTACK_3"
+    },
+    {
+     "no": 105,
+     "name": "Thrust Attack 3",
+     "detail": "physical",
+     "key": "THRUST_ATTACK_3"
+    },
+    {
+     "no": 106,
+     "name": "Melee Attack 4",
+     "detail": "physical",
+     "key": "MELEE_ATTACK_4"
+    },
+    {
+     "no": 107,
+     "name": "Thrust Attack 4",
+     "detail": "physical",
+     "key": "THRUST_ATTACK_4"
+    },
+    {
+     "no": 108,
+     "name": "Ranged Attack 1",
+     "detail": "physical",
+     "key": "RANGED_ATTACK_1"
+    },
+    {
+     "no": 109,
+     "name": "Ranged Attack 2",
+     "detail": "physical",
+     "key": "RANGED_ATTACK_2"
+    },
+    {
+     "no": 110,
+     "name": "Ranged Attack 3",
+     "detail": "physical",
+     "key": "RANGED_ATTACK_3"
+    },
+    {
+     "no": 111,
+     "name": "Ranged Attack 4",
+     "detail": "physical",
+     "key": "RANGED_ATTACK_4"
+    },
+    {
+     "no": 112,
+     "name": "Strike Attack 1",
+     "detail": "physical",
+     "key": "STRIKE_ATTACK_1"
+    },
+    {
+     "no": 113,
+     "name": "Strike Attack 2",
+     "detail": "physical",
+     "key": "STRIKE_ATTACK_2"
+    },
+    {
+     "no": 114,
+     "name": "Strike Attack 3",
+     "detail": "physical",
+     "key": "STRIKE_ATTACK_3"
+    },
+    {
+     "no": 115,
+     "name": "Strike Attack 4",
+     "detail": "physical",
+     "key": "STRIKE_ATTACK_4"
+    },
+    {
+     "no": 116,
+     "name": "Counter Attack",
+     "detail": "physical",
+     "key": "COUNTER_ATTACK"
+    },
+    {
+     "no": 117,
+     "name": "B Slash",
+     "detail": "physical",
+     "key": "B_SLASH"
+    },
+    {
+     "no": 118,
+     "name": "Mercy Attack",
+     "detail": "physical",
+     "key": "MERCY_ATTACK"
+    },
+    {
+     "no": 119,
+     "name": "Shield Punch",
+     "detail": "physical",
+     "key": "SHIELD_PUNCH"
+    },
+    {
+     "no": 120,
+     "name": "Assassinate",
+     "detail": "physical",
+     "key": "ASSASSINATE"
+    },
+    {
+     "no": 121,
+     "name": "Shuriken",
+     "detail": "physical",
+     "key": "SHURIKEN"
+    },
+    {
+     "no": 122,
+     "name": "Hypnotism",
+     "detail": "physical",
+     "key": "HYPNOTISM"
+    },
+    {
+     "no": 123,
+     "name": "Full Power Slash",
+     "detail": "physical",
+     "key": "FULL_POWER_SLASH"
+    },
+    {
+     "no": 124,
+     "name": "Train Slash",
+     "detail": "physical",
+     "key": "TRAIN_SLASH"
+    },
+    {
+     "no": 125,
+     "name": "Mirage Sword",
+     "detail": "physical",
+     "key": "MIRAGE_SWORD"
+    },
+    {
+     "no": 126,
+     "name": "Flame Slash",
+     "detail": "physical",
+     "key": "FLAME_SLASH"
+    },
+    {
+     "no": 127,
+     "name": "Flamethrower",
+     "detail": "physical",
+     "key": "FLAMETHROWER_127",
+     "aliases": [
+      "FLAMETHROWER"
+     ]
+    },
+    {
+     "no": 128,
+     "name": "Flamethrower 2",
+     "detail": "physical",
+     "key": "FLAMETHROWER_2"
+    },
+    {
+     "no": 129,
+     "name": "Flamethrower/All",
+     "detail": "physical",
+     "key": "FLAMETHROWER_ALL"
+    },
+    {
+     "no": 130,
+     "name": "Frostblower",
+     "detail": "physical",
+     "key": "FROSTBLOWER"
+    },
+    {
+     "no": 131,
+     "name": "Numbing Slash",
+     "detail": "physical",
+     "key": "NUMBING_SLASH"
+    },
+    {
+     "no": 132,
+     "name": "Target Crush",
+     "detail": "physical",
+     "key": "TARGET_CRUSH"
+    },
+    {
+     "no": 133,
+     "name": "Impulse",
+     "detail": "physical",
+     "key": "IMPULSE"
+    },
+    {
+     "no": 134,
+     "name": "Spear Flurry",
+     "detail": "physical",
+     "key": "SPEAR_FLURRY"
+    },
+    {
+     "no": 135,
+     "name": "Rapid Fire",
+     "detail": "physical",
+     "key": "RAPID_FIRE"
+    },
+    {
+     "no": 136,
+     "name": "Bullseye Arrow",
+     "detail": "physical",
+     "key": "BULLSEYE_ARROW"
+    },
+    {
+     "no": 137,
+     "name": "Volley",
+     "detail": "physical",
+     "key": "VOLLEY"
+    },
+    {
+     "no": 138,
+     "name": "Super Draw",
+     "detail": "physical",
+     "key": "SUPER_DRAW"
+    },
+    {
+     "no": 139,
+     "name": "Reverberation",
+     "detail": "physical",
+     "key": "REVERBERATION"
+    },
+    {
+     "no": 140,
+     "name": "Light Arrow",
+     "detail": "physical",
+     "key": "LIGHT_ARROW"
+    },
+    {
+     "no": 141,
+     "name": "Dark Arrow",
+     "detail": "physical",
+     "key": "DARK_ARROW"
+    },
+    {
+     "no": 142,
+     "name": "Weapon Breaker",
+     "detail": "ability",
+     "key": "WEAPON_BREAKER"
+    },
+    {
+     "no": 143,
+     "name": "Armor Strike",
+     "detail": "physical",
+     "key": "ARMOR_STRIKE"
+    },
+    {
+     "no": 144,
+     "name": "Soft Spot Strike",
+     "detail": "physical",
+     "key": "SOFT_SPOT_STRIKE"
+    },
+    {
+     "no": 145,
+     "name": "Element Strike",
+     "detail": "physical",
+     "key": "ELEMENT_STRIKE"
+    },
+    {
+     "no": 146,
+     "name": "Shoulder Throw",
+     "detail": "physical",
+     "key": "SHOULDER_THROW"
+    },
+    {
+     "no": 147,
+     "name": "Rance Attack",
+     "detail": "physical",
+     "key": "RANCE_ATTACK"
+    },
+    {
+     "no": 148,
+     "name": "Brutal Attack",
+     "detail": "physical",
+     "key": "BRUTAL_ATTACK"
+    },
+    {
+     "no": 149,
+     "name": "Verbal Abuse",
+     "detail": "special",
+     "key": "VERBAL_ABUSE"
+    },
+    {
+     "no": 150,
+     "name": "Stone Throw",
+     "detail": "physical",
+     "key": "STONE_THROW"
+    },
+    {
+     "no": 151,
+     "name": "Needle Shower",
+     "detail": "physical",
+     "key": "NEEDLE_SHOWER"
+    },
+    {
+     "no": 152,
+     "name": "Leazas' Lightning Dragon",
+     "detail": "physical",
+     "key": "LEAZAS_LIGHTNING_DRAGON"
+    },
+    {
+     "no": 153,
+     "name": "Eidolon Attack",
+     "detail": "physical",
+     "key": "EIDOLON_ATTACK"
+    },
+    {
+     "no": 154,
+     "name": "Iai Slash",
+     "detail": "physical",
+     "key": "IAI_SLASH"
+    },
+    {
+     "no": 155,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_155"
+    },
+    {
+     "no": 158,
+     "name": "Fortune",
+     "detail": "physical",
+     "key": "FORTUNE_158"
+    },
+    {
+     "no": 159,
+     "name": "Fortune",
+     "detail": "physical",
+     "key": "FORTUNE_159"
+    },
+    {
+     "no": 160,
+     "name": "Fortune",
+     "detail": "physical",
+     "key": "FORTUNE_160"
+    },
+    {
+     "no": 161,
+     "name": "Launch Torpedo",
+     "detail": "physical",
+     "key": "LAUNCH_TORPEDO"
+    },
+    {
+     "no": 162,
+     "name": "Load Torpedo",
+     "detail": "support",
+     "key": "LOAD_TORPEDO"
+    },
+    {
+     "no": 163,
+     "name": "Self-Destruct Preparation 1",
+     "detail": "support",
+     "key": "SELF_DESTRUCT_PREPARATION_1"
+    },
+    {
+     "no": 164,
+     "name": "Self-Destruct Preparation 2",
+     "detail": "support",
+     "key": "SELF_DESTRUCT_PREPARATION_2"
+    },
+    {
+     "no": 165,
+     "name": "Self-Destruct",
+     "detail": "physical",
+     "key": "SELF_DESTRUCT"
+    },
+    {
+     "no": 166,
+     "name": "Capture",
+     "detail": "special",
+     "key": "CAPTURE_166",
+     "aliases": [
+      "CAPTURE"
+     ]
+    },
+    {
+     "no": 167,
+     "name": "Explosive Rounds",
+     "detail": "physical",
+     "key": "EXPLOSIVE_ROUNDS"
+    },
+    {
+     "no": 168,
+     "name": "Flame Arrow",
+     "detail": "magic",
+     "key": "FLAME_ARROW"
+    },
+    {
+     "no": 169,
+     "name": "Fire Blast",
+     "detail": "magic",
+     "key": "FIRE_BLAST_169",
+     "aliases": [
+      "FIRE_BLAST"
+     ]
+    },
+    {
+     "no": 170,
+     "name": "Fire Blast",
+     "detail": "magic",
+     "key": "FIRE_BLAST_170"
+    },
+    {
+     "no": 171,
+     "name": "Hellfire Blast",
+     "detail": "magic",
+     "key": "HELLFIRE_BLAST_171",
+     "aliases": [
+      "HELLFIRE_BLAST"
+     ]
+    },
+    {
+     "no": 172,
+     "name": "Hellfire Blast",
+     "detail": "magic",
+     "key": "HELLFIRE_BLAST_172"
+    },
+    {
+     "no": 173,
+     "name": "Fire Laser",
+     "detail": "magic",
+     "key": "FIRE_LASER"
+    },
+    {
+     "no": 174,
+     "name": "Ice Arrow",
+     "detail": "magic",
+     "key": "ICE_ARROW_174",
+     "aliases": [
+      "ICE_ARROW"
+     ]
+    },
+    {
+     "no": 175,
+     "name": "Ice Arrow",
+     "detail": "magic",
+     "key": "ICE_ARROW_175"
+    },
+    {
+     "no": 176,
+     "name": "Glacial Storm",
+     "detail": "magic",
+     "key": "GLACIAL_STORM"
+    },
+    {
+     "no": 177,
+     "name": "Mollusc Freezer",
+     "detail": "magic",
+     "key": "MOLLUSC_FREEZER"
+    },
+    {
+     "no": 178,
+     "name": "Siberia",
+     "detail": "magic",
+     "key": "SIBERIA_178",
+     "aliases": [
+      "SIBERIA"
+     ]
+    },
+    {
+     "no": 179,
+     "name": "Siberia",
+     "detail": "magic",
+     "key": "SIBERIA_179"
+    },
+    {
+     "no": 180,
+     "name": "Snow Laser",
+     "detail": "magic",
+     "key": "SNOW_LASER"
+    },
+    {
+     "no": 181,
+     "name": "Thunderstrike",
+     "detail": "magic",
+     "key": "THUNDERSTRIKE"
+    },
+    {
+     "no": 182,
+     "name": "EM Field",
+     "detail": "magic",
+     "key": "EM_FIELD"
+    },
+    {
+     "no": 183,
+     "name": "Electroshock",
+     "detail": "magic",
+     "key": "ELECTROSHOCK"
+    },
+    {
+     "no": 184,
+     "name": "EM Storm",
+     "detail": "magic",
+     "key": "EM_STORM_184",
+     "aliases": [
+      "EM_STORM"
+     ]
+    },
+    {
+     "no": 185,
+     "name": "EM Storm",
+     "detail": "magic",
+     "key": "EM_STORM_185"
+    },
+    {
+     "no": 186,
+     "name": "Zeus Lightning",
+     "detail": "magic",
+     "key": "ZEUS_LIGHTNING"
+    },
+    {
+     "no": 187,
+     "name": "Light",
+     "detail": "magic",
+     "key": "LIGHT_187",
+     "aliases": [
+      "LIGHT"
+     ]
+    },
+    {
+     "no": 188,
+     "name": "Light",
+     "detail": "magic",
+     "key": "LIGHT_188"
+    },
+    {
+     "no": 189,
+     "name": "A Cutter",
+     "detail": "magic",
+     "key": "A_CUTTER"
+    },
+    {
+     "no": 190,
+     "name": "Light Bomb",
+     "detail": "magic",
+     "key": "LIGHT_BOMB_190",
+     "aliases": [
+      "LIGHT_BOMB"
+     ]
+    },
+    {
+     "no": 191,
+     "name": "Light Bomb",
+     "detail": "magic",
+     "key": "LIGHT_BOMB_191"
+    },
+    {
+     "no": 192,
+     "name": "Book Heines",
+     "detail": "magic",
+     "key": "BOOK_HEINES"
+    },
+    {
+     "no": 193,
+     "name": "White Destruction Beam",
+     "detail": "magic",
+     "key": "WHITE_DESTRUCTION_BEAM"
+    },
+    {
+     "no": 194,
+     "name": "Darkness",
+     "detail": "magic",
+     "key": "DARKNESS"
+    },
+    {
+     "no": 195,
+     "name": "Devil Beam",
+     "detail": "magic",
+     "key": "DEVIL_BEAM"
+    },
+    {
+     "no": 196,
+     "name": "Death Bomb",
+     "detail": "magic",
+     "key": "DEATH_BOMB_196",
+     "aliases": [
+      "DEATH_BOMB"
+     ]
+    },
+    {
+     "no": 197,
+     "name": "Death Bomb",
+     "detail": "magic",
+     "key": "DEATH_BOMB_197"
+    },
+    {
+     "no": 198,
+     "name": "Black Destruction Beam",
+     "detail": "magic",
+     "key": "BLACK_DESTRUCTION_BEAM_198",
+     "aliases": [
+      "BLACK_DESTRUCTION_BEAM"
+     ]
+    },
+    {
+     "no": 199,
+     "name": "Black Destruction Beam",
+     "detail": "magic",
+     "key": "BLACK_DESTRUCTION_BEAM_199"
+    },
+    {
+     "no": 200,
+     "name": "Weakness Search",
+     "detail": "special",
+     "key": "WEAKNESS_SEARCH"
+    },
+    {
+     "no": 201,
+     "name": "Weakener",
+     "detail": "special",
+     "key": "WEAKENER"
+    },
+    {
+     "no": 202,
+     "name": "Spider Thread",
+     "detail": "special",
+     "key": "SPIDER_THREAD"
+    },
+    {
+     "no": 203,
+     "name": "Tiger",
+     "detail": "magic",
+     "key": "TIGER"
+    },
+    {
+     "no": 204,
+     "name": "Stuka",
+     "detail": "magic",
+     "key": "STUKA"
+    },
+    {
+     "no": 205,
+     "name": "Purification",
+     "detail": "magic",
+     "key": "PURIFICATION"
+    },
+    {
+     "no": 206,
+     "name": "Use Ibeprofun",
+     "detail": "support",
+     "key": "USE_IBEPROFUN_206",
+     "aliases": [
+      "USE_IBEPROFUN"
+     ]
+    },
+    {
+     "no": 207,
+     "name": "Use Ibeprofun",
+     "detail": "support",
+     "key": "USE_IBEPROFUN_207",
+     "aliases": [
+      "USE_IBEPROFUN_EX"
+     ]
+    },
+    {
+     "no": 208,
+     "name": "Use Ibeprofun",
+     "detail": "support",
+     "key": "USE_IBEPROFUN_208",
+     "aliases": [
+      "USE_IBEPROFUN_EX_PLUS"
+     ]
+    },
+    {
+     "no": 209,
+     "name": "Use Epinephrend",
+     "detail": "support",
+     "key": "USE_EPINEPHREND"
+    },
+    {
+     "no": 210,
+     "name": "Use Key",
+     "detail": "ability",
+     "key": "USE_KEY"
+    },
+    {
+     "no": 211,
+     "name": "Escape",
+     "detail": "support",
+     "key": "ESCAPE"
+    },
+    {
+     "no": 212,
+     "name": "Ally Guard",
+     "detail": "support",
+     "key": "ALLY_GUARD"
+    },
+    {
+     "no": 213,
+     "name": "Defensive Stance",
+     "detail": "support",
+     "key": "DEFENSIVE_STANCE"
+    },
+    {
+     "no": 214,
+     "name": "Covert Concealment",
+     "detail": "support",
+     "key": "COVERT_CONCEALMENT"
+    },
+    {
+     "no": 215,
+     "name": "Stealth",
+     "detail": "support",
+     "key": "STEALTH"
+    },
+    {
+     "no": 216,
+     "name": "Full Party Protection",
+     "detail": "ability",
+     "key": "FULL_PARTY_PROTECTION"
+    },
+    {
+     "no": 217,
+     "name": "Relax",
+     "detail": "special",
+     "key": "RELAX"
+    },
+    {
+     "no": 218,
+     "name": "First Aid",
+     "detail": "support",
+     "key": "FIRST_AID"
+    },
+    {
+     "no": 219,
+     "name": "First Aid 2",
+     "detail": "support",
+     "key": "FIRST_AID_2"
+    },
+    {
+     "no": 220,
+     "name": "Self-Healing",
+     "detail": "support",
+     "key": "SELF_HEALING"
+    },
+    {
+     "no": 221,
+     "name": "Healing 1",
+     "detail": "support",
+     "key": "HEALING_1"
+    },
+    {
+     "no": 222,
+     "name": "Healing 2",
+     "detail": "support",
+     "key": "HEALING_2"
+    },
+    {
+     "no": 223,
+     "name": "Healing 3",
+     "detail": "support",
+     "key": "HEALING_3"
+    },
+    {
+     "no": 224,
+     "name": "Recovery Rain 1",
+     "detail": "support",
+     "key": "RECOVERY_RAIN_1"
+    },
+    {
+     "no": 225,
+     "name": "Recovery Rain 2",
+     "detail": "support",
+     "key": "RECOVERY_RAIN_2"
+    },
+    {
+     "no": 226,
+     "name": "Angel Mirror",
+     "detail": "support",
+     "key": "ANGEL_MIRROR"
+    },
+    {
+     "no": 227,
+     "name": "Status Restore",
+     "detail": "support",
+     "key": "STATUS_RESTORE"
+    },
+    {
+     "no": 228,
+     "name": "Nursing",
+     "detail": "support",
+     "key": "NURSING"
+    },
+    {
+     "no": 229,
+     "name": "Full Revive",
+     "detail": "support",
+     "key": "FULL_REVIVE"
+    },
+    {
+     "no": 230,
+     "name": "Maiden's Spirit",
+     "detail": "support",
+     "key": "MAIDENS_SPIRIT"
+    },
+    {
+     "no": 231,
+     "name": "Play With Me!",
+     "detail": "support",
+     "key": "PLAY_WITH_ME"
+    },
+    {
+     "no": 232,
+     "name": "Dancer",
+     "detail": "support",
+     "key": "DANCER"
+    },
+    {
+     "no": 233,
+     "name": "Bishamonten",
+     "detail": "support",
+     "key": "BISHAMONTEN"
+    },
+    {
+     "no": 234,
+     "name": "Offense/Defense Buff",
+     "detail": "support",
+     "key": "OFFENSE_DEFENSE_BUFF"
+    },
+    {
+     "no": 235,
+     "name": "Offense Buff All",
+     "detail": "support",
+     "key": "OFFENSE_BUFF_ALL"
+    },
+    {
+     "no": 236,
+     "name": "Defense Buff All",
+     "detail": "support",
+     "key": "DEFENSE_BUFF_ALL"
+    },
+    {
+     "no": 237,
+     "name": "Encourage",
+     "detail": "support",
+     "key": "ENCOURAGE"
+    },
+    {
+     "no": 238,
+     "name": "Harden",
+     "detail": "support",
+     "key": "HARDEN"
+    },
+    {
+     "no": 239,
+     "name": "Attack Spell",
+     "detail": "support",
+     "key": "ATTACK_SPELL"
+    },
+    {
+     "no": 240,
+     "name": "Accuracy Spell",
+     "detail": "support",
+     "key": "ACCURACY_SPELL"
+    },
+    {
+     "no": 241,
+     "name": "Evasion Spell",
+     "detail": "support",
+     "key": "EVASION_SPELL"
+    },
+    {
+     "no": 242,
+     "name": "Defense Spell",
+     "detail": "support",
+     "key": "DEFENSE_SPELL"
+    },
+    {
+     "no": 243,
+     "name": "Resistance Spell",
+     "detail": "support",
+     "key": "RESISTANCE_SPELL"
+    },
+    {
+     "no": 244,
+     "name": "Critical Spell",
+     "detail": "support",
+     "key": "CRITICAL_SPELL"
+    },
+    {
+     "no": 245,
+     "name": "Efficient Action",
+     "detail": "ability",
+     "key": "EFFICIENT_ACTION"
+    },
+    {
+     "no": 246,
+     "name": "Head Start",
+     "detail": "ability",
+     "key": "HEAD_START"
+    },
+    {
+     "no": 247,
+     "name": "Persevere",
+     "detail": "ability",
+     "key": "PERSEVERE"
+    },
+    {
+     "no": 248,
+     "name": "Shield Deflection",
+     "detail": "ability",
+     "key": "SHIELD_DEFLECTION"
+    },
+    {
+     "no": 249,
+     "name": "Initial Guard - Heaven",
+     "detail": "ability",
+     "key": "INITIAL_GUARD_HEAVEN"
+    },
+    {
+     "no": 250,
+     "name": "Magic Barrier",
+     "detail": "ability",
+     "key": "MAGIC_BARRIER"
+    },
+    {
+     "no": 251,
+     "name": "Augmented Rapid Fire",
+     "detail": "ability",
+     "key": "AUGMENTED_RAPID_FIRE"
+    },
+    {
+     "no": 252,
+     "name": "Preemptive Strike",
+     "detail": "ability",
+     "key": "PREEMPTIVE_STRIKE"
+    },
+    {
+     "no": 253,
+     "name": "Surprise Attack",
+     "detail": "ability",
+     "key": "SURPRISE_ATTACK"
+    },
+    {
+     "no": 254,
+     "name": "Fire Arrows",
+     "detail": "ability",
+     "key": "FIRE_ARROWS"
+    },
+    {
+     "no": 255,
+     "name": "Ice Arrows",
+     "detail": "ability",
+     "key": "ICE_ARROWS"
+    },
+    {
+     "no": 256,
+     "name": "Electric Arrows",
+     "detail": "ability",
+     "key": "ELECTRIC_ARROWS"
+    },
+    {
+     "no": 257,
+     "name": "Erasure Arrows",
+     "detail": "ability",
+     "key": "ERASURE_ARROWS"
+    },
+    {
+     "no": 258,
+     "name": "Hunter",
+     "detail": "ability",
+     "key": "HUNTER"
+    },
+    {
+     "no": 259,
+     "name": "Counter",
+     "detail": "ability",
+     "key": "COUNTER"
+    },
+    {
+     "no": 260,
+     "name": "Prolonged Fight",
+     "detail": "ability",
+     "key": "PROLONGED_FIGHT"
+    },
+    {
+     "no": 261,
+     "name": "Shortened Fight",
+     "detail": "ability",
+     "key": "SHORTENED_FIGHT"
+    },
+    {
+     "no": 262,
+     "name": "Thin Ranks",
+     "detail": "ability",
+     "key": "THIN_RANKS"
+    },
+    {
+     "no": 263,
+     "name": "In Training",
+     "detail": "ability",
+     "key": "IN_TRAINING"
+    },
+    {
+     "no": 264,
+     "name": "Poison Effect",
+     "detail": "ability",
+     "key": "POISON_EFFECT"
+    },
+    {
+     "no": 265,
+     "name": "Chest Opening",
+     "detail": "ability",
+     "key": "CHEST_OPENING"
+    },
+    {
+     "no": 266,
+     "name": "Trap Evasion",
+     "detail": "ability",
+     "key": "TRAP_EVASION"
+    },
+    {
+     "no": 267,
+     "name": "Covert Movement",
+     "detail": "ability",
+     "key": "COVERT_MOVEMENT"
+    },
+    {
+     "no": 268,
+     "name": "Escape Skills",
+     "detail": "ability",
+     "key": "ESCAPE_SKILLS"
+    },
+    {
+     "no": 269,
+     "name": "Publicity",
+     "detail": "ability",
+     "key": "PUBLICITY"
+    },
+    {
+     "no": 271,
+     "name": "Experience Talent",
+     "detail": "ability",
+     "key": "EXPERIENCE_TALENT"
+    },
+    {
+     "no": 272,
+     "name": "Post-Battle Recovery",
+     "detail": "ability",
+     "key": "POST_BATTLE_RECOVERY"
+    },
+    {
+     "no": 273,
+     "name": "Berserker",
+     "detail": "ability",
+     "key": "BERSERKER"
+    },
+    {
+     "no": 274,
+     "name": "Pepsi Swordplay",
+     "detail": "ability",
+     "key": "PEPSI_SWORDPLAY"
+    },
+    {
+     "no": 275,
+     "name": "Solo Fighter",
+     "detail": "ability",
+     "key": "SOLO_FIGHTER"
+    },
+    {
+     "no": 276,
+     "name": "Stamina Boost",
+     "detail": "ability",
+     "key": "STAMINA_BOOST_276",
+     "aliases": [
+      "STAMINA_BOOST"
+     ]
+    },
+    {
+     "no": 277,
+     "name": "Attack Boost",
+     "detail": "ability",
+     "key": "ATTACK_BOOST_277",
+     "aliases": [
+      "ATTACK_BOOST"
+     ]
+    },
+    {
+     "no": 278,
+     "name": "Magic Boost",
+     "detail": "ability",
+     "key": "MAGIC_BOOST_278",
+     "aliases": [
+      "MAGIC_BOOST"
+     ]
+    },
+    {
+     "no": 279,
+     "name": "Accuracy Boost",
+     "detail": "ability",
+     "key": "ACCURACY_BOOST"
+    },
+    {
+     "no": 280,
+     "name": "Evasion Boost",
+     "detail": "ability",
+     "key": "EVASION_BOOST"
+    },
+    {
+     "no": 281,
+     "name": "Critical Boost",
+     "detail": "ability",
+     "key": "CRITICAL_BOOST"
+    },
+    {
+     "no": 282,
+     "name": "Resilience Boost",
+     "detail": "ability",
+     "key": "RESILIENCE_BOOST"
+    },
+    {
+     "no": 283,
+     "name": "Stun Boost",
+     "detail": "ability",
+     "key": "STUN_BOOST"
+    },
+    {
+     "no": 284,
+     "name": "Fire Tolerance",
+     "detail": "ability",
+     "key": "FIRE_TOLERANCE"
+    },
+    {
+     "no": 285,
+     "name": "Ice Tolerance",
+     "detail": "ability",
+     "key": "ICE_TOLERANCE"
+    },
+    {
+     "no": 286,
+     "name": "Electric Tolerance",
+     "detail": "ability",
+     "key": "ELECTRIC_TOLERANCE"
+    },
+    {
+     "no": 287,
+     "name": "Light Tolerance",
+     "detail": "ability",
+     "key": "LIGHT_TOLERANCE"
+    },
+    {
+     "no": 288,
+     "name": "Darkness Tolerance",
+     "detail": "ability",
+     "key": "DARKNESS_TOLERANCE"
+    },
+    {
+     "no": 289,
+     "name": "Damage Maximum",
+     "detail": "ability",
+     "key": "DAMAGE_MAXIMUM"
+    },
+    {
+     "no": 290,
+     "name": "Kalar Species",
+     "detail": "ability",
+     "key": "KALAR_SPECIES"
+    },
+    {
+     "no": 291,
+     "name": "Kalar Curse",
+     "detail": "ability",
+     "key": "KALAR_CURSE"
+    },
+    {
+     "no": 292,
+     "name": "Intimidation",
+     "detail": "ability",
+     "key": "INTIMIDATION"
+    },
+    {
+     "no": 293,
+     "name": "Improve Fortune",
+     "detail": "ability",
+     "key": "IMPROVE_FORTUNE"
+    },
+    {
+     "no": 294,
+     "name": "Economic Luck",
+     "detail": "ability",
+     "key": "ECONOMIC_LUCK"
+    },
+    {
+     "no": 295,
+     "name": "Handicap",
+     "detail": "ability",
+     "key": "HANDICAP"
+    },
+    {
+     "no": 296,
+     "name": "Treasure Appraisal",
+     "detail": "ability",
+     "key": "TREASURE_APPRAISAL"
+    },
+    {
+     "no": 297,
+     "name": "Treasure Appraisal+",
+     "detail": "ability",
+     "key": "TREASURE_APPRAISAL_PLUS"
+    },
+    {
+     "no": 298,
+     "name": "Holy Healing Marks",
+     "detail": "ability",
+     "key": "HOLY_HEALING_MARKS"
+    },
+    {
+     "no": 299,
+     "name": "Healing Ability",
+     "detail": "ability",
+     "key": "HEALING_ABILITY"
+    },
+    {
+     "no": 300,
+     "name": "Easy Target",
+     "detail": "ability",
+     "key": "EASY_TARGET"
+    },
+    {
+     "no": 301,
+     "name": "Phoenix",
+     "detail": "ability",
+     "key": "PHOENIX"
+    },
+    {
+     "no": 302,
+     "name": "Hanny Zippo",
+     "detail": "ability",
+     "key": "HANNY_ZIPPO"
+    },
+    {
+     "no": 303,
+     "name": "Physical Weakness",
+     "detail": "ability",
+     "key": "PHYSICAL_WEAKNESS"
+    },
+    {
+     "no": 304,
+     "name": "Magical Weakness",
+     "detail": "ability",
+     "key": "MAGICAL_WEAKNESS"
+    },
+    {
+     "no": 305,
+     "name": "Damage Reduction",
+     "detail": "ability",
+     "key": "DAMAGE_REDUCTION"
+    },
+    {
+     "no": 306,
+     "name": "Stun Death",
+     "detail": "ability",
+     "key": "STUN_DEATH"
+    },
+    {
+     "no": 307,
+     "name": "Auto Attack/Defense Buff",
+     "detail": "ability",
+     "key": "AUTO_ATTACK_DEFENSE_BUFF"
+    },
+    {
+     "no": 308,
+     "name": "With Kenshin",
+     "detail": "ability",
+     "key": "WITH_KENSHIN"
+    },
+    {
+     "no": 309,
+     "name": "With Katsuko",
+     "detail": "ability",
+     "key": "WITH_KATSUKO"
+    },
+    {
+     "no": 310,
+     "name": "With Torako",
+     "detail": "ability",
+     "key": "WITH_TORAKO"
+    },
+    {
+     "no": 311,
+     "name": "Alice's Protection",
+     "detail": "ability",
+     "key": "ALICES_PROTECTION"
+    },
+    {
+     "no": 312,
+     "name": "Rock On",
+     "detail": "ability",
+     "key": "ROCK_ON"
+    },
+    {
+     "no": 313,
+     "name": "Narcolepsy ",
+     "detail": "ability",
+     "key": "NARCOLEPSY"
+    },
+    {
+     "no": 314,
+     "name": "Sword Knowledge",
+     "detail": "ability",
+     "key": "SWORD_KNOWLEDGE"
+    },
+    {
+     "no": 315,
+     "name": "Shortsword Knowledge",
+     "detail": "ability",
+     "key": "SHORTSWORD_KNOWLEDGE"
+    },
+    {
+     "no": 316,
+     "name": "Hammer Knowledge",
+     "detail": "ability",
+     "key": "HAMMER_KNOWLEDGE"
+    },
+    {
+     "no": 317,
+     "name": "Spear Knowledge",
+     "detail": "ability",
+     "key": "SPEAR_KNOWLEDGE"
+    },
+    {
+     "no": 318,
+     "name": "Bow Knowledge",
+     "detail": "ability",
+     "key": "BOW_KNOWLEDGE"
+    },
+    {
+     "no": 319,
+     "name": "Firearm Knowledge",
+     "detail": "ability",
+     "key": "FIREARM_KNOWLEDGE"
+    },
+    {
+     "no": 320,
+     "name": "Brawling Knowledge",
+     "detail": "ability",
+     "key": "BRAWLING_KNOWLEDGE"
+    },
+    {
+     "no": 321,
+     "name": "Familiar Knowledge",
+     "detail": "ability",
+     "key": "FAMILIAR_KNOWLEDGE"
+    },
+    {
+     "no": 322,
+     "name": "Capture Knowledge",
+     "detail": "ability",
+     "key": "CAPTURE_KNOWLEDGE"
+    },
+    {
+     "no": 323,
+     "name": "Tactician Knowledge",
+     "detail": "ability",
+     "key": "TACTICIAN_KNOWLEDGE"
+    },
+    {
+     "no": 324,
+     "name": "Covert Knowledge",
+     "detail": "ability",
+     "key": "COVERT_KNOWLEDGE"
+    },
+    {
+     "no": 325,
+     "name": "Assassination Knowledge",
+     "detail": "ability",
+     "key": "ASSASSINATION_KNOWLEDGE"
+    },
+    {
+     "no": 326,
+     "name": "Fire Knowledge",
+     "detail": "ability",
+     "key": "FIRE_KNOWLEDGE"
+    },
+    {
+     "no": 327,
+     "name": "Ice Knowledge",
+     "detail": "ability",
+     "key": "ICE_KNOWLEDGE"
+    },
+    {
+     "no": 328,
+     "name": "Electric Knowledge",
+     "detail": "ability",
+     "key": "ELECTRIC_KNOWLEDGE"
+    },
+    {
+     "no": 329,
+     "name": "Light Knowledge",
+     "detail": "ability",
+     "key": "LIGHT_KNOWLEDGE"
+    },
+    {
+     "no": 330,
+     "name": "Darkness Knowledge",
+     "detail": "ability",
+     "key": "DARKNESS_KNOWLEDGE"
+    },
+    {
+     "no": 331,
+     "name": "Fire Brawling Knowledge",
+     "detail": "ability",
+     "key": "FIRE_BRAWLING_KNOWLEDGE"
+    },
+    {
+     "no": 332,
+     "name": "Ice Brawling Knowledge",
+     "detail": "ability",
+     "key": "ICE_BRAWLING_KNOWLEDGE"
+    },
+    {
+     "no": 333,
+     "name": "Electric Brawling Knowledge",
+     "detail": "ability",
+     "key": "ELECTRIC_BRAWLING_KNOWLEDGE"
+    },
+    {
+     "no": 334,
+     "name": "Light Brawling Knowledge",
+     "detail": "ability",
+     "key": "LIGHT_BRAWLING_KNOWLEDGE"
+    },
+    {
+     "no": 335,
+     "name": "Darkness Brawling Knowledge",
+     "detail": "ability",
+     "key": "DARKNESS_BRAWLING_KNOWLEDGE"
+    },
+    {
+     "no": 336,
+     "name": "Attack Studies",
+     "detail": "ability",
+     "key": "ATTACK_STUDIES"
+    },
+    {
+     "no": 337,
+     "name": "Accuracy Studies",
+     "detail": "ability",
+     "key": "ACCURACY_STUDIES"
+    },
+    {
+     "no": 338,
+     "name": "Speed Studies",
+     "detail": "ability",
+     "key": "SPEED_STUDIES"
+    },
+    {
+     "no": 339,
+     "name": "HP Studies",
+     "detail": "ability",
+     "key": "HP_STUDIES"
+    },
+    {
+     "no": 340,
+     "name": "Critical Studies",
+     "detail": "ability",
+     "key": "CRITICAL_STUDIES"
+    },
+    {
+     "no": 341,
+     "name": "Hannyology",
+     "detail": "ability",
+     "key": "HANNYOLOGY"
+    },
+    {
+     "no": 342,
+     "name": "Stone Guardianology",
+     "detail": "ability",
+     "key": "STONE_GUARDIANOLOGY"
+    },
+    {
+     "no": 343,
+     "name": "Hugantology",
+     "detail": "ability",
+     "key": "HUGANTOLOGY"
+    },
+    {
+     "no": 344,
+     "name": "Horned Whaleology",
+     "detail": "ability",
+     "key": "HORNED_WHALEOLOGY"
+    },
+    {
+     "no": 345,
+     "name": "Night Horrorology",
+     "detail": "ability",
+     "key": "NIGHT_HORROROLOGY"
+    },
+    {
+     "no": 346,
+     "name": "Talent Cap +",
+     "detail": "ability",
+     "key": "TALENT_CAP_PLUS"
+    },
+    {
+     "no": 347,
+     "name": "Talent Cap ++",
+     "detail": "ability",
+     "key": "TALENT_CAP_PLUS_PLUS"
+    },
+    {
+     "no": 348,
+     "name": "Stamina Specialist",
+     "detail": "ability",
+     "key": "STAMINA_SPECIALIST"
+    },
+    {
+     "no": 349,
+     "name": "Attack Specialist",
+     "detail": "ability",
+     "key": "ATTACK_SPECIALIST"
+    },
+    {
+     "no": 350,
+     "name": "Defense Specialist",
+     "detail": "ability",
+     "key": "DEFENSE_SPECIALIST"
+    },
+    {
+     "no": 351,
+     "name": "Skill Points +",
+     "detail": "ability",
+     "key": "SKILL_POINTS_PLUS"
+    },
+    {
+     "no": 352,
+     "name": "Mystery Bonus",
+     "detail": "ability",
+     "key": "MYSTERY_BONUS"
+    },
+    {
+     "no": 353,
+     "name": "Weak Constitution",
+     "detail": "ability",
+     "key": "WEAK_CONSTITUTION"
+    },
+    {
+     "no": 354,
+     "name": "Monster Info",
+     "detail": "ability",
+     "key": "MONSTER_INFO"
+    },
+    {
+     "no": 355,
+     "name": "Guy Monster Weakness",
+     "detail": "ability",
+     "key": "GUY_MONSTER_WEAKNESS"
+    },
+    {
+     "no": 356,
+     "name": "Master Author",
+     "detail": "ability",
+     "key": "MASTER_AUTHOR"
+    },
+    {
+     "no": 357,
+     "name": "Bonus Damage 2",
+     "detail": "ability",
+     "key": "BONUS_DAMAGE_2"
+    },
+    {
+     "no": 358,
+     "name": "Bonus Damage 3",
+     "detail": "ability",
+     "key": "BONUS_DAMAGE_3"
+    },
+    {
+     "no": 359,
+     "name": "Bonus Damage 4",
+     "detail": "ability",
+     "key": "BONUS_DAMAGE_4"
+    },
+    {
+     "no": 360,
+     "name": "Bonus Damage 5",
+     "detail": "ability",
+     "key": "BONUS_DAMAGE_5"
+    },
+    {
+     "no": 361,
+     "name": "Possessed by Suzume",
+     "detail": "ability",
+     "key": "POSSESSED_BY_SUZUME"
+    },
+    {
+     "no": 362,
+     "name": "Eavesdrop",
+     "detail": "ability",
+     "key": "EAVESDROP"
+    },
+    {
+     "no": 363,
+     "name": "Become Human",
+     "detail": "ability",
+     "key": "BECOME_HUMAN"
+    },
+    {
+     "no": 364,
+     "name": "Sexual Prowess",
+     "detail": "ability",
+     "key": "SEXUAL_PROWESS"
+    },
+    {
+     "no": 365,
+     "name": "Abstinence Morurun",
+     "detail": "ability",
+     "key": "ABSTINENCE_MORURUN"
+    },
+    {
+     "no": 366,
+     "name": "Spirit Form",
+     "detail": "ability",
+     "key": "SPIRIT_FORM"
+    },
+    {
+     "no": 367,
+     "name": "Artificial Being",
+     "detail": "ability",
+     "key": "ARTIFICIAL_BEING"
+    },
+    {
+     "no": 368,
+     "name": "False Memories",
+     "detail": "ability",
+     "key": "FALSE_MEMORIES"
+    },
+    {
+     "no": 369,
+     "name": "Go Home",
+     "detail": "ability",
+     "key": "GO_HOME"
+    },
+    {
+     "no": 370,
+     "name": "Reflector?",
+     "detail": "ability",
+     "key": "REFLECTOR"
+    },
+    {
+     "no": 371,
+     "name": "Compulsory Education",
+     "detail": "ability",
+     "key": "COMPULSORY_EDUCATION"
+    },
+    {
+     "no": 372,
+     "name": "Cough-Cough Disease",
+     "detail": "ability",
+     "key": "COUGH_COUGH_DISEASE"
+    },
+    {
+     "no": 373,
+     "name": "Immature",
+     "detail": "ability",
+     "key": "IMMATURE"
+    },
+    {
+     "no": 374,
+     "name": "Descendant",
+     "detail": "ability",
+     "key": "DESCENDANT"
+    },
+    {
+     "no": 375,
+     "name": "Treasure Chest Fan",
+     "detail": "ability",
+     "key": "TREASURE_CHEST_FAN"
+    },
+    {
+     "no": 376,
+     "name": "Morurun Damage",
+     "detail": "ability",
+     "key": "MORURUN_DAMAGE_376"
+    },
+    {
+     "no": 377,
+     "name": "Morurun Damage 2",
+     "detail": "ability",
+     "key": "MORURUN_DAMAGE_2"
+    },
+    {
+     "no": 378,
+     "name": "Morurun Damage 3",
+     "detail": "ability",
+     "key": "MORURUN_DAMAGE_3"
+    },
+    {
+     "no": 379,
+     "name": "Morurun Damage 4",
+     "detail": "ability",
+     "key": "MORURUN_DAMAGE_4"
+    },
+    {
+     "no": 380,
+     "name": "Morurun Damage 5",
+     "detail": "ability",
+     "key": "MORURUN_DAMAGE_5"
+    },
+    {
+     "no": 381,
+     "name": "Morurun Damage 6",
+     "detail": "ability",
+     "key": "MORURUN_DAMAGE_6"
+    },
+    {
+     "no": 382,
+     "name": "Warrior Talent",
+     "detail": "ability",
+     "key": "WARRIOR_TALENT"
+    },
+    {
+     "no": 383,
+     "name": "Magic Talent",
+     "detail": "ability",
+     "key": "MAGIC_TALENT"
+    },
+    {
+     "no": 384,
+     "name": "Standby",
+     "detail": "support",
+     "key": "STANDBY"
+    },
+    {
+     "no": 385,
+     "name": "Attack 10",
+     "detail": "physical",
+     "key": "ATTACK_10"
+    },
+    {
+     "no": 386,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_386"
+    },
+    {
+     "no": 387,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_387"
+    },
+    {
+     "no": 388,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_388"
+    },
+    {
+     "no": 389,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_389"
+    },
+    {
+     "no": 390,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_390"
+    },
+    {
+     "no": 391,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_391"
+    },
+    {
+     "no": 392,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_392"
+    },
+    {
+     "no": 393,
+     "name": "Attack 10Far",
+     "detail": "physical",
+     "key": "ATTACK_10FAR_393"
+    },
+    {
+     "no": 394,
+     "name": "Attack 10Far",
+     "detail": "physical",
+     "key": "ATTACK_10FAR_394"
+    },
+    {
+     "no": 395,
+     "name": "Attack 10DF",
+     "detail": "physical",
+     "key": "ATTACK_10DF"
+    },
+    {
+     "no": 396,
+     "name": "Attack 15",
+     "detail": "physical",
+     "key": "ATTACK_15"
+    },
+    {
+     "no": 397,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_397"
+    },
+    {
+     "no": 398,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_398"
+    },
+    {
+     "no": 399,
+     "name": "Attack 20",
+     "detail": "physical",
+     "key": "ATTACK_20"
+    },
+    {
+     "no": 400,
+     "name": "Attack 20D",
+     "detail": "physical",
+     "key": "ATTACK_20D"
+    },
+    {
+     "no": 401,
+     "name": "Attack 30D",
+     "detail": "physical",
+     "key": "ATTACK_30D"
+    },
+    {
+     "no": 402,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_402"
+    },
+    {
+     "no": 403,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_403"
+    },
+    {
+     "no": 404,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_404"
+    },
+    {
+     "no": 405,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_405"
+    },
+    {
+     "no": 406,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_406"
+    },
+    {
+     "no": 407,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_407"
+    },
+    {
+     "no": 408,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_408"
+    },
+    {
+     "no": 409,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_409"
+    },
+    {
+     "no": 410,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_410"
+    },
+    {
+     "no": 411,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_411"
+    },
+    {
+     "no": 412,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_412"
+    },
+    {
+     "no": 413,
+     "name": "Splash",
+     "detail": "physical",
+     "key": "SPLASH"
+    },
+    {
+     "no": 414,
+     "name": "Acid Splash",
+     "detail": "physical",
+     "key": "ACID_SPLASH"
+    },
+    {
+     "no": 415,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_415"
+    },
+    {
+     "no": 416,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_416"
+    },
+    {
+     "no": 417,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_417"
+    },
+    {
+     "no": 418,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_418"
+    },
+    {
+     "no": 419,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_419"
+    },
+    {
+     "no": 420,
+     "name": "Hanny Flash",
+     "detail": "physical",
+     "key": "HANNY_FLASH"
+    },
+    {
+     "no": 421,
+     "name": "Masuzoe Flash",
+     "detail": "physical",
+     "key": "MASUZOE_FLASH"
+    },
+    {
+     "no": 422,
+     "name": "Devil's Face Flash",
+     "detail": "special",
+     "key": "DEVILS_FACE_FLASH"
+    },
+    {
+     "no": 423,
+     "name": "Stuffed Animal",
+     "detail": "physical",
+     "key": "STUFFED_ANIMAL_423"
+    },
+    {
+     "no": 424,
+     "name": "Poison Jab",
+     "detail": "physical",
+     "key": "POISON_JAB"
+    },
+    {
+     "no": 425,
+     "name": "Hugant Hammer",
+     "detail": "physical",
+     "key": "HUGANT_HAMMER"
+    },
+    {
+     "no": 426,
+     "name": "Tuna Uppercut",
+     "detail": "physical",
+     "key": "TUNA_UPPERCUT"
+    },
+    {
+     "no": 427,
+     "name": "Crab Punch",
+     "detail": "physical",
+     "key": "CRAB_PUNCH"
+    },
+    {
+     "no": 428,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_428"
+    },
+    {
+     "no": 429,
+     "name": "Seal '95",
+     "detail": "special",
+     "key": "SEAL_95"
+    },
+    {
+     "no": 430,
+     "name": "Seizure Sticker",
+     "detail": "special",
+     "key": "SEIZURE_STICKER"
+    },
+    {
+     "no": 431,
+     "name": "EXP Absorption",
+     "detail": "special",
+     "key": "EXP_ABSORPTION"
+    },
+    {
+     "no": 432,
+     "name": "Stunner",
+     "detail": "special",
+     "key": "STUNNER"
+    },
+    {
+     "no": 433,
+     "name": "Queen's Curse",
+     "detail": "special",
+     "key": "QUEENS_CURSE"
+    },
+    {
+     "no": 434,
+     "name": "Mortal Curse",
+     "detail": "physical",
+     "key": "MORTAL_CURSE"
+    },
+    {
+     "no": 435,
+     "name": "Attack Failure",
+     "detail": "support",
+     "key": "ATTACK_FAILURE"
+    },
+    {
+     "no": 436,
+     "name": "Piss",
+     "detail": "special",
+     "key": "PISS"
+    },
+    {
+     "no": 437,
+     "name": "Blockade",
+     "detail": "ability",
+     "key": "BLOCKADE"
+    },
+    {
+     "no": 438,
+     "name": "Rich Enemy",
+     "detail": "ability",
+     "key": "RICH_ENEMY"
+    },
+    {
+     "no": 439,
+     "name": "Cheat System",
+     "detail": "ability",
+     "key": "CHEAT_SYSTEM"
+    },
+    {
+     "no": 440,
+     "name": "Japan Beam",
+     "detail": "magic",
+     "key": "JAPAN_BEAM"
+    },
+    {
+     "no": 441,
+     "name": "Bear Traits",
+     "detail": "ability",
+     "key": "BEAR_TRAITS"
+    },
+    {
+     "no": 442,
+     "name": "Hag",
+     "detail": "ability",
+     "key": "HAG"
+    },
+    {
+     "no": 443,
+     "name": "Poison Gas Breath",
+     "detail": "physical",
+     "key": "POISON_GAS_BREATH"
+    },
+    {
+     "no": 444,
+     "name": "Burnerthrower",
+     "detail": "physical",
+     "key": "BURNERTHROWER"
+    },
+    {
+     "no": 445,
+     "name": "Tongue Lash",
+     "detail": "physical",
+     "key": "TONGUE_LASH"
+    },
+    {
+     "no": 446,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_446"
+    },
+    {
+     "no": 447,
+     "name": "Attack 10Far/Whip",
+     "detail": "physical",
+     "key": "ATTACK_10FAR_WHIP"
+    },
+    {
+     "no": 448,
+     "name": "Fortune",
+     "detail": "physical",
+     "key": "FORTUNE_448",
+     "aliases": [
+      "FORTUNE"
+     ]
+    },
+    {
+     "no": 449,
+     "name": "Pilfer",
+     "detail": "special",
+     "key": "PILFER"
+    },
+    {
+     "no": 450,
+     "name": "Drug Resistance",
+     "detail": "ability",
+     "key": "DRUG_RESISTANCE"
+    },
+    {
+     "no": 451,
+     "name": "Capture",
+     "detail": "special",
+     "key": "CAPTURE_451",
+     "aliases": [
+      "CAPTURE_EX"
+     ]
+    },
+    {
+     "no": 452,
+     "name": "Magic Invulnerability",
+     "detail": "ability",
+     "key": "MAGIC_INVULNERABILITY"
+    },
+    {
+     "no": 453,
+     "name": "Wild Dance",
+     "detail": "physical",
+     "key": "WILD_DANCE"
+    },
+    {
+     "no": 454,
+     "name": "Quick Casting",
+     "detail": "ability",
+     "key": "QUICK_CASTING"
+    },
+    {
+     "no": 455,
+     "name": "Stamina Boost",
+     "detail": "ability",
+     "key": "STAMINA_BOOST_455",
+     "aliases": [
+      "STAMINA_BOOST_1"
+     ]
+    },
+    {
+     "no": 456,
+     "name": "Attack Boost",
+     "detail": "ability",
+     "key": "ATTACK_BOOST_456",
+     "aliases": [
+      "ATTACK_BOOST_1"
+     ]
+    },
+    {
+     "no": 457,
+     "name": "Magic Boost",
+     "detail": "ability",
+     "key": "MAGIC_BOOST_457",
+     "aliases": [
+      "MAGIC_BOOST_1"
+     ]
+    },
+    {
+     "no": 458,
+     "name": "Royal Flash",
+     "detail": "physical",
+     "key": "ROYAL_FLASH"
+    },
+    {
+     "no": 459,
+     "name": "By La Way",
+     "detail": "physical",
+     "key": "BY_LA_WAY"
+    },
+    {
+     "no": 460,
+     "name": "Winding Wheel Sword",
+     "detail": "physical",
+     "key": "WINDING_WHEEL_SWORD"
+    },
+    {
+     "no": 461,
+     "name": "Boobs",
+     "detail": "ability",
+     "key": "BOOBS"
+    },
+    {
+     "no": 463,
+     "name": "Gates Beam",
+     "detail": "physical",
+     "key": "GATES_BEAM"
+    },
+    {
+     "no": 464,
+     "name": "Liked by Treasure Chests",
+     "detail": "ability",
+     "key": "LIKED_BY_TREASURE_CHESTS"
+    },
+    {
+     "no": 465,
+     "name": "Attack 10Far/Spear",
+     "detail": "physical",
+     "key": "ATTACK_10FAR_SPEAR"
+    },
+    {
+     "no": 466,
+     "name": "Flamethrower",
+     "detail": "physical",
+     "key": "FLAMETHROWER_466"
+    },
+    {
+     "no": 467,
+     "name": "Sword Attack",
+     "detail": "physical",
+     "key": "SWORD_ATTACK_467"
+    },
+    {
+     "no": 468,
+     "name": "Sword Attack",
+     "detail": "physical",
+     "key": "SWORD_ATTACK_468"
+    },
+    {
+     "no": 469,
+     "name": "Sword Attack",
+     "detail": "physical",
+     "key": "SWORD_ATTACK_469"
+    },
+    {
+     "no": 470,
+     "name": "Sword Attack",
+     "detail": "physical",
+     "key": "SWORD_ATTACK_470"
+    },
+    {
+     "no": 471,
+     "name": "Spear Attack",
+     "detail": "physical",
+     "key": "SPEAR_ATTACK"
+    },
+    {
+     "no": 472,
+     "name": "Hammer Attack",
+     "detail": "physical",
+     "key": "HAMMER_ATTACK"
+    },
+    {
+     "no": 473,
+     "name": "Strike",
+     "detail": "physical",
+     "key": "STRIKE"
+    },
+    {
+     "no": 474,
+     "name": "Bow Attack",
+     "detail": "physical",
+     "key": "BOW_ATTACK"
+    },
+    {
+     "no": 481,
+     "name": "Contaminated Tenacity",
+     "detail": "ability",
+     "key": "CONTAMINATED_TENACITY"
+    },
+    {
+     "no": 482,
+     "name": "Dungeon Cleaning",
+     "detail": "ability",
+     "key": "DUNGEON_CLEANING"
+    },
+    {
+     "no": 483,
+     "name": "Morurun Damage 7",
+     "detail": "ability",
+     "key": "MORURUN_DAMAGE_7"
+    },
+    {
+     "no": 484,
+     "name": "Morurun Damage 8",
+     "detail": "ability",
+     "key": "MORURUN_DAMAGE_8"
+    },
+    {
+     "no": 485,
+     "name": "Morurun Damage 9",
+     "detail": "ability",
+     "key": "MORURUN_DAMAGE_9"
+    },
+    {
+     "no": 486,
+     "name": "Morurun Damage X",
+     "detail": "ability",
+     "key": "MORURUN_DAMAGE_X"
+    },
+    {
+     "no": 487,
+     "name": "Skill Fix",
+     "detail": "ability",
+     "key": "SKILL_FIX"
+    },
+    {
+     "no": 488,
+     "name": "Battle Forecast",
+     "detail": "ability",
+     "key": "BATTLE_FORECAST"
+    },
+    {
+     "no": 489,
+     "name": "Gale Thrust",
+     "detail": "physical",
+     "key": "GALE_THRUST"
+    },
+    {
+     "no": 490,
+     "name": "Vitality Smite",
+     "detail": "physical",
+     "key": "VITALITY_SMITE"
+    },
+    {
+     "no": 491,
+     "name": "Pop Pulse",
+     "detail": "physical",
+     "key": "POP_PULSE"
+    },
+    {
+     "no": 492,
+     "name": "Train Familiar",
+     "detail": "ability",
+     "key": "TRAIN_FAMILIAR"
+    },
+    {
+     "no": 493,
+     "name": "Feed Familiar",
+     "detail": "ability",
+     "key": "FEED_FAMILIAR"
+    },
+    {
+     "no": 494,
+     "name": "Pet Familiar",
+     "detail": "ability",
+     "key": "PET_FAMILIAR"
+    },
+    {
+     "no": 495,
+     "name": "Physical Tolerance",
+     "detail": "ability",
+     "key": "PHYSICAL_TOLERANCE"
+    },
+    {
+     "no": 496,
+     "name": "Magical Tolerance",
+     "detail": "ability",
+     "key": "MAGICAL_TOLERANCE"
+    },
+    {
+     "no": 497,
+     "name": "Initial Guard - Earth",
+     "detail": "ability",
+     "key": "INITIAL_GUARD_EARTH"
+    },
+    {
+     "no": 498,
+     "name": "Am Powder",
+     "detail": "support",
+     "key": "AM_POWDER"
+    },
+    {
+     "no": 499,
+     "name": "Seed Launch",
+     "detail": "physical",
+     "key": "SEED_LAUNCH"
+    },
+    {
+     "no": 500,
+     "name": "Soul Hunt",
+     "detail": "physical",
+     "key": "SOUL_HUNT"
+    },
+    {
+     "no": 501,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_501"
+    },
+    {
+     "no": 502,
+     "name": "Invincibility Field",
+     "detail": "ability",
+     "key": "INVINCIBILITY_FIELD"
+    },
+    {
+     "no": 503,
+     "name": "Attack 30",
+     "detail": "physical",
+     "key": "ATTACK_30"
+    },
+    {
+     "no": 504,
+     "name": "Magic Stun Wave",
+     "detail": "magic",
+     "key": "MAGIC_STUN_WAVE"
+    },
+    {
+     "no": 505,
+     "name": "Songbird Attack",
+     "detail": "physical",
+     "key": "SONGBIRD_ATTACK"
+    },
+    {
+     "no": 506,
+     "name": "Invincible Barrier",
+     "detail": "support",
+     "key": "INVINCIBLE_BARRIER"
+    },
+    {
+     "no": 507,
+     "name": "Sleep",
+     "detail": "special",
+     "key": "SLEEP"
+    },
+    {
+     "no": 508,
+     "name": "Reset Slap",
+     "detail": "ability",
+     "key": "RESET_SLAP"
+    },
+    {
+     "no": 509,
+     "name": "Mysterious Reset",
+     "detail": "ability",
+     "key": "MYSTERIOUS_RESET"
+    },
+    {
+     "no": 510,
+     "name": "Push",
+     "detail": "physical",
+     "key": "PUSH"
+    },
+    {
+     "no": 511,
+     "name": "Firebowl Jutsu",
+     "detail": "physical",
+     "key": "FIREBOWL_JUTSU"
+    },
+    {
+     "no": 512,
+     "name": "Pity Magnet",
+     "detail": "ability",
+     "key": "PITY_MAGNET"
+    },
+    {
+     "no": 513,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_513"
+    },
+    {
+     "no": 514,
+     "name": "Sword Attack",
+     "detail": "physical",
+     "key": "SWORD_ATTACK_514"
+    },
+    {
+     "no": 515,
+     "name": "Guna Beam",
+     "detail": "physical",
+     "key": "GUNA_BEAM"
+    },
+    {
+     "no": 516,
+     "name": "Flame Card",
+     "detail": "magic",
+     "key": "FLAME_CARD"
+    },
+    {
+     "no": 517,
+     "name": "Flame Card-Barrage",
+     "detail": "magic",
+     "key": "FLAME_CARD_BARRAGE"
+    },
+    {
+     "no": 518,
+     "name": "Explosive Shot",
+     "detail": "physical",
+     "key": "EXPLOSIVE_SHOT"
+    },
+    {
+     "no": 519,
+     "name": "Divine Erosion Wave",
+     "detail": "magic",
+     "key": "DIVINE_EROSION_WAVE"
+    },
+    {
+     "no": 520,
+     "name": "With Megadeth",
+     "detail": "ability",
+     "key": "WITH_MEGADETH"
+    },
+    {
+     "no": 521,
+     "name": "With Prima",
+     "detail": "ability",
+     "key": "WITH_PRIMA"
+    },
+    {
+     "no": 522,
+     "name": "Liked by Treasure Chests 2",
+     "detail": "ability",
+     "key": "LIKED_BY_TREASURE_CHESTS_2"
+    },
+    {
+     "no": 523,
+     "name": "Weapon & Armor Lover",
+     "detail": "ability",
+     "key": "WEAPON_AND_ARMOR_LOVER"
+    },
+    {
+     "no": 524,
+     "name": "Special Item Lover",
+     "detail": "ability",
+     "key": "SPECIAL_ITEM_LOVER"
+    },
+    {
+     "no": 525,
+     "name": "Item Lover",
+     "detail": "ability",
+     "key": "ITEM_LOVER"
+    },
+    {
+     "no": 526,
+     "name": "Training",
+     "detail": "ability",
+     "key": "TRAINING"
+    },
+    {
+     "no": 527,
+     "name": "Suke-san",
+     "detail": "ability",
+     "key": "SUKE_SAN"
+    },
+    {
+     "no": 528,
+     "name": "Kaku-san",
+     "detail": "ability",
+     "key": "KAKU_SAN"
+    },
+    {
+     "no": 529,
+     "name": "Pheromone",
+     "detail": "ability",
+     "key": "PHEROMONE"
+    },
+    {
+     "no": 530,
+     "name": "Turn Shuffle",
+     "detail": "support",
+     "key": "TURN_SHUFFLE"
+    },
+    {
+     "no": 531,
+     "name": "Capture Thread",
+     "detail": "special",
+     "key": "CAPTURE_THREAD"
+    },
+    {
+     "no": 532,
+     "name": "Sticky Effect",
+     "detail": "ability",
+     "key": "STICKY_EFFECT"
+    },
+    {
+     "no": 533,
+     "name": "Shikigami-Bird",
+     "detail": "magic",
+     "key": "SHIKIGAMI_BIRD"
+    },
+    {
+     "no": 534,
+     "name": "Shikigami-Snake",
+     "detail": "magic",
+     "key": "SHIKIGAMI_SNAKE"
+    },
+    {
+     "no": 535,
+     "name": "Shikigami-Tiger",
+     "detail": "magic",
+     "key": "SHIKIGAMI_TIGER"
+    },
+    {
+     "no": 536,
+     "name": "Haniwa Magnet",
+     "detail": "ability",
+     "key": "HANIWA_MAGNET"
+    },
+    {
+     "no": 537,
+     "name": "Pharmacology",
+     "detail": "ability",
+     "key": "PHARMACOLOGY"
+    },
+    {
+     "no": 538,
+     "name": "Nature Knowledge",
+     "detail": "ability",
+     "key": "NATURE_KNOWLEDGE"
+    },
+    {
+     "no": 539,
+     "name": "Sword Attack",
+     "detail": "physical",
+     "key": "SWORD_ATTACK_539"
+    },
+    {
+     "no": 540,
+     "name": "Stone Splitter",
+     "detail": "physical",
+     "key": "STONE_SPLITTER"
+    },
+    {
+     "no": 541,
+     "name": "My Waifu",
+     "detail": "ability",
+     "key": "MY_WAIFU"
+    },
+    {
+     "no": 542,
+     "name": "My Waifu (#2)",
+     "detail": "ability",
+     "key": "MY_WAIFU_2"
+    },
+    {
+     "no": 543,
+     "name": "My Waifu (#3)",
+     "detail": "ability",
+     "key": "MY_WAIFU_3"
+    },
+    {
+     "no": 545,
+     "name": "Deadly Mist",
+     "detail": "special",
+     "key": "DEADLY_MIST"
+    },
+    {
+     "no": 546,
+     "name": "Contaminated Spears",
+     "detail": "physical",
+     "key": "CONTAMINATED_SPEARS_546"
+    },
+    {
+     "no": 547,
+     "name": "Divine Punishment",
+     "detail": "physical",
+     "key": "DIVINE_PUNISHMENT"
+    },
+    {
+     "no": 548,
+     "name": "Swaying Boobs",
+     "detail": "ability",
+     "key": "SWAYING_BOOBS"
+    },
+    {
+     "no": 549,
+     "name": "Low Blow",
+     "detail": "ability",
+     "key": "LOW_BLOW"
+    },
+    {
+     "no": 550,
+     "name": "Cursed Glasses",
+     "detail": "ability",
+     "key": "CURSED_GLASSES"
+    },
+    {
+     "no": 551,
+     "name": "Sword Attack",
+     "detail": "physical",
+     "key": "SWORD_ATTACK_551"
+    },
+    {
+     "no": 552,
+     "name": "Lemon Attack",
+     "detail": "physical",
+     "key": "LEMON_ATTACK"
+    },
+    {
+     "no": 553,
+     "name": "Automatic Stealth",
+     "detail": "ability",
+     "key": "AUTOMATIC_STEALTH"
+    },
+    {
+     "no": 554,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_554"
+    },
+    {
+     "no": 555,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_555"
+    },
+    {
+     "no": 556,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_556"
+    },
+    {
+     "no": 557,
+     "name": "Contaminated Spears",
+     "detail": "physical",
+     "key": "CONTAMINATED_SPEARS_557"
+    },
+    {
+     "no": 558,
+     "name": "Cheerleader",
+     "detail": "ability",
+     "key": "CHEERLEADER"
+    },
+    {
+     "no": 559,
+     "name": "Coach",
+     "detail": "ability",
+     "key": "COACH"
+    },
+    {
+     "no": 560,
+     "name": "Flame Breath",
+     "detail": "physical",
+     "key": "FLAME_BREATH"
+    },
+    {
+     "no": 561,
+     "name": "Freezing Breath",
+     "detail": "physical",
+     "key": "FREEZING_BREATH"
+    },
+    {
+     "no": 562,
+     "name": "Dark Breath",
+     "detail": "physical",
+     "key": "DARK_BREATH"
+    },
+    {
+     "no": 563,
+     "name": "Stupid",
+     "detail": "ability",
+     "key": "STUPID"
+    },
+    {
+     "no": 564,
+     "name": "Crazy Geyser",
+     "detail": "magic",
+     "key": "CRAZY_GEYSER"
+    },
+    {
+     "no": 565,
+     "name": "Mass physical attack",
+     "detail": "physical",
+     "key": "MASS_PHYSICAL_ATTACK"
+    },
+    {
+     "no": 566,
+     "name": "Morurun Damage !",
+     "detail": "ability",
+     "key": "MORURUN_DAMAGE_566"
+    },
+    {
+     "no": 567,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_567"
+    },
+    {
+     "no": 568,
+     "name": "Skill Slots",
+     "detail": "ability",
+     "key": "SKILL_SLOTS"
+    },
+    {
+     "no": 569,
+     "name": "Item Slot",
+     "detail": "ability",
+     "key": "ITEM_SLOT"
+    },
+    {
+     "no": 570,
+     "name": "Steamroll Weaklings",
+     "detail": "ability",
+     "key": "STEAMROLL_WEAKLINGS"
+    },
+    {
+     "no": 571,
+     "name": "Magical Drill",
+     "detail": "ability",
+     "key": "MAGICAL_DRILL"
+    },
+    {
+     "no": 572,
+     "name": "Parental Instincts",
+     "detail": "ability",
+     "key": "PARENTAL_INSTINCTS"
+    },
+    {
+     "no": 573,
+     "name": "Star",
+     "detail": "ability",
+     "key": "STAR"
+    },
+    {
+     "no": 574,
+     "name": "Club Fan",
+     "detail": "ability",
+     "key": "CLUB_FAN"
+    },
+    {
+     "no": 575,
+     "name": "Nudist",
+     "detail": "ability",
+     "key": "NUDIST"
+    },
+    {
+     "no": 576,
+     "name": "Show-Stealer",
+     "detail": "ability",
+     "key": "SHOW_STEALER"
+    },
+    {
+     "no": 577,
+     "name": "Weed-like Tenacity",
+     "detail": "ability",
+     "key": "WEED_LIKE_TENACITY"
+    },
+    {
+     "no": 578,
+     "name": "Melee Attack 5",
+     "detail": "physical",
+     "key": "MELEE_ATTACK_5"
+    },
+    {
+     "no": 579,
+     "name": "Thrust Attack 5",
+     "detail": "physical",
+     "key": "THRUST_ATTACK_5"
+    },
+    {
+     "no": 580,
+     "name": "Ranged Attack 5",
+     "detail": "physical",
+     "key": "RANGED_ATTACK_5"
+    },
+    {
+     "no": 581,
+     "name": "Strike Attack 5",
+     "detail": "physical",
+     "key": "STRIKE_ATTACK_5"
+    },
+    {
+     "no": 583,
+     "name": "Killer Tea Party",
+     "detail": "ability",
+     "key": "KILLER_TEA_PARTY"
+    },
+    {
+     "no": 584,
+     "name": "△ Attack",
+     "detail": "ability",
+     "key": "TRIANGLE_ATTACK"
+    },
+    {
+     "no": 585,
+     "name": "7 Misfortunes, 8 Pains",
+     "detail": "ability",
+     "key": "N_7_MISFORTUNES_8_PAINS"
+    },
+    {
+     "no": 586,
+     "name": "Serious Mode",
+     "detail": "ability",
+     "key": "SERIOUS_MODE"
+    },
+    {
+     "no": 587,
+     "name": "Attack 10/3 strikes",
+     "detail": "physical",
+     "key": "ATTACK_10_3_STRIKES"
+    },
+    {
+     "no": 589,
+     "name": "Attack",
+     "detail": "physical",
+     "key": "ATTACK_589"
+    },
+    {
+     "no": 590,
+     "name": "Natural Poison",
+     "detail": "physical",
+     "key": "NATURAL_POISON"
+    },
+    {
+     "no": 591,
+     "name": "Poison Slash",
+     "detail": "physical",
+     "key": "POISON_SLASH"
+    },
+    {
+     "no": 592,
+     "name": "Haniwa Barrier",
+     "detail": "ability",
+     "key": "HANIWA_BARRIER"
+    },
+    {
+     "no": 593,
+     "name": "Firearm Knowledge 2",
+     "detail": "ability",
+     "key": "FIREARM_KNOWLEDGE_2"
+    },
+    {
+     "no": 594,
+     "name": "Snipe",
+     "detail": "physical",
+     "key": "SNIPE"
+    },
+    {
+     "no": 595,
+     "name": "Defense Shikigami",
+     "detail": "support",
+     "key": "DEFENSE_SHIKIGAMI"
+    },
+    {
+     "no": 596,
+     "name": "Hugant Hammer 2",
+     "detail": "physical",
+     "key": "HUGANT_HAMMER_2"
+    },
+    {
+     "no": 597,
+     "name": "Full Power Attack",
+     "detail": "physical",
+     "key": "FULL_POWER_ATTACK"
+    },
+    {
+     "no": 599,
+     "name": "Stuffed Animal",
+     "detail": "physical",
+     "key": "STUFFED_ANIMAL_599"
+    }
+   ]
+  },
+  {
+   "kind": "state",
+   "title": "States",
+   "what": "status values (`状態変化`), as in `rq.chara.get(iic).status`",
+   "entries": [
+    {
+     "no": 0,
+     "name": "None",
+     "detail": "",
+     "key": "NONE"
+    },
+    {
+     "no": 1,
+     "name": "Poison",
+     "detail": "",
+     "key": "POISON"
+    },
+    {
+     "no": 2,
+     "name": "Stun",
+     "detail": "",
+     "key": "STUN"
+    },
+    {
+     "no": 3,
+     "name": "Downed",
+     "detail": "",
+     "key": "DOWNED"
+    }
+   ]
+  },
+  {
+   "kind": "target",
+   "title": "Skill targets",
+   "what": "skill target codes (`対象`), as in a skill's `target`",
+   "entries": [
+    {
+     "no": 1,
+     "name": "Melee",
+     "detail": "近距離",
+     "key": "MELEE"
+    },
+    {
+     "no": 2,
+     "name": "Ranged",
+     "detail": "遠距離",
+     "key": "RANGED"
+    },
+    {
+     "no": 3,
+     "name": "All Enemies",
+     "detail": "全体",
+     "key": "ALL_ENEMIES"
+    },
+    {
+     "no": 4,
+     "name": "Row",
+     "detail": "横一列",
+     "key": "ROW"
+    },
+    {
+     "no": 10,
+     "name": "Self",
+     "detail": "自分",
+     "key": "SELF"
+    },
+    {
+     "no": 11,
+     "name": "Ally",
+     "detail": "味方",
+     "key": "ALLY"
+    },
+    {
+     "no": 12,
+     "name": "All Allies",
+     "detail": "味方全体",
+     "key": "ALL_ALLIES"
+    },
+    {
+     "no": 20,
+     "name": "Random Target",
+     "detail": "ランダムターゲット",
+     "key": "RANDOM_TARGET"
+    }
+   ]
+  }
+ ]
+}

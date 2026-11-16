@@ -1,0 +1,94 @@
+name: Build
+
+# Every push and pull request builds the Windows zip and keeps it as a workflow artifact.
+# A tag v<version> (matching the version in meson.build) also publishes it as a GitHub release.
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    name: Windows
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >-
+            base-devel
+            git
+            zip
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-meson
+            mingw-w64-x86_64-pkg-config
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-SDL2
+            mingw-w64-x86_64-libsndfile
+            mingw-w64-x86_64-libjpeg-turbo
+            mingw-w64-x86_64-libwebp
+            mingw-w64-x86_64-libpng
+            mingw-w64-x86_64-libdeflate
+
+      # libjpeg-turbo 3.2.1 puts a copy of zlib inside its static library, so a static link beside
+      # zlib fails (z_errmsg defined twice). 3.2.0 links.
+      - name: Pin libjpeg-turbo 3.2.0
+        run: pacman -U --noconfirm https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libjpeg-turbo-3.2.0-1-any.pkg.tar.zst
+
+      - name: Version
+        id: version
+        run: |
+          v=$(sed -n "s/^ *version : '\([^']*\)'.*/\1/p" meson.build | head -1)
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          if [[ "$GITHUB_REF" == refs/tags/v* && "${GITHUB_REF#refs/tags/v}" != "$v" ]]; then
+            echo "Tag ${GITHUB_REF#refs/tags/} does not match the version $v in meson.build" >&2
+            exit 1
+          fi
+
+      - name: Build
+        run: |
+          meson setup build --buildtype=release
+          ninja -C build
+
+      # The program runs: --help prints its usage and ends with 0.
+      - name: Run
+        run: ./build/rance-browser.exe --help
+
+      - name: Package
+        run: |
+          pkg=RanceBrowser
+          mkdir -p $pkg/licenses/imgui $pkg/licenses/cimgui
+          cp build/rance-browser.exe README.md CHANGELOG.md CREDITS.md COPYING $pkg/
+          cp -r /mingw64/share/licenses/. $pkg/licenses/
+          cp third_party/cimgui/imgui/LICENSE.txt $pkg/licenses/imgui/
+          cp third_party/cimgui/LICENSE $pkg/licenses/cimgui/
+          cd $pkg && zip -r -9 ../RanceBrowser-${{ steps.version.outputs.version }}-windows.zip . && cd ..
+          # The release's text: this version's section of CHANGELOG.md.
+          awk -v v="## ${{ steps.version.outputs.version }} " 'index($0, v) == 1 { on = 1; next } /^## / { on = 0 } on' CHANGELOG.md > notes.md
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RanceBrowser-${{ steps.version.outputs.version }}-windows
+          path: RanceBrowser-${{ steps.version.outputs.version }}-windows.zip
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Rance Browser ${{ steps.version.outputs.version }}
+          body_path: notes.md
+          files: RanceBrowser-${{ steps.version.outputs.version }}-windows.zip
+          fail_on_unmatched_files: true

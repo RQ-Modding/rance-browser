@@ -1,0 +1,18 @@
+# Rance Quest Magnum: RQ MOD's game. Lines: a key, a tab, the value (games/README.md).
+title	Rance Quest Magnum
+tested	yes
+rq	yes
+font	Data/NotoSansRQM-Regular.ttf
+# The CG archive's folders, with an English label each
+folder	01_スプライト	Sprites (standing pictures)
+folder	02_顔	Faces
+folder	03_ビジュアル	Scene CGs
+folder	04_ミニビジュアル	Small scene CGs
+folder	05_背景	Backgrounds
+folder	06_システム	Interface
+folder	08_サムネイル	Thumbnails
+folder	09_女の子モンスター捕獲用	Capture pictures
+folder	10_コンフィグ	Config
+folder	エイプリル企画	April Fools' event
+folder	追加キット	Added kits
+folder	２１０用	For 2.10

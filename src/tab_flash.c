@@ -1,6 +1,6 @@
-/* The Flash tab: the game's Flash files (RanceQuestAFF.afa), each one's bitmaps with their ids and
- * its sounds, read with the engine's own swf.c, and the Lua lines for rq.image.flash_bitmap and
- * rq.sound.play_flash. Playing a file's motion is left for later. */
+/* The Flash tab: the game's Flash files (<code>AFF.afa), each one's bitmaps with their ids and its
+ * sounds, read with xsystem4's own swf.c, and for Rance Quest Magnum RQ MOD's Lua lines for
+ * rq.image.flash_bitmap and rq.sound.play_flash. Playing a file's motion is left for later. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,7 +8,7 @@
 #include "system4.h"
 #include "swf.h"
 
-#include "rqb.h"
+#include "browser.h"
 #include "lua_lines.h"
 
 struct fbmp {
@@ -287,18 +287,22 @@ static void right(void)
 	igSameLine(S(110), -1);
 	igText("%.1f KB", f->size / 1024.0);
 	char line[768];
-	igSeparatorText("Its pictures, from Lua");
-	snprintf(line, sizeof line, LUA_FLASH_BITMAPS, F.key);
-	ui_lua_line("bitmaps", line);
+	igSeparatorText(G.rq ? "Its pictures, from Lua" : "Its pictures");
+	if (G.rq) {
+		snprintf(line, sizeof line, LUA_FLASH_BITMAPS, F.key);
+		ui_lua_line("bitmaps", line);
+	}
 	if (F.bsel >= 0 && F.bsel < F.nbm) {
 		struct fbmp *m = &F.bm[F.bsel];
 		igText("Picture id %d, %d x %d", m->id, m->w, m->h);
 		V2 pos = igGetCursorScreenPos();
 		igDummy(v2(S(160), S(160)));
 		draw_fit_image(m->tex, m->w, m->h, pos, S(160));
-		igTextDisabled("Replace it from a mod:");
-		snprintf(line, sizeof line, LUA_FLASH_BITMAP, F.key, m->id, m->id);
-		ui_lua_line("bitmap", line);
+		if (G.rq) {
+			igTextDisabled("Replace it from a mod:");
+			snprintf(line, sizeof line, LUA_FLASH_BITMAP, F.key, m->id, m->id);
+			ui_lua_line("bitmap", line);
+		}
 		if (igButton("Save this picture as PNG...", v2(-1, 0))) {
 			char name[64], path[2048];
 			snprintf(name, sizeof name, "%d_%dx%d.png", m->id, m->w, m->h);
@@ -331,11 +335,14 @@ static void right(void)
 				else if (player_load_pcm(s->data, s->len, s->rate, s->channels, s->bits, title))
 					player_play();
 			}
-			igSameLine(0, -1);
-			snprintf(line, sizeof line, LUA_FLASH_SOUND, F.key, s->index);
-			ui_lua_line("snd", line);
+			if (G.rq) {
+				igSameLine(0, -1);
+				snprintf(line, sizeof line, LUA_FLASH_SOUND, F.key, s->index);
+				ui_lua_line("snd", line);
+			}
 		} else {
-			igTextDisabled("Compressed (MP3 or ADPCM): rq.sound.play_flash cannot play it.");
+			igTextDisabled(G.rq ? "Compressed (MP3 or ADPCM): rq.sound.play_flash cannot play it."
+			                    : "Compressed (MP3 or ADPCM): the browser cannot play it.");
 		}
 		igPopID();
 	}

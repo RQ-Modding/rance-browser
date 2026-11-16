@@ -1,11 +1,12 @@
-/* RQ Browser: the game's files for mod creators (phase P1, loader 2.43.0).
+/* Rance Browser: a window over the files of AliceSoft's System 4 games.
  *
  * It opens the player's own game folder read-only: the CGs, the Flash files, the music, the sounds,
- * the 3D textures and the names of rq.ids, each with the Lua line that uses it. It reads them with
- * libsys4 and the engine's own readers, so a picture or a loop point reads as the game reads it.
- * Nothing of the game ships with it. Dear ImGui (through cimgui) draws the window. */
-#ifndef RQB_H
-#define RQB_H
+ * the textures and other pictures. It reads them with libsys4 and xsystem4's own readers, so a
+ * picture or a loop point reads as the game reads it. Nothing of a game ships with it. For Rance
+ * Quest Magnum it also shows RQ MOD's names (rq.ids) and the Lua line that uses each file. Dear ImGui
+ * (through cimgui) draws the window. */
+#ifndef BROWSER_H
+#define BROWSER_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -21,8 +22,12 @@
 #include "cimgui.h"
 #include "cimgui_impl.h"
 
+#define APP_NAME "Rance Browser"
+#define APP_EXE "rance-browser"
+
 struct afa_archive;
 struct aar_archive;
+struct alk_archive;
 struct archive;
 struct cg;
 
@@ -30,18 +35,37 @@ typedef ImVec2_c V2;
 static inline ImVec2_c v2(float x, float y) { ImVec2_c r = { x, y }; return r; }
 static inline ImVec4_c v4(float x, float y, float z, float w) { ImVec4_c r = { x, y, z, w }; return r; }
 
+/* ---- a game's profile (games.c, from games/<code>.tsv) ---- */
+
+struct profile {
+	const char *code;   /* the .ain's name without .ain: "RanceQuest", "Rance6" */
+	char *title;        /* "Rance Quest Magnum" */
+	bool tested;        /* someone checked this game's files with the browser */
+	bool rq;            /* RQ MOD's game: its names (rq.ids) and Lua lines */
+	char *font;         /* a font in the game's folder for the window, or NULL */
+	struct { char *name, *label; } folders[64];        /* labels for a CG archive's folders */
+	int nfolders;
+	struct { int lo, hi; char *label; } ranges[128];   /* labels for CG number ranges */
+	int nranges;
+	struct { int lo, hi, offset; } masks[8];   /* CGs whose see-through is another CG (CG + offset) */
+	int nmasks;
+};
+
+const struct profile *profile_find(const char *code);
+
 /* ---- the game folder (game.c) ---- */
 
 struct cg_folder {
-	char *jp;          /* the archive's folder name, UTF-8 */
+	char *jp;          /* the archive's folder name, UTF-8, or the numbers ("7000-7999") */
 	const char *en;    /* our English label */
 	int count;
+	int lo;            /* a range's first number, to sort by */
 };
 
 struct cg_entry {
-	int no;            /* the CG number, as rq.image.replace takes it */
+	int no;            /* the CG number, as the game (and rq.image.replace) takes it */
 	int folder;        /* index in G.cg_folders */
-	int afa_index;     /* index in the archive's table */
+	int index;         /* index in the archive: the AFA's table, or the ALD's number - 1 */
 	uint32_t size;
 	char *name;        /* the file's name in the archive, UTF-8 */
 	const char *use;   /* "Rance: face", from the names' pictures, or NULL */
@@ -66,14 +90,35 @@ struct audio_entry {
 	int loop_count, loop_start, loop_end, volume;
 };
 
+/* The picture kinds: the CGs, and three sets of other pictures (sets.c). */
+enum pic_kind { PK_CG, PK_TEX, PK_ALK, PK_DTX, PK_NKINDS };
+
 enum { TEX_CHARA, TEX_MAP, TEX_BG, TEX_ETC, TEX_TEXTURE, TEX_OTHER, TEX_NFOLDERS };
 
-struct tex_entry {
-	char *path;        /* Data\PolyData\Chara\x\tex1.png, UTF-8 */
-	char *raw;         /* the same in Shift-JIS, the archive's key */
-	char *model;       /* the model's folder (x), or "" */
-	int folder;
+/* One picture of a set: a 3D texture of ReignData.red, a picture in an .alk file, or a dungeon's
+ * texture in a .dlf file. */
+struct pic_entry {
+	char *path;        /* where it is, shown in the details: Data\PolyData\Chara\x\tex1.png */
+	char *title;       /* the list's line: tex1.png */
+	char *group;       /* a second level shown beside the folder (a model), or "" */
+	char *save;        /* the file name to save as, without .png */
+	char *save_dir;    /* a folder under the one picked for "Save the shown", or "" */
+	int folder;        /* index in the set's folders */
 	uint32_t size;
+	char *raw;         /* RED: the archive's key, in Shift-JIS */
+	int src;           /* ALK: which file; DTX: the dungeon's slot in the .dlf */
+	int index;         /* ALK: the entry */
+	int64_t off;       /* DTX: where the texture starts in the .dlf */
+};
+
+#define SET_MAX_FOLDERS 128
+
+struct pic_set {
+	char *folders[SET_MAX_FOLDERS];
+	int counts[SET_MAX_FOLDERS];
+	int nfolders;
+	struct pic_entry *e;
+	int n;
 };
 
 struct id_entry {
@@ -89,23 +134,54 @@ struct id_kind {
 	int n;
 };
 
+#define MAX_ALK 16
+
+/* Where the game keeps each kind of file, found from its ini as the engine finds them (game.c). */
+struct game_files {
+	char ini[64];                /* "System40.ini" or "AliceStart.ini" */
+	char *cg_afa;                /* RanceQuestCG.afa, or NULL */
+	char *cg_ald[26];            /* Rance6GA.ald ... by the volume's letter */
+	int ncg_ald;
+	char *ba_afa, *wa_afa;
+	char *ba_ald[26], *wa_ald[26];
+	int nba_ald, nwa_ald;
+	char *aff;
+	char *red;
+	char *bgi;
+	char *alk[MAX_ALK];          /* the .alk files that hold pictures */
+	int nalk;
+	char *dlf;
+};
+
 /* One set of open archives. The thumbnail thread has its own, since an archive reads through one
  * FILE*. */
 struct handles {
-	struct afa_archive *cg, *aff;
+	struct archive *cg;          /* the CGs: an AFA or an ALD archive */
+	struct afa_archive *cg_afa;  /* the same when it is an AFA (its table has the folders) */
+	struct afa_archive *aff;
 	struct aar_archive *red;
 	struct archive *ba, *wa;
+	struct alk_archive *alk[MAX_ALK];
+	void *dlf;                   /* the .dlf's FILE* */
 };
 
 struct game {
 	char dir[1024];
+	char code[256];      /* the .ain's name without .ain */
+	char name[256];      /* the ini's GameName, UTF-8 */
+	char title[256];     /* the profile's title, else the ini's name */
+	const struct profile *prof;   /* NULL: no profile */
+	bool tested;         /* the profile says the game was checked */
+	bool rq;             /* Rance Quest Magnum: RQ MOD's names and Lua lines */
+	struct game_files f;
 	struct handles h;
 	struct cg_entry *cgs; int ncg;
-	struct cg_folder cg_folders[32]; int ncg_folders;
+	struct cg_folder cg_folders[256]; int ncg_folders;
 	struct flash_entry *flash; int nflash;
 	struct audio_entry *music; int nmusic;
 	struct audio_entry *sounds; int nsounds;
-	struct tex_entry *tex; int ntex;
+	struct pic_set sets[PK_NKINDS];   /* PK_TEX, PK_ALK and PK_DTX; PK_CG's is unused */
+	int ndungeons;       /* dungeons with textures */
 	struct id_kind *kinds; int nkinds;
 	int npictures;       /* names with a picture */
 	int npicture_lines;  /* pictures.tsv lines read */
@@ -123,15 +199,24 @@ bool game_open(const char *dir);
 bool handles_open(struct handles *h, const char *dir);
 void handles_close(struct handles *h);
 struct cg *game_load_cg(struct handles *h, int i);
-struct cg *game_load_tex(struct handles *h, int i);
 uint8_t *game_read_flash(struct handles *h, int i, size_t *size);
 uint8_t *game_read_audio(struct archive *ar, int no, size_t *size);
 int game_find_cg(int no);
+int game_mask_of(int no);   /* the CG whose mask gives CG no its see-through, or 0 */
 void game_error(const char *fmt, ...);
+char *join(const char *dir, const char *name);
+const char *base_name(const char *path);   /* after the last \ or / */
+
+/* ---- the picture sets (sets.c) ---- */
+
+extern const char *const set_titles[PK_NKINDS];
+void sets_list(void);
+int pic_count(int kind);
+struct cg *game_load_pic(struct handles *h, int kind, int i);   /* any kind, PK_CG too */
+void sets_open(struct handles *h);
+void sets_close(struct handles *h);
 
 /* ---- pictures and thumbnails (pics.c) ---- */
-
-enum pic_kind { PK_CG, PK_TEX, PK_NKINDS };
 
 struct thumb {
 	unsigned tex;      /* GL texture, or 0 */
@@ -189,20 +274,24 @@ bool win_pick_folder(const char *title, char *out, size_t n);
 bool win_pick_save(const char *title, const char *name, const char *ext, char *out, size_t n);
 void win_message(const char *title, const char *text);
 void win_attach_console(void);
+bool win_relaunch(const char *game_dir);   /* start the program again on another game */
 const char *settings_get(const char *key);
 void settings_set(const char *key, const char *value);
 void win_last_dir(const char *path);   /* remember the folder of a saved file */
 
 /* ---- the tabs ---- */
 
-enum tab { TAB_CGS, TAB_FLASH, TAB_MUSIC, TAB_SOUNDS, TAB_TEXTURES, TAB_NAMES, TAB_COUNT };
+enum tab { TAB_CGS, TAB_FLASH, TAB_MUSIC, TAB_SOUNDS, TAB_TEXTURES, TAB_PICTURES, TAB_DUNGEONS,
+           TAB_NAMES, TAB_COUNT };
 extern const char *const tab_keys[TAB_COUNT];
+bool tab_shown(int tab);   /* the game has this kind of file */
 
 struct ui {
 	unsigned frame;
 	float scale;       /* the display's scale: 1 at 100 %, 1.5 at 150 % (1 for --shot) */
 	int want_tab;      /* a tab to open next frame, or -1 */
 	int shot_select;   /* --select for --shot, or -1 */
+	bool shot_grid;    /* --grid for --shot: the pictures' grid instead of one picture */
 	char status[512];  /* a message for the status line */
 	double status_until;
 };
@@ -222,6 +311,8 @@ bool ui_nav_keys(int *sel, int count);
 
 void tab_cgs(void);
 void tab_textures(void);
+void tab_alk(void);
+void tab_dungeons(void);
 void tab_flash(void);
 void tab_music(void);
 void tab_sounds(void);
@@ -229,7 +320,8 @@ void tab_names(void);
 void tab_cgs_select(int no);           /* from the Names tab: open CG no in the CGs tab */
 /* What --shot --select picks; with -1 the first one. */
 void cgs_select_first(int no);
-void textures_select(int i);
+void set_select(int kind, int i);
+void pictures_grid(int kind, bool on);
 void flash_select(int i);
 void music_select(int no);
 void sounds_select(int no);
@@ -241,4 +333,4 @@ void batch_start(const char *what, int count, batch_fn fn, const char *dir);
 void batch_frame(void);
 bool batch_running(void);
 
-#endif
+#endif /* BROWSER_H */

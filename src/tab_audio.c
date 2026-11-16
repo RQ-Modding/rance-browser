@@ -1,11 +1,12 @@
-/* The Music and Sounds tabs: the game's tracks (RanceQuestBA.ald, with the loops of
- * RanceQuestBA.bgi) and sounds (RanceQuestWA.ald), a player, and the Lua lines. */
+/* The Music and Sounds tabs: the game's tracks (<code>BA.ald or .afa, with the loops of its .bgi)
+ * and sounds (<code>WA.ald, WA.afa or Sound.afa), a player, and RQ MOD's Lua lines for Rance Quest
+ * Magnum. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "system4.h"
-#include "rqb.h"
+#include "browser.h"
 #include "lua_lines.h"
 
 struct atab {
@@ -110,7 +111,7 @@ static void left_panel(struct atab *t)
 	if (strcmp(before, t->search))
 		t->dirty = true;
 	refilter(t);
-	igTextDisabled("%d shown%s", t->n, t->music ? " · names from rq.ids.music" : "");
+	igTextDisabled("%d shown%s", t->n, t->music && G.rq ? " · names from rq.ids.music" : "");
 	igBeginChild_Str("rows", v2(0, 0), ImGuiChildFlags_None, 0);
 	ImGuiListClipper *clip = ImGuiListClipper_ImGuiListClipper();
 	ImGuiListClipper_Begin(clip, t->n, igGetTextLineHeightWithSpacing());
@@ -229,7 +230,7 @@ static void middle(struct atab *t)
 				apply_loop(t);
 			igTextDisabled("The shaded span is the loop: at its end the game goes back to its start.");
 		} else {
-			igTextDisabled("This track has no loop in RanceQuestBA.bgi.");
+			igTextDisabled("This track has no loop in %s.", G.f.bgi ? base_name(G.f.bgi) : "the game's .bgi");
 		}
 	}
 	igSpacing();
@@ -254,7 +255,7 @@ static void right(struct atab *t)
 	}
 	igTextDisabled("File");
 	igSameLine(S(130), -1);
-	igText("%s (OGG)", a->file);
+	igText("%s", a->file);
 	igTextDisabled("Size");
 	igSameLine(S(130), -1);
 	igText("%.1f KB", a->size / 1024.0);
@@ -282,7 +283,9 @@ static void right(struct atab *t)
 		igText("%s", a->loop_count == 0 ? "for ever" : "a set number of times");
 	}
 	char line[256];
-	if (t->music) {
+	if (!G.rq) {
+		/* the Lua lines are RQ MOD's, for Rance Quest Magnum only */
+	} else if (t->music) {
 		igSeparatorText("Replace it from a mod");
 		snprintf(line, sizeof line, LUA_MUSIC_REPLACE, a->no, a->no);
 		ui_lua_line("replace", line);

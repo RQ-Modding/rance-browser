@@ -14,7 +14,7 @@
 #include "system4/cg.h"
 #include "system4/file.h"
 
-#include "rqb.h"
+#include "browser.h"
 
 /* Thumbnails are at most THUMB pixels, 96 at the display's 100 % (set by pics_init). */
 static int THUMB = 96;
@@ -172,7 +172,7 @@ static int worker(void *arg)
 		struct result *r = xcalloc(1, sizeof *r);
 		r->kind = kind;
 		r->i = i;
-		struct cg *cg = kind == PK_CG ? game_load_cg(&wh, i) : game_load_tex(&wh, i);
+		struct cg *cg = game_load_pic(&wh, kind, i);
 		if (cg && cg->pixels && cg->metrics.w > 0 && cg->metrics.h > 0)
 			r->rgba = shrink(cg->pixels, cg->metrics.w, cg->metrics.h, &r->w, &r->h);
 		if (cg)
@@ -192,8 +192,8 @@ void pics_init(void)
 	THUMB = (int)(96 * (UI.scale > 1 ? UI.scale : 1) + 0.5f);
 	if (THUMB > 192)
 		THUMB = 192;
-	nthumbs[PK_CG] = G.ncg;
-	nthumbs[PK_TEX] = G.ntex;
+	for (int k = 0; k < PK_NKINDS; k++)
+		nthumbs[k] = pic_count(k);
 	for (int k = 0; k < PK_NKINDS; k++)
 		thumbs[k] = xcalloc(nthumbs[k] ? nthumbs[k] : 1, sizeof **thumbs);
 	lock = SDL_CreateMutex();

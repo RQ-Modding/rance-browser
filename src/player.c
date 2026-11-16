@@ -8,7 +8,7 @@
 #include <sndfile.h>
 
 #include "system4.h"
-#include "rqb.h"
+#include "browser.h"
 
 struct vio {
 	uint8_t *data;

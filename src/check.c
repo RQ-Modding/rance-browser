@@ -1,6 +1,6 @@
-/* rq-browser --check: opens every archive and reads a sample of each kind, the way the tabs do,
- * then prints the counts as JSON (exit 1 when something failed). scripts\check-browser.ps1 compares
- * the counts with the game's. */
+/* rance-browser --check: opens every archive and reads a sample of each kind, the way the tabs do,
+ * then prints the counts as JSON (exit 1 when something failed). RQ MOD's scripts\check-browser.ps1
+ * compares the counts with each tested game's. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,9 +11,9 @@
 #include "swf.h"
 #include "cJSON.h"
 
-#include "rqb.h"
+#include "browser.h"
 
-extern const int rqb_lua_lines_checked;
+extern const int rq_lua_lines_checked;
 
 static cJSON *failures;
 
@@ -175,39 +175,42 @@ static cJSON *check_sounds(void)
 	return o;
 }
 
-static cJSON *check_textures(void)
+/* A set of pictures (3D textures, other pictures, dungeon textures): its count by folder, and the
+ * first, middle and last picture of each folder decoded. */
+static cJSON *check_set(int kind)
 {
+	struct pic_set *s = &G.sets[kind];
 	cJSON *o = cJSON_CreateObject();
-	int counts[TEX_NFOLDERS] = { 0 }, decoded = 0;
-	for (int i = 0; i < G.ntex; i++)
-		counts[G.tex[i].folder]++;
-	for (int f = 0; f < TEX_NFOLDERS; f++) {
-		if (counts[f])
-			cJSON_AddNumberToObject(o, tex_folder_names[f], counts[f]);
+	int decoded = 0;
+	cJSON *folders = cJSON_AddObjectToObject(o, "folders");
+	for (int f = 0; f < s->nfolders; f++) {
+		if (!s->counts[f])
+			continue;
+		cJSON_AddNumberToObject(folders, s->folders[f], s->counts[f]);
 		int lo = -1, hi = -1;
-		for (int i = 0; i < G.ntex; i++)
-			if (G.tex[i].folder == f) {
+		for (int i = 0; i < s->n; i++)
+			if (s->e[i].folder == f) {
 				if (lo < 0) lo = i;
 				hi = i;
 			}
-		if (lo < 0)
-			continue;
 		int last = -1;
 		for (int k = 0; k < 3; k++) {
 			int i = sample(lo, hi, k);
-			if (i == last)
+			while (i <= hi && s->e[i].folder != f)
+				i++;
+			if (i > hi || i == last)
 				continue;
 			last = i;
-			struct cg *cg = game_load_tex(&G.h, i);
-			if (cg)
+			struct cg *cg = game_load_pic(&G.h, kind, i);
+			if (cg && cg->metrics.w > 0)
 				decoded++;
 			else
-				fail("texture %s (%d) could not be read", G.tex[i].path, i);
+				fail("%s could not be read (%d)", s->e[i].path, i);
 			if (cg)
 				cg_free(cg);
 		}
 	}
-	cJSON_AddNumberToObject(o, "count", G.ntex);
+	cJSON_AddNumberToObject(o, "count", s->n);
 	cJSON_AddNumberToObject(o, "decoded", decoded);
 	return o;
 }
@@ -233,23 +236,38 @@ int run_check(const char *dir, const char *out_path)
 {
 	failures = cJSON_CreateArray();
 	cJSON *root = cJSON_CreateObject();
-	cJSON_AddStringToObject(root, "version", RQB_VERSION);
-	cJSON_AddStringToObject(root, "game", dir);
+	cJSON_AddStringToObject(root, "version", BROWSER_VERSION);
+	cJSON_AddStringToObject(root, "dir", dir);
 	bool opened = game_open(dir);
 	if (opened) {
+		cJSON *game = cJSON_AddObjectToObject(root, "game");
+		cJSON_AddStringToObject(game, "code", G.code);
+		cJSON_AddStringToObject(game, "name", G.name);
+		cJSON_AddStringToObject(game, "title", G.title);
+		cJSON_AddStringToObject(game, "ini", G.f.ini);
+		cJSON_AddBoolToObject(game, "profile", G.prof != NULL);
+		cJSON_AddBoolToObject(game, "tested", G.tested);
+		cJSON_AddBoolToObject(game, "rq", G.rq);
+		cJSON_AddStringToObject(game, "cg_archive", G.h.cg_afa ? "afa" : "ald");
 		cJSON_AddItemToObject(root, "cgs", check_cgs());
 		cJSON_AddItemToObject(root, "flash", check_flash());
 		cJSON_AddItemToObject(root, "music", check_music());
 		cJSON_AddItemToObject(root, "sounds", check_sounds());
-		cJSON_AddItemToObject(root, "textures", check_textures());
-		cJSON_AddItemToObject(root, "names", check_names());
+		cJSON_AddItemToObject(root, "textures", check_set(PK_TEX));
+		cJSON_AddItemToObject(root, "pictures", check_set(PK_ALK));
+		cJSON *dungeons = check_set(PK_DTX);
+		cJSON_AddNumberToObject(dungeons, "dungeons", G.ndungeons);
+		cJSON_AddItemToObject(root, "dungeons", dungeons);
+		if (G.rq)
+			cJSON_AddItemToObject(root, "names", check_names());
 		cJSON *font = cJSON_AddObjectToObject(root, "font");
 		cJSON_AddStringToObject(font, "file", G.font);
 		bool jp = G.font[0] && font_has_japanese(G.font);
 		cJSON_AddBoolToObject(font, "japanese", jp);
-		cJSON_AddNumberToObject(root, "lua_lines_checked", rqb_lua_lines_checked);
+		if (G.rq)
+			cJSON_AddNumberToObject(root, "lua_lines_checked", rq_lua_lines_checked);
 	} else {
-		fail("%s: not a Rance Quest folder (no RanceQuestCG.afa)", dir, 0);
+		fail("%s: not a System 4 game folder (no System40.ini or AliceStart.ini, or no CG archive)", dir, 0);
 	}
 	if (G.errors[0])
 		cJSON_AddStringToObject(root, "open_errors", G.errors);

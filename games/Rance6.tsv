@@ -1,0 +1,32 @@
+# Rance VI - Collapse of Zeth: MangaGamer's English release (System 4.0), 1280 x 960.
+# Lines: a key, a tab, the values (games/README.md). The ranges were labelled by looking at the
+# pictures in the browser (2026-11-16); a range may hold a few pictures of another kind.
+title	Rance VI - Collapse of Zeth
+tested	yes
+
+# 1000-9999: the pictures at their first size. The battle effects are JPEGs with no see-through; each
+# has a PMS mask of the same size 10000 higher, which the game's script lays on it.
+mask	1000	9999	10000
+range	1000	1999	Battle effects (small)
+range	2000	2999	Battle sprites and icons (small)
+range	3000	3999	Battle skills (small)
+range	4000	4999	Battle effects (small)
+range	5000	5999	Enemies and their attacks (small)
+range	6000	6499	Other characters in battle (small)
+range	6500	9999	Battle effects (small)
+range	10000	19999	Masks of the battle effects (CG - 10000)
+
+# 20000-29999: the same kinds at twice the size, and the story's pictures.
+range	20000	20499	Standing pictures
+range	20500	20899	Scene CGs
+range	20900	20999	Event pictures and eyecatches
+range	21000	21899	Standing pictures: other characters
+range	21900	21999	Backgrounds
+range	22000	22999	Interface, faces and battle sprites
+range	23000	23999	Battle skills and item icons
+range	24000	24999	World map
+range	25000	25999	Enemies and their attacks
+range	26000	26999	Other characters in battle
+
+range	30000	30999	Battle backgrounds
+range	39000	39999	Full-screen pictures

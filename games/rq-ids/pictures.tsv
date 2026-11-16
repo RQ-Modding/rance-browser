@@ -1,4 +1,4 @@
-# The game's pictures for rq.ids' names, for the file browser (rq-browser's Names tab). Not part of rq.ids.
+# The game's pictures for rq.ids' names, for the file browser (Rance Browser's Names tab). Not part of rq.ids.
 # Written by tools/ids/extract.lua (scripts\ids-extract.ps1). kind, number, CG, use.
 item	1	6000	icon
 item	2	6324	icon

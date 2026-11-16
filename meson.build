@@ -50,32 +50,30 @@ games_c = custom_target('games_c',
     command : [py, files('tools/embed_games.py'), '@OUTPUT@', '@INPUT@'])
 
 # RQ MOD's names (rq.ids) and their pictures, for Rance Quest Magnum's Names tab. Inside RQ MOD the
-# engine's data/ids; alone, the copy in games/rq-ids (scripts in RQ MOD keep it the same).
+# engine's data/ids; alone, the copy in games/rq-ids (scripts in RQ MOD keep it the same). The paths
+# go to the scripts as plain arguments, since a subproject may not take files from outside itself as
+# inputs; each script writes a depfile so the build runs again when they change.
 rq_ids_dir = get_option('rq_ids_dir')
 if rq_ids_dir == ''
     rq_ids_dir = meson.current_source_dir() / 'games/rq-ids'
 endif
 embed = files('tools/embed.py')
 rq_ids_c = custom_target('rq_ids_json',
-    input : rq_ids_dir / 'ids.json',
     output : 'rq_ids_json.c',
-    command : [py, embed, '@INPUT@', '@OUTPUT@', 'rq_ids_json'])
+    depfile : 'rq_ids_json.c.d',
+    command : [py, embed, rq_ids_dir / 'ids.json', '@OUTPUT@', 'rq_ids_json', '@DEPFILE@'])
 rq_pictures_c = custom_target('rq_pictures_tsv',
-    input : rq_ids_dir / 'pictures.tsv',
     output : 'rq_pictures_tsv.c',
-    command : [py, embed, '@INPUT@', '@OUTPUT@', 'rq_pictures_tsv'])
+    depfile : 'rq_pictures_tsv.c.d',
+    command : [py, embed, rq_ids_dir / 'pictures.tsv', '@OUTPUT@', 'rq_pictures_tsv', '@DEPFILE@'])
 
 # The Lua lines for RQ MOD, checked against the loader's rq.lua when it is given, so a renamed call
 # fails the build instead of leaving a stale line.
-rq_lua = get_option('rq_lua')
-lua_lines_inputs = [files('src/lua_lines.h')]
-if rq_lua != ''
-    lua_lines_inputs += [rq_lua]
-endif
 rq_lua_lines_c = custom_target('rq_lua_lines',
-    input : lua_lines_inputs,
+    input : 'src/lua_lines.h',
     output : 'rq_lua_lines.c',
-    command : [py, files('tools/check_lua_lines.py'), '@OUTPUT@', '@INPUT@'])
+    depfile : 'rq_lua_lines.c.d',
+    command : [py, files('tools/check_lua_lines.py'), '@OUTPUT@', '@DEPFILE@', '@INPUT@', get_option('rq_lua')])
 
 # ---- the program ----
 

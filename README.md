@@ -39,8 +39,8 @@ Each tab appears when the game has that kind of file.
 | **Names** | Rance Quest only: RQ MOD's names, with a picture where one is known. | built in |
 
 Every picture saves as PNG, alone or all the ones a search shows at once. Music and sounds save as the
-OGG the game stores. A picture the game draws with a separate mask (Rance VI's battle effects) shows
-and saves with that mask, so its see-through parts stay see-through.
+OGG the game stores. A picture whose see-through is kept in a separate mask (Rance VI's battle
+effects) shows and saves with that mask, so its see-through parts stay see-through.
 
 ## Using it
 

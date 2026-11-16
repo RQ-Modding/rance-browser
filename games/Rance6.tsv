@@ -5,7 +5,7 @@ title	Rance VI - Collapse of Zeth
 tested	yes
 
 # 1000-9999: the pictures at their first size. The battle effects are JPEGs with no see-through; each
-# has a PMS mask of the same size 10000 higher, which the game's script lays on it.
+# has a PMS alpha map of the same size 10000 higher; the browser lays it on the picture.
 mask	1000	9999	10000
 range	1000	1999	Battle effects (small)
 range	2000	2999	Battle sprites and icons (small)

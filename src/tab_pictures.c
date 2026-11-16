@@ -466,7 +466,7 @@ static void details(struct plist *p)
 			row("Offset", "%d, %d", p->cg->metrics.x, p->cg->metrics.y);
 		int mask = p->kind == PK_CG ? game_mask_of(G.cgs[p->sel].no) : 0;
 		if (mask && p->cg->metrics.has_alpha)
-			row("See-through", "from CG %d, its mask (the game lays it on this one)", mask);
+			row("See-through", "from CG %d, its mask", mask);
 		else
 			row("See-through", "%s", p->cg->metrics.has_alpha ? "yes" : "no");
 	}

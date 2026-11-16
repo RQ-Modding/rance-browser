@@ -467,7 +467,8 @@ int game_find_cg(int no)
 }
 
 /* A profile's mask rule (Rance VI): a CG with no see-through of its own takes it from the CG
- * `offset` higher, a PMS alpha map of the same size, as the game's script lays one on the other. */
+ * `offset` higher, a PMS alpha map of the same size. The pairs come from the numbers and sizes;
+ * the game itself lays a mask on a picture through DrawGraph.CopyAMap in its script. */
 int game_mask_of(int no)
 {
 	if (!G.prof)

@@ -23,7 +23,7 @@
 #include "system4/utfsjis.h"
 #include "cJSON.h"
 
-#include "browser.h"
+#include "core.h"
 
 struct game G;
 

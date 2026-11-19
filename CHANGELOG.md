@@ -2,6 +2,18 @@
 
 Each version, newest first. A version in RQ MOD's package is named in RQ MOD's own CHANGELOG.
 
+## 1.0.1 (2026-11-19)
+
+The readers as a library, for another program to share; nothing changes in the window.
+
+- **`rance_core`.** What reads a game (the profiles, the game folder, the CGs, the Flash files, the
+  music and sounds, the other pictures, RQ MOD's names, the thumbnails and the player) moved to
+  `src/core` and builds as a static library, described by `src/core/core.h`. The program links it.
+  Another program takes it as `subproject('rance-browser').get_variable('rance_core_dep')`, with
+  cimgui in it; RQ MOD's coming scene editor is the first.
+- The readers no longer reach into the window: the program gives them the display's scale and where
+  their messages go (`CORE`), and the thumbnails count their own frames.
+
 ## 1.0.0 (2026-11-16)
 
 Rance Browser: RQ MOD's file browser in a repository of its own, and for more games than Rance Quest

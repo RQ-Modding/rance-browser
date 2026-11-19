@@ -114,11 +114,24 @@ with two options: `rq_ids_dir` (its own names, `data/ids`) and `rq_lua` (its `rq
 each Lua line the browser offers names a real call). Built alone, the browser uses the copy of the
 names in `games/rq-ids` and checks no Lua lines.
 
+**Its readers as a library.** What reads a game (its profile, the game folder, the CGs, the Flash
+files, the music and sounds, the other pictures, RQ MOD's names, the thumbnails and the player) is the
+static library `rance_core`, in `src/core`, described by `src/core/core.h`. Another program takes it
+as a meson subproject, with cimgui in it:
+
+```
+rance_core_dep = subproject('rance-browser').get_variable('rance_core_dep')
+```
+
+The program gives the readers the display's scale and where their messages go (`CORE` in `core.h`),
+and calls `pics_frame()` once a frame.
+
 ## The repository
 
 | Folder | What |
 | --- | --- |
-| `src` | The program, in C. `browser.h` describes the parts. |
+| `src` | The window, in C. `browser.h` describes its parts. |
+| `src/core` | The readers, the library `rance_core`. `core.h` describes them. |
 | `games` | The game profiles (`games/README.md`) and the copy of RQ MOD's names (`games/rq-ids`). |
 | `third_party/cimgui` | Dear ImGui and cimgui, which draw the window (MIT). |
 | `subprojects/libsys4` | libsys4, a git submodule (GPL-2.0-or-later). |

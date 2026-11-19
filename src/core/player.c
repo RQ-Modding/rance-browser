@@ -8,7 +8,7 @@
 #include <sndfile.h>
 
 #include "system4.h"
-#include "browser.h"
+#include "core.h"
 
 struct vio {
 	uint8_t *data;
@@ -125,7 +125,7 @@ static bool open_device(void)
 	want.callback = callback;
 	P.dev = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
 	if (!P.dev) {
-		ui_status("No sound device: %s", SDL_GetError());
+		core_status("No sound device: %s", SDL_GetError());
 		return false;
 	}
 	SDL_PauseAudioDevice(P.dev, 0);
@@ -142,7 +142,7 @@ static bool load(const uint8_t *data, size_t size, const char *title, SF_INFO *i
 	P.info = *info;
 	P.f = sf_open_virtual(&vio_ops, SFM_READ, &P.info, &P.v);
 	if (!P.f || P.info.channels <= 0 || P.info.samplerate <= 0) {
-		ui_status("Could not read the sound: %s", sf_strerror(P.f));
+		core_status("Could not read the sound: %s", sf_strerror(P.f));
 		player_close();
 		return false;
 	}

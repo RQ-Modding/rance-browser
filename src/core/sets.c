@@ -21,7 +21,7 @@
 #include "system4/little_endian.h"
 #include "system4/utfsjis.h"
 
-#include "browser.h"
+#include "core.h"
 
 const char *const set_titles[PK_NKINDS] = { "CGs", "3D textures", "Other pictures", "Dungeon textures" };
 const char *const tex_folder_names[TEX_NFOLDERS] = { "Chara", "Map", "BG", "Etc", "Texture", "Other" };

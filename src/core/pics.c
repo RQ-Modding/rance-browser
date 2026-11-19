@@ -14,7 +14,7 @@
 #include "system4/cg.h"
 #include "system4/file.h"
 
-#include "browser.h"
+#include "core.h"
 
 /* Thumbnails are at most THUMB pixels, 96 at the display's 100 % (set by pics_init). */
 static int THUMB = 96;
@@ -28,6 +28,7 @@ struct result {
 };
 
 static struct thumb *thumbs[PK_NKINDS];
+static unsigned now;   /* the frames pics_frame has seen: when each thumbnail was last drawn */
 static int nthumbs[PK_NKINDS];
 static int live;
 
@@ -112,7 +113,7 @@ void draw_fit_image(unsigned tex, int w, int h, V2 pos, float box)
 	V2 a = v2(pos.x + (box - dw) / 2, pos.y + (box - dh) / 2);
 	V2 b = v2(a.x + dw, a.y + dh);
 	ImDrawList *dl = igGetWindowDrawList();
-	draw_checker(dl, a, b, S(6), 0x40666666, 0x40999999);
+	draw_checker(dl, a, b, 6 * CORE.scale, 0x40666666, 0x40999999);
 	ImDrawList_AddImage(dl, texref(tex), a, b, v2(0, 0), v2(1, 1), 0xffffffff);
 }
 
@@ -189,7 +190,7 @@ static int worker(void *arg)
 
 void pics_init(void)
 {
-	THUMB = (int)(96 * (UI.scale > 1 ? UI.scale : 1) + 0.5f);
+	THUMB = (int)(96 * (CORE.scale > 1 ? CORE.scale : 1) + 0.5f);
 	if (THUMB > 192)
 		THUMB = 192;
 	for (int k = 0; k < PK_NKINDS; k++)
@@ -207,7 +208,7 @@ struct thumb *pics_thumb(int kind, int i)
 	if (kind < 0 || kind >= PK_NKINDS || i < 0 || i >= nthumbs[kind])
 		return &none;
 	struct thumb *t = &thumbs[kind][i];
-	t->last = UI.frame;
+	t->last = now;
 	if (t->state == 0) {
 		SDL_LockMutex(lock);
 		if (nreq == MAX_REQ) {
@@ -229,6 +230,7 @@ struct thumb *pics_thumb(int kind, int i)
 
 void pics_frame(void)
 {
+	now++;
 	SDL_LockMutex(lock);
 	struct result *r = done;
 	done = NULL;
@@ -255,7 +257,7 @@ void pics_frame(void)
 		for (int k = 0; k < PK_NKINDS; k++)
 			for (int i = 0; i < nthumbs[k]; i++) {
 				struct thumb *t = &thumbs[k][i];
-				if (t->state == 2 && t->last + 2 < UI.frame && (!old || t->last < old->last))
+				if (t->state == 2 && t->last + 2 < now && (!old || t->last < old->last))
 					old = t;
 			}
 		if (!old)

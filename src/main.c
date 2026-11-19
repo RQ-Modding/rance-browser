@@ -211,8 +211,8 @@ static void style(void)
 	s->FramePadding = v2(8, 5);
 	s->ItemSpacing = v2(8, 6);
 	/* The sizes and the text at the display's scale; ImGui 1.92 draws the font's glyphs at that size. */
-	ImGuiStyle_ScaleAllSizes(s, UI.scale);
-	s->FontScaleDpi = UI.scale;
+	ImGuiStyle_ScaleAllSizes(s, CORE.scale);
+	s->FontScaleDpi = CORE.scale;
 }
 
 /* The display's scale, 1 at 100 % (96 DPI). The program is per-monitor DPI aware, so Windows does
@@ -398,6 +398,12 @@ static void select_for_shot(void)
 
 /* ---- main ---- */
 
+/* A reader's message (the player's, core.h) goes to the status line. */
+static void core_message(const char *text)
+{
+	ui_status("%s", text);
+}
+
 int main(int argc, char **argv)
 {
 	parse_args(argc, argv);
@@ -406,6 +412,7 @@ int main(int argc, char **argv)
 	sys_silent = true;
 	sys_error_handler = on_error;
 	win_init();
+	CORE.status = core_message;
 
 	char dir[1024] = "";
 	if (!find_game(dir, sizeof dir)) {
@@ -453,12 +460,12 @@ int main(int argc, char **argv)
 		flags |= SDL_WINDOW_HIDDEN;
 	int ww = A.w, wh = A.h;
 	if (A.shot_path) {
-		UI.scale = A.scale > 0 ? A.scale : 1;
+		CORE.scale = A.scale > 0 ? A.scale : 1;
 	} else {
-		UI.scale = A.scale > 0 ? A.scale : display_scale(0);
+		CORE.scale = A.scale > 0 ? A.scale : display_scale(0);
 		if (!A.size_given) {
-			ww = (int)(A.w * UI.scale);
-			wh = (int)(A.h * UI.scale);
+			ww = (int)(A.w * CORE.scale);
+			wh = (int)(A.h * CORE.scale);
 		}
 		SDL_Rect r;
 		if (SDL_GetDisplayUsableBounds(0, &r) == 0) {
@@ -512,8 +519,8 @@ int main(int argc, char **argv)
 			/* Moved to a screen with another scale. */
 			if (!A.shot_path && !A.scale && ev.type == SDL_WINDOWEVENT && ev.window.event == SDL_WINDOWEVENT_DISPLAY_CHANGED) {
 				float s = display_scale(ev.window.data1);
-				if (s != UI.scale) {
-					UI.scale = s;
+				if (s != CORE.scale) {
+					CORE.scale = s;
 					style();
 				}
 			}

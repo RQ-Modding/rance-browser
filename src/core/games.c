@@ -10,7 +10,7 @@
 
 #include "system4.h"
 
-#include "browser.h"
+#include "core.h"
 
 struct game_src { const char *code; const char *text; unsigned len; };
 extern const struct game_src game_srcs[];

@@ -4,8 +4,11 @@
 # Alone:            meson setup build && ninja -C build
 # Inside RQ MOD:    the engine calls subproject('rance-browser') with rq_ids_dir and rq_lua, so the
 #                   names and the Lua lines are the loader's own (meson then shares its libsys4).
+# Its readers:      the static library rance_core (src/core), which another program (a scene
+#                   editor) takes as subproject('rance-browser').get_variable('rance_core_dep'),
+#                   with cimgui in it.
 project('rance-browser', 'c', 'cpp',
-        version : '1.0.0',
+        version : '1.0.1',
         meson_version : '>= 0.59',
         default_options : ['c_std=c11', 'cpp_std=c++17', 'warning_level=1'])
 add_project_arguments('-D_DEFAULT_SOURCE', language : 'c')
@@ -75,24 +78,41 @@ rq_lua_lines_c = custom_target('rq_lua_lines',
     depfile : 'rq_lua_lines.c.d',
     command : [py, files('tools/check_lua_lines.py'), '@OUTPUT@', '@DEPFILE@', '@INPUT@', get_option('rq_lua')])
 
+# ---- the readers: the rance_core library (src/core/core.h) ----
+
+c_warnings = ['-Wno-unused-parameter', '-Wno-sign-compare', '-Wno-missing-field-initializers']
+core_inc = include_directories('src/core')
+core_deps = [sdl2, sndfile, zlib, libm, gl, libsys4_dep]
+
+rance_core_lib = static_library('rance_core',
+    ['src/core/core.c', 'src/core/game.c', 'src/core/games.c', 'src/core/sets.c',
+     'src/core/pics.c', 'src/core/player.c', 'src/core/swf.c', 'src/core/cJSON.c',
+     games_c, rq_ids_c, rq_pictures_c],
+    c_args : c_warnings + ['-DCIMGUI_NO_EXPORT'],
+    include_directories : [core_inc, cimgui_inc],
+    dependencies : core_deps)
+
+# What a program over the readers takes: their header, cimgui's, and the libraries in link order.
+rance_core_dep = declare_dependency(
+    link_with : [rance_core_lib, cimgui_lib],
+    include_directories : [core_inc, cimgui_inc],
+    compile_args : ['-DCIMGUI_NO_EXPORT'],
+    dependencies : core_deps)
+
 # ---- the program ----
 
 browser_version = meson.project_version()
 build_note = get_option('build_note')
 
 executable('rance-browser',
-    ['src/main.c', 'src/game.c', 'src/games.c', 'src/sets.c', 'src/pics.c', 'src/player.c',
-     'src/ui.c', 'src/win.c', 'src/check.c',
+    ['src/main.c', 'src/ui.c', 'src/win.c', 'src/check.c',
      'src/tab_pictures.c', 'src/tab_flash.c', 'src/tab_audio.c', 'src/tab_names.c',
-     'src/swf.c', 'src/cJSON.c',
-     games_c, rq_ids_c, rq_pictures_c, rq_lua_lines_c],
-    c_args : ['-Wno-unused-parameter', '-Wno-sign-compare', '-Wno-missing-field-initializers',
+     rq_lua_lines_c],
+    c_args : c_warnings + [
               '-DBROWSER_VERSION="' + browser_version + '"',
-              '-DBROWSER_BUILD_NOTE="' + build_note + '"',
-              '-DCIMGUI_NO_EXPORT'],
-    include_directories : [include_directories('src'), cimgui_inc],
-    dependencies : [sdl2, sndfile, zlib, libm, gl, libsys4_dep],
-    link_with : cimgui_lib,
+              '-DBROWSER_BUILD_NOTE="' + build_note + '"'],
+    include_directories : include_directories('src'),
+    dependencies : rance_core_dep,
     link_args : ['-static', '-lstdc++', '-lcomdlg32', '-lole32', '-lshell32', '-luuid'],
     win_subsystem : 'windows',
     install : true)

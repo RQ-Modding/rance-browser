@@ -1,5 +1,5 @@
 # Rance Browser: a window over the files of AliceSoft's System 4 games (CGs, Flash files, music,
-# sounds, textures), read-only. Built on Windows with MSYS2 MINGW64; see README.md.
+# sounds, textures), read-only. Built on Windows with MSYS2 UCRT64; see README.md.
 #
 # Alone:            meson setup build && ninja -C build
 # Inside RQ MOD:    the engine calls subproject('rance-browser') with rq_ids_dir and rq_lua, so the

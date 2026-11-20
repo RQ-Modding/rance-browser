@@ -90,13 +90,13 @@ a loop point therefore reads as the game reads it.
 
 ## Building
 
-Windows, with [MSYS2](https://www.msys2.org/) in its MINGW64 shell:
+Windows, with [MSYS2](https://www.msys2.org/) in its UCRT64 shell:
 
 ```
-pacman -S --needed base-devel git mingw-w64-x86_64-gcc mingw-w64-x86_64-meson \
-    mingw-w64-x86_64-pkg-config mingw-w64-x86_64-python mingw-w64-x86_64-SDL2 \
-    mingw-w64-x86_64-libsndfile mingw-w64-x86_64-libjpeg-turbo mingw-w64-x86_64-libwebp \
-    mingw-w64-x86_64-libpng mingw-w64-x86_64-libdeflate
+pacman -S --needed base-devel git mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-meson \
+    mingw-w64-ucrt-x86_64-pkg-config mingw-w64-ucrt-x86_64-python mingw-w64-ucrt-x86_64-SDL2 \
+    mingw-w64-ucrt-x86_64-libsndfile mingw-w64-ucrt-x86_64-libjpeg-turbo mingw-w64-ucrt-x86_64-libwebp \
+    mingw-w64-ucrt-x86_64-libpng mingw-w64-ucrt-x86_64-libdeflate
 git clone --recurse-submodules https://github.com/RQ-Modding/rance-browser.git
 cd rance-browser
 meson setup build --buildtype=release
@@ -107,7 +107,7 @@ The program is `build/rance-browser.exe`, linked statically: it needs only Windo
 
 libjpeg-turbo 3.2.1 cannot be linked statically beside zlib (both define `z_errmsg`). Until that is
 fixed, install 3.2.0:
-`pacman -U https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libjpeg-turbo-3.2.0-1-any.pkg.tar.zst`.
+`pacman -U https://repo.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libjpeg-turbo-3.2.0-1-any.pkg.tar.zst`.
 
 **Inside RQ MOD.** RQ MOD has this repository as a submodule and builds it as a meson subproject
 with two options: `rq_ids_dir` (its own names, `data/ids`) and `rq_lua` (its `rq.lua`, to check that

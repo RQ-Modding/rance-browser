@@ -80,6 +80,8 @@ jobs:
           mkdir -p $pkg/licenses/imgui $pkg/licenses/cimgui
           cp build/rance-browser.exe README.md CHANGELOG.md CREDITS.md COPYING $pkg/
           cp -r /mingw64/share/licenses/. $pkg/licenses/
+          # MSYS2 installs no license file for libvorbis and LAME, linked in through libsndfile.
+          cp -r licenses/. $pkg/licenses/
           cp third_party/cimgui/imgui/LICENSE.txt $pkg/licenses/imgui/
           cp third_party/cimgui/LICENSE $pkg/licenses/cimgui/
           cd $pkg && zip -r -9 ../RanceBrowser-${{ steps.version.outputs.version }}-windows.zip . && cd ..

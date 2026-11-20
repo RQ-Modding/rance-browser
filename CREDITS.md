@@ -11,10 +11,12 @@ Rance Browser is GPL-2.0-or-later (`COPYING`). It is built from these, each unde
 | [Dear ImGui 1.92.9](https://github.com/ocornut/imgui) | Omar Cornut and contributors | MIT | `third_party/cimgui/imgui` |
 | [cimgui 1.92.9b](https://github.com/cimgui/cimgui) | Stephan Dilly and contributors | MIT | `third_party/cimgui` |
 | [SDL2](https://www.libsdl.org/) | Sam Lantinga and contributors | zlib | linked in |
-| [libsndfile](https://libsndfile.github.io/libsndfile/), with libogg, libvorbis, FLAC, Opus and mpg123 | their authors | LGPL-2.1-or-later and others | linked in |
+| [libsndfile](https://libsndfile.github.io/libsndfile/), with libogg, libvorbis, FLAC, Opus, mpg123 and LAME | their authors | LGPL-2.1-or-later and others | linked in |
 | libjpeg-turbo, libwebp, libpng, zlib, libdeflate | their authors | BSD-style, zlib, MIT | linked in, through libsys4 |
 
 The release zip carries each linked library's license in `licenses/`, as MSYS2 installs them.
+MSYS2 installs no license file for libvorbis and LAME, so this repository carries them in
+`licenses/`.
 
 Rance Browser began as RQ Browser in [RQ MOD](https://github.com/RQ-Modding/RQ-Mod) (loader 2.43.0
 to 2.55.0); its history came along with it.

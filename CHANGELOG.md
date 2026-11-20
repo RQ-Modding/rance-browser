@@ -13,6 +13,9 @@ The readers as a library, for another program to share; nothing changes in the w
   cimgui in it; RQ MOD's coming scene editor is the first.
 - The readers no longer reach into the window: the program gives them the display's scale and where
   their messages go (`CORE`), and the thumbnails count their own frames.
+- **The licenses of libvorbis and LAME in the zip** (`licenses/libvorbis`, `licenses/lame`): both are
+  linked in through libsndfile, and MSYS2 installs no license file for them, so the repository
+  carries them. 1.0.0's zip lacked both.
 
 ## 1.0.0 (2026-11-16)
 

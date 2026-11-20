@@ -2,7 +2,7 @@
 
 Each version, newest first. A version in RQ MOD's package is named in RQ MOD's own CHANGELOG.
 
-## 1.0.1 (2026-11-19)
+## 1.0.1 (2026-11-20)
 
 The readers as a library, for another program to share; nothing changes in the window.
 

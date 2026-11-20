@@ -104,10 +104,17 @@ rance_core_dep = declare_dependency(
 browser_version = meson.project_version()
 build_note = get_option('build_note')
 
-executable('rance-browser',
-    ['src/main.c', 'src/ui.c', 'src/win.c', 'src/check.c',
+browser_src = ['src/main.c', 'src/ui.c', 'src/win.c', 'src/check.c',
      'src/tab_pictures.c', 'src/tab_flash.c', 'src/tab_audio.c', 'src/tab_names.c',
-     rq_lua_lines_c],
+     rq_lua_lines_c]
+# The exe's icon (res/rance-browser.ico, from res/rance-browser.png).
+if host_machine.system() == 'windows'
+    browser_src += import('windows').compile_resources('res/rance-browser.rc',
+        include_directories : include_directories('res'))
+endif
+
+executable('rance-browser',
+    browser_src,
     c_args : c_warnings + [
               '-DBROWSER_VERSION="' + browser_version + '"',
               '-DBROWSER_BUILD_NOTE="' + build_note + '"'],

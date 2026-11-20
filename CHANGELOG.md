@@ -16,6 +16,8 @@ The readers as a library, for another program to share; nothing changes in the w
 - **The licenses of libvorbis and LAME in the zip** (`licenses/libvorbis`, `licenses/lame`): both are
   linked in through libsndfile, and MSYS2 installs no license file for them, so the repository
   carries them. 1.0.0's zip lacked both.
+- **An icon of its own**, on the exe in Explorer, on the window and in the taskbar
+  (`res/rance-browser.png`, made into `res/rance-browser.ico`).
 
 ## 1.0.0 (2026-11-16)
 

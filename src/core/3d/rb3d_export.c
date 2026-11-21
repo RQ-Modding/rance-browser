@@ -4,7 +4,10 @@
  * POL read again with its .opr, for what the engine keeps only in GL buffers (points, UVs, normals,
  * colours, triangles, weights). The pictures are decoded again and kept in the file as PNG. What the
  * game draws and glTF cannot say (the light map, the outline, a UV scroll, the frames the game plays)
- * goes into extras named rq_*.
+ * goes into extras named rq_*. The points' colours are written decoded as sRGB: glTF reads COLOR_0 as
+ * linear and multiplies the decoded picture by it, where the engine multiplies the picture's values by
+ * the colour as they are, so a reader draws close to what the game draws. Each primitive's UVs are
+ * moved by whole squares to lie on their picture (uv_shifts), which draws the same.
  *
  * glTF's axes are the engine's (y up; the POL reader turned the game's left-handed space around),
  * its units metres, its front faces counter-clockwise, as the engine's are before it turns its
@@ -46,9 +49,10 @@ enum { C_FLOAT = 5126, C_USHORT = 5123, C_UINT = 5125 };
 enum { T_ARRAY = 34962, T_INDEX = 34963 };
 enum { MODE_OPAQUE, MODE_MASK, MODE_BLEND };
 static const char *const mode_names[] = { "OPAQUE", "MASK", "BLEND" };
-/* How a picture is written: as it is; its alpha times its alpha map's red, or that red alone (the
- * shader's ALPHA_MAP_BLEND and ALPHA_MAP_TEST); a normal map with its green turned over (the
- * engine's bitangent points down the picture, glTF's up). */
+/* How a picture is written: as it is; its alpha times its alpha map's red (the shader's
+ * ALPHA_MAP_BLEND), or its alpha where the map's red is 0.1 or more and 0 under it (ALPHA_MAP_TEST:
+ * the shader cuts there and blends the rest by the picture's alpha); a normal map with its green
+ * turned over (the engine's bitangent points down the picture, glTF's up). */
 enum { BAKE_PLAIN, BAKE_TIMES_MAP, BAKE_FROM_MAP, BAKE_GREEN };
 
 /* ---- bytes ---- */
@@ -332,6 +336,7 @@ struct prim {
 	int nidx, capidx;
 	int base;                     /* its first point's number in its mesh, as Blender numbers them */
 	const char *node;             /* its node's name */
+	float uv_shift[2], luv_shift[2];  /* whole squares added to its UVs as written (uv_shifts) */
 	float min_alpha;              /* its points' smallest alpha */
 	uint8_t *engine;              /* the engine's buffer, read back for the samples */
 	int stride, bones_off;        /* its layout (model.c's add_mesh) */
@@ -345,6 +350,8 @@ struct image {
 	int w, h;
 	uint32_t crc;                 /* of the RGBA written */
 	int min_alpha;
+	int kept_min_alpha;           /* BAKE_FROM_MAP: the smallest alpha where the map keeps the picture
+	                               * (255 when it keeps none); else min_alpha */
 };
 
 struct gmat {
@@ -492,6 +499,7 @@ static int get_image(struct export *x, const char *name, const char *amap, int b
 	uint8_t *px = cg->pixels;
 	size_t npx = (size_t)w * h;
 	bool baked = false;
+	int kept_min = 256;
 	if (bake == BAKE_TIMES_MAP || bake == BAKE_FROM_MAP) {
 		struct cg *am = read_cg(x, amap);
 		if (!am) {
@@ -501,7 +509,13 @@ static int get_image(struct export *x, const char *name, const char *amap, int b
 				for (int xx = 0; xx < w; xx++) {
 					uint8_t *q = px + ((size_t)yy * w + xx) * 4;
 					int r = red_at(am, xx, yy, w, h);
-					q[3] = (uint8_t)(bake == BAKE_TIMES_MAP ? (q[3] * r + 127) / 255 : r);
+					if (bake == BAKE_TIMES_MAP) {
+						q[3] = (uint8_t)((q[3] * r + 127) / 255);
+					} else if (r * 10 < 255) {   /* the shader's red < 0.1: cut */
+						q[3] = 0;
+					} else if (q[3] < kept_min) {
+						kept_min = q[3];
+					}
 				}
 			cg_free(am);
 			baked = true;
@@ -552,6 +566,7 @@ static int get_image(struct export *x, const char *name, const char *amap, int b
 	im->h = h;
 	im->crc = crc;
 	im->min_alpha = min_alpha;
+	im->kept_min_alpha = bake == BAKE_FROM_MAP && baked ? (kept_min > 255 ? 255 : kept_min) : min_alpha;
 	return x->nimg++;
 }
 
@@ -588,8 +603,13 @@ static void flag_word(char *buf, size_t n, const char *word)
 
 /* The file's material for a primitive: one per engine material and what changes it in glTF (its
  * alpha, both sides, vertex colours: Blender makes one material per glTF material and presence of
- * COLOR_0). Blended or cut is the engine's call (renderer.c: an alpha map's red blended on a
- * transparent mesh, else cut under 0.1; the colour's alpha blended, else cut under 0.75). */
+ * COLOR_0). Blended or cut is the engine's call (renderer.c and reign.f.glsl): on a transparent
+ * mesh the alpha is blended, times the alpha map's red when there is one; else the shader cuts (where
+ * an alpha map's red is under 0.1, or else where the alpha is under 0.75) and blends what is left by
+ * its alpha, as blending is on in both passes. glTF cuts or blends, not both: BLEND when what an alpha
+ * map leaves is not solid; a cut at 0.75 stays MASK (or OPAQUE when it cuts nothing), which draws the
+ * alpha from 0.75 to 1 solid, as blending would also take the depth sorting a solid mesh needs in
+ * Blender. */
 static int get_material(struct export *x, int mi, const struct pol_material *pm, const struct mesh *em,
                         bool colors, float min_vertex_alpha)
 {
@@ -606,8 +626,13 @@ static int get_material(struct export *x, int mi, const struct pol_material *pm,
 	if (blend) {
 		mode = MODE_BLEND;
 	} else if (amap) {
-		mode = MODE_MASK;
-		cutoff = 0.1;
+		/* the picture's alpha is 0 where the map cuts: a cut alone when what it leaves is solid */
+		if ((img >= 0 ? x->img[img].kept_min_alpha / 255.0 : 1.0) * min_vertex_alpha >= 1.0) {
+			mode = MODE_MASK;
+			cutoff = 0.5;
+		} else {
+			mode = MODE_BLEND;
+		}
 	} else if ((img >= 0 ? x->img[img].min_alpha / 255.0 : 1.0) * min_vertex_alpha >= 0.75) {
 		mode = MODE_OPAQUE;   /* the engine's test at 0.75 cuts nothing */
 	} else {
@@ -662,11 +687,16 @@ static int get_material(struct export *x, int mi, const struct pol_material *pm,
 		flag_word(flags, sizeof flags, "sprite");
 	if (flags[0])
 		cJSON_AddStringToObject(ex, "rq_flags", flags);
-	const char *alpha = mode == MODE_BLEND ? (amap ? "blended by the picture's alpha times its alpha map's red, baked into the picture"
-	                                              : "blended by the picture's alpha")
-	                  : amap ? "cut where its alpha map's red is under 0.1, baked into the picture's alpha"
-	                  : mode == MODE_MASK ? "cut where the alpha is under 0.75"
-	                  : "cut where the alpha is under 0.75, which is nowhere";
+	const char *alpha = blend ? (amap ? "blended by the picture's alpha times its alpha map's red, baked into the picture"
+	                                  : "blended by the picture's alpha")
+	                  : amap ? (mode == MODE_BLEND ? "cut where its alpha map's red is under 0.1 and the rest blended by the "
+	                                                 "picture's alpha, baked into the picture's alpha (0 where cut)"
+	                                               : "cut where its alpha map's red is under 0.1, baked into the picture's alpha "
+	                                                 "(0 where cut); what is left is solid")
+	                  : mode == MODE_MASK ? "cut where the alpha is under 0.75, the rest blended by its alpha in the game "
+	                                        "(drawn solid by glTF's MASK)"
+	                  : "cut where the alpha is under 0.75, which is nowhere, the rest blended by its alpha in the game "
+	                    "(drawn solid by glTF's OPAQUE)";
 	cJSON_AddStringToObject(ex, "rq_alpha", alpha);
 	if (amap) {
 		char *a = utf(pm->textures[ALPHA_MAP]);
@@ -1029,6 +1059,46 @@ static void build_points(struct export *x, struct prim *pr, const struct pol_mes
 	weld_free(&w);
 }
 
+static int cmp_float(const void *a, const void *b)
+{
+	float x = *(const float *)a, y = *(const float *)b;
+	return (x > y) - (x < y);
+}
+
+/* Whole squares to add to a primitive's UVs, each set and each axis apart, so that their median lies
+ * in the picture's square: the game's model textures repeat (model.c's GL_REPEAT, the file's samplers
+ * too), so a whole number draws the same, while the game's own UVs often lie a square away (v from -1
+ * to 0), where Blender's UV editor shows them off the picture. The median, not the middle of the
+ * box, as some meshes hold a few points far out (a room's light map with UVs near 400,000); and no
+ * move of more than 16 squares, which could cost a float its fraction. */
+static void uv_shifts(struct prim *pr)
+{
+	float *f = xmalloc((pr->nv ? pr->nv : 1) * sizeof *f);
+	for (int l = 0; l < 2; l++) {
+		float *sh = l ? pr->luv_shift : pr->uv_shift;
+		sh[0] = sh[1] = 0.f;
+		if ((l && !pr->luv) || pr->nv <= 0)
+			continue;
+		for (int c = 0; c < 2; c++) {
+			for (int i = 0; i < pr->nv; i++)
+				f[i] = l ? pr->v[i].luv[c] : pr->v[i].uv[c];
+			qsort(f, pr->nv, sizeof *f, cmp_float);
+			float s = -floorf(f[pr->nv / 2]);
+			if (isfinite(s) && s != 0.f && fabsf(s) <= 16.f)
+				sh[c] = s;
+		}
+	}
+	free(f);
+}
+
+/* A colour of the game's as glTF reads COLOR_0: the engine multiplies a picture's values by it as they
+ * are, while a reader decodes the picture from sRGB and multiplies by COLOR_0 as linear; decoded the
+ * same way, the product encoded again comes close to the game's. */
+static float srgb_decode(float c)
+{
+	return c <= 0.04045f ? c / 12.92f : powf((c + 0.055f) / 1.055f, 2.4f);
+}
+
 /* The primitive's accessors and its JSON. */
 static cJSON *prim_json(struct export *x, const struct prim *pr)
 {
@@ -1052,16 +1122,21 @@ static cJSON *prim_json(struct export *x, const struct prim *pr)
 			memcpy(&buf[i * 3], pr->v[i].nrm, 3 * sizeof(float));
 		cJSON_AddNumberToObject(at, "NORMAL", glb_accessor(&x->g, buf, nv, C_FLOAT, "VEC3", 3, T_ARRAY, NULL, NULL));
 		for (int i = 0; i < nv; i++)
-			memcpy(&buf[i * 2], pr->v[i].uv, 2 * sizeof(float));
+			for (int c = 0; c < 2; c++)
+				buf[i * 2 + c] = pr->v[i].uv[c] + pr->uv_shift[c];
 		cJSON_AddNumberToObject(at, "TEXCOORD_0", glb_accessor(&x->g, buf, nv, C_FLOAT, "VEC2", 2, T_ARRAY, NULL, NULL));
 		if (pr->luv) {
 			for (int i = 0; i < nv; i++)
-				memcpy(&buf[i * 2], pr->v[i].luv, 2 * sizeof(float));
+				for (int c = 0; c < 2; c++)
+					buf[i * 2 + c] = pr->v[i].luv[c] + pr->luv_shift[c];
 			cJSON_AddNumberToObject(at, "TEXCOORD_1", glb_accessor(&x->g, buf, nv, C_FLOAT, "VEC2", 2, T_ARRAY, NULL, NULL));
 		}
 		if (pr->colors) {
-			for (int i = 0; i < nv; i++)
-				memcpy(&buf[i * 4], pr->v[i].col, 4 * sizeof(float));
+			for (int i = 0; i < nv; i++) {
+				for (int c = 0; c < 3; c++)
+					buf[i * 4 + c] = srgb_decode(pr->v[i].col[c]);
+				buf[i * 4 + 3] = pr->v[i].col[3];   /* alpha is not encoded */
+			}
 			cJSON_AddNumberToObject(at, "COLOR_0", glb_accessor(&x->g, buf, nv, C_FLOAT, "VEC4", 4, T_ARRAY, NULL, NULL));
 		}
 		if (pr->skinned) {
@@ -1243,6 +1318,8 @@ static bool build_meshes(struct export *x)
 				free(pr.idx);
 				continue;
 			}
+			if (!walk)
+				uv_shifts(&pr);
 			pr.material = walk ? walk_material(x)
 			            : get_material(x, mi, pm, &x->mdl->meshes[pr.engine_mesh], pr.colors, pr.min_alpha);
 			pr.base = base;
@@ -1517,6 +1594,12 @@ static void root_extras(struct export *x, cJSON *ex)
 		cJSON_AddStringToObject(ex, "rq_label_en", m->en);
 	if (m->look)
 		cJSON_AddStringToObject(ex, "rq_look", m->look);
+	for (int i = 0; i < x->nprim; i++)
+		if (x->prim[i].colors) {
+			cJSON_AddStringToObject(ex, "rq_vertex_colors", "COLOR_0 is the game's colours decoded as sRGB; the game "
+			                                                 "multiplies its pictures by them as they are");
+			break;
+		}
 	if (m->bg_no >= 0)
 		cJSON_AddNumberToObject(ex, "rq_background", m->bg_no);
 	if (m->object >= 0) {
@@ -1633,11 +1716,11 @@ static void skin_point(const mat3x4 *bt, int nb, const int ids[4], const float w
 	}
 }
 
-/* A point of the engine's buffer of primitive pr: its position, UV, light UV (when the engine has
- * them) and its bones as the engine's shader reads them. */
+/* A point of the engine's buffer of primitive pr: its position, UV, light UV and colour (when the
+ * engine has them) and its bones as the engine's shader reads them. */
 struct epoint {
-	float pos[3], uv[2], luv[2];
-	bool has_luv;
+	float pos[3], uv[2], luv[2], col[4];
+	bool has_luv, has_col;
 	int ids[4];
 	float w[4];
 	bool has_bones;
@@ -1664,6 +1747,10 @@ static void engine_point(struct export *x, struct prim *pr, int point, struct ep
 	if (m->light_uvs && mat->light_map) {
 		memcpy(out->luv, v + 32, 2 * sizeof(float));
 		out->has_luv = true;
+	}
+	if (m->nr_colors > 0 || m->nr_alphas > 0) {   /* the colour comes after the light UV */
+		memcpy(out->col, v + (out->has_luv ? 40 : 32), 4 * sizeof(float));
+		out->has_col = true;
 	}
 	if (x->mdl->bone_map) {
 		memcpy(out->ids, v + pr->bones_off, 4 * sizeof(int));
@@ -1784,13 +1871,22 @@ static void samples(struct export *x, cJSON *out)
 		cJSON *o = point_ref(pr, pk[i].point);
 		cJSON_AddItemToObject(o, "pos", sample_vec(ep[i].pos, 3));
 		cJSON_AddItemToArray(pts, o);
-		/* the UVs Blender should hold: the engine's, the colour's tiling applied as the export did */
+		/* the engine's UVs, the colour's tiling applied as the export did, and the whole squares the
+		 * export added (Blender should hold the sum) */
 		const float *tiling = mdl->materials[mdl->meshes[pr->engine_mesh].material].uv_tiling;
 		float uv[2] = { ep[i].uv[0] * tiling[0], ep[i].uv[1] * tiling[1] };
 		cJSON *u = point_ref(pr, pk[i].point);
 		cJSON_AddItemToObject(u, "uv", sample_vec(uv, 2));
-		if (ep[i].has_luv)
+		if (pr->uv_shift[0] != 0.f || pr->uv_shift[1] != 0.f)
+			cJSON_AddItemToObject(u, "uv_shift", sample_vec(pr->uv_shift, 2));
+		if (ep[i].has_luv) {
 			cJSON_AddItemToObject(u, "uv1", sample_vec(ep[i].luv, 2));
+			if (pr->luv_shift[0] != 0.f || pr->luv_shift[1] != 0.f)
+				cJSON_AddItemToObject(u, "uv1_shift", sample_vec(pr->luv_shift, 2));
+		}
+		/* the colour the shader multiplies by, which Blender should give back as sRGB */
+		if (ep[i].has_col && pr->colors)
+			cJSON_AddItemToObject(u, "color", sample_vec(ep[i].col, 4));
 		cJSON_AddItemToArray(uvs, u);
 	}
 
@@ -2061,6 +2157,25 @@ static void export_fn(void *arg)
 	x->ok = true;
 }
 
+/* part put in place of path: 0 done; 1 path could not be removed (it stays as it was); 2 path was
+ * removed but part could not take its name (part stays). */
+static int replace_file(const char *part, const char *path)
+{
+	if (file_exists(path) && remove_utf8(path) != 0)
+		return 1;
+#ifdef _WIN32
+	wchar_t *a = utf8_to_wchar(part), *b = utf8_to_wchar(path);
+	int r = _wrename(a, b);
+	free(a);
+	free(b);
+#else
+	int r = rename(part, path);
+#endif
+	return r == 0 ? 0 : 2;
+}
+
+/* The file is written beside path as path.part and takes path's name once it is whole, so a write
+ * that fails (a full disk) leaves no broken file and an earlier one as it was. */
 static bool write_glb(const char *path, const char *json, const struct bytes *bin, char *err, size_t n)
 {
 	size_t jlen = strlen(json), jpad = (4 - jlen % 4) % 4;
@@ -2070,9 +2185,13 @@ static bool write_glb(const char *path, const char *json, const struct bytes *bi
 		snprintf(err, n, "%s: the model is too big for a .glb file", path);
 		return false;
 	}
-	FILE *f = file_open_utf8(path, "wb");
+	size_t plen = strlen(path) + sizeof ".part";
+	char *part = xmalloc(plen);
+	snprintf(part, plen, "%s.part", path);
+	FILE *f = file_open_utf8(part, "wb");
 	if (!f) {
-		snprintf(err, n, "%s: could not open it to write", path);
+		snprintf(err, n, "%s: could not open it to write", part);
+		free(part);
 		return false;
 	}
 	uint32_t head[3] = { 0x46546C67u, 2, (uint32_t)total };
@@ -2090,8 +2209,21 @@ static bool write_glb(const char *path, const char *json, const struct bytes *bi
 	bool ok = !ferror(f);
 	if (fclose(f) != 0)
 		ok = false;
-	if (!ok)
-		snprintf(err, n, "%s: could not write it all", path);
+	if (!ok) {
+		remove_utf8(part);
+		snprintf(err, n, "%s: could not write it all (is the disk full?)", path);
+	} else {
+		int r = replace_file(part, path);
+		if (r == 1) {
+			remove_utf8(part);
+			snprintf(err, n, "%s: could not replace it (is it open in another program?)", path);
+			ok = false;
+		} else if (r == 2) {
+			snprintf(err, n, "%s: written as %s, which could not take its name", path, part);
+			ok = false;
+		}
+	}
+	free(part);
 	return ok;
 }
 

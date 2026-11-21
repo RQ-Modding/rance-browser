@@ -233,8 +233,9 @@ struct cJSON *rb3d_check(struct aar_archive *red, const char *red_path, const st
  * counts, what was left out and why, and numbers from the engine's own code for a checker: bone
  * heads and points at rest and posed on four frames of each animation, UVs, each picture's CRC and
  * each material's alpha. The view's pose is put back. path NULL makes the whole file and writes
- * nothing (the check's test that the view is left as it was). False with a message in err when it
- * fails; the file is then not written. */
+ * nothing (the check's test that the view is left as it was). The file is written as path.part and
+ * takes path's name once whole. False with a message in err when it fails: path is then as it was,
+ * except when the earlier file went and path.part could not take its name (err names path.part). */
 bool rb3d_export_glb(struct rb3d_view *v, const struct rb3d_list *l, const struct rb3d_model *m,
                      const char *path, const char *generator, struct cJSON *report, char *err, size_t n);
 

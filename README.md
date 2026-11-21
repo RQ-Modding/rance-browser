@@ -4,9 +4,10 @@
 
 
 A window over the files of AliceSoft's System 4 games, for players, wiki writers and mod creators.
-Point it at a game you own and it lists the game's CGs, Flash animations, music, sounds and other
-pictures. You can look at each one, play it, and save it as PNG or OGG. It reads the game's archives without changing them
-and needs neither the game running nor anything installed.
+Point it at a game you own and it lists the game's CGs, Flash animations, 3D models, music, sounds
+and other pictures. You can look at each one, play it, and save it as PNG or OGG, or a 3D model as a
+glTF file for Blender. It reads the game's archives without changing them and needs neither the game
+running nor anything installed.
 
 It began as RQ Browser, the file browser of [RQ MOD](https://github.com/RQ-Modding/RQ-Mod) (a mod
 loader for Rance Quest Magnum), and RQ MOD's package carries it too.
@@ -34,12 +35,13 @@ Each tab appears when the game has that kind of file.
 | --- | --- | --- |
 | **CGs** | Every picture of the CG archive by its number: characters, scenes, backgrounds, the interface, effects. A grid or one at a time, with zoom. | `<game>CG.afa`, or `<game>GA.ald` to `<game>GZ.ald` |
 | **Flash** | The game's Flash animations (Rance Quest's battle effects, marks and cut-ins), played as the game plays them, with what the game makes of each file and the pictures and sounds inside it. A `.swf` or `.aff` from disk too. | `<game>AFF.afa` |
+| **3D models** | Rance Quest's 3D models (its monsters and figures, rooms, fight backgrounds and props), drawn as the game draws them, with their motions; a monster on one of the game's fight backgrounds with its shadow. Each one exports as a glTF file (`.glb`). | `Data\ReignData.red` |
 | **Music** | The tracks, with a player that loops each one where the game does. | `<game>BA.ald` or `.afa`, with the `.bgi` |
 | **Sounds** | The sound effects. | `<game>WA.ald`, `WA.afa` or `Sound.afa` |
 | **3D textures** | The textures of the 3D models (Rance Quest). | `Data\ReignData.red` |
 | **Other pictures** | Pictures kept in `.alk` files (Rance VI's event pictures, the AliceSoft logo). | `*.alk` |
 | **Dungeon textures** | Each dungeon's walls, floors, ceilings, stairs, doors, sky and light maps (Rance VI). | a `.dlf` file |
-| **Names** | Rance Quest only: RQ MOD's names, with a picture where one is known. | built in |
+| **Names** | Rance Quest only: RQ MOD's names, with a picture where one is known (a monster's is its 3D model, which opens in the 3D tab). | built in |
 
 Every picture saves as PNG, alone or all the ones a search shows at once. Music and sounds save as the
 OGG the game stores. A picture whose see-through is kept in a separate mask (Rance VI's battle
@@ -81,22 +83,54 @@ its frame, its tag and what to do. A file the game would not play is not played 
 disk: a mod's own animation, made with RQ MOD's `rqmod-aff`, can be checked and watched before it goes
 into a mod. **Save this frame as PNG...** saves the frame shown.
 
+### 3D models
+
+The 3D tab draws Rance Quest's models with a copy of RQ MOD's 3D renderer, so a model looks as it does
+in the game: its textures and light maps, its outline, and its motions at the game's 30 frames a
+second. A monster plays the motions a fight plays it with, by the game's own table; every motion file
+of its folder also plays whole. Left drag turns the camera, right drag moves it, the wheel comes
+closer. **Bones** and **Walk mesh** draw the skeleton and the floor a room's characters walk on. A
+monster can stand on one of the game's fight backgrounds, with its shadow and, with **Fight camera**,
+seen as a fight sees it. **Save this frame as PNG...** saves the view, see-through where nothing is
+drawn.
+
+**Export the model as glTF (.glb)...** saves the model for Blender and other 3D programs: its meshes,
+its textures (as PNG, inside the file), its materials, its skeleton and each point's weights, each
+motion as an animation, a room's walk mesh as an object of its own, and what glTF has no place for as
+properties named `rq_*`. RQ MOD's guide
+[Game models in Blender](https://rq-modding.github.io/rq-modding-docs/guide/game-models) opens one.
+
+The tab needs OpenGL 3.1; on a PC with less it says so, and the other tabs work. It shows when the
+game has Rance Quest's 3D files.
+
 ### On the command line
 
 ```
 rance-browser [--game DIR] [--scale F] [FILE.aff|FILE.swf]
 rance-browser --check [--game DIR] [--out FILE]
 rance-browser --shot TAB FILE.png [--game DIR] [--select N|NAME] [--grid] [--frame N] [--file PATH]
-              [--size WxH] [--scale F]
+              [--motion NAME] [--fight BG] [--fight-camera] [--walk] [--bones] [--size WxH] [--scale F]
+rance-browser --export OUT.glb --select NAME [--game DIR]
+rance-browser --export DIR (--select NAME | --kind KIND | --all) [--game DIR]
 ```
 
 - A `.aff` or `.swf` path opens that file in the Flash tab.
 - `--check` opens every archive, decodes the first, middle and last picture of each group, reads
-  every track's loop and every sound, checks every Flash file and plays it to its end, and prints the
-  counts as JSON (exit 1 when something failed).
-- `--shot` draws one tab without a window and saves it: `cgs`, `flash`, `music`, `sounds`,
+  every track's loop and every sound, checks every Flash file and plays it to its end, reads every 3D
+  model and motion and draws each model through its motions, and prints the counts as JSON (exit 1
+  when something failed).
+- `--shot` draws one tab without a window and saves it: `cgs`, `flash`, `music`, `sounds`, `3d`,
   `textures`, `pictures`, `dungeons` or `names`. In the Flash tab, `--select` also takes a file's name,
-  `--frame` the frame to draw (from 1) and `--file` a file from disk.
+  `--frame` the frame to draw (from 1) and `--file` a file from disk. In the 3D tab, `--select` takes
+  a model's folder (`gokiburi`, or `Chara/gokiburi` when two kinds have one of that name) or a
+  monster's model number from the game's data (`100122`, with the motions of its entry in the game's
+  monster table), `--motion` a motion file of its folder (or `none`), `--frame` the motion's
+  frame, `--fight` a fight background's folder (`bgA_00_douk`) and `--fight-camera` the fight's camera;
+  `--walk` and `--bones` draw the walk mesh and the skeleton.
+- `--export` saves a model as a `.glb` file, or a folder of them: `--kind` takes `chara`, `map`, `bg`
+  or `etc` (or a list, `chara,map`) and `--all` takes every model, each written as
+  `DIR\<Kind>\<folder>.glb`, with `DIR\export.json`: what each file holds and points of each model as
+  the game's renderer places them, to check the files against in another program.
 - `--scale` sets the size of the text and the layout (1 to 4; by default the screen's scale).
 
 ## How a game is found

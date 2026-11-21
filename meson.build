@@ -9,7 +9,7 @@
 #                   with cimgui in it.
 # Its 3D view:      the static library rance_3d (src/core/3d), apart, on cglm (the option 3d).
 project('rance-browser', 'c', 'cpp',
-        version : '1.1.0',
+        version : '1.2.0',
         meson_version : '>= 0.59',
         default_options : ['c_std=c11', 'cpp_std=c++17', 'warning_level=1'])
 add_project_arguments('-D_DEFAULT_SOURCE', language : 'c')

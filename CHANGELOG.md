@@ -2,6 +2,57 @@
 
 Each version, newest first. A version in RQ MOD's package is named in RQ MOD's own CHANGELOG.
 
+## 1.2.0 (not released)
+
+Rance Quest's 3D models: a tab that draws them as the game draws them, and each one as a glTF file
+for Blender.
+
+- **The 3D models tab.** The models of `Data\ReignData.red`: the monsters and figures, the rooms, the
+  fight backgrounds and the props, by kind, each by its folder and the game's name (a monster's with
+  the English names of the monsters that wear it), with a search over them. Each one is drawn by a
+  copy of RQ MOD's 3D renderer, so as the game draws it: its textures and light maps, its outline,
+  its texture animations. Left drag turns the camera, right drag moves it, the wheel comes closer;
+  the camera frames the model through its whole motion. **Outline** and **Light map** turn the
+  game's off; **Bones** and **Walk mesh** draw the skeleton and the floor a room's characters walk
+  on; the view lies over black, white or squares.
+- **Motions** at the game's 30 frames a second: a monster's motions as a fight plays them, by the
+  game's monster table ("攻撃 · gokiburi_kougeki · 1 to 21, once"), a prop's as a map shows it, each
+  motion file of the folder whole, or the rest pose. Play and Pause (Space), a frame back or on (Comma
+  and Period), a slider over the frames and the speed, as in the Flash tab.
+- **In a fight.** A monster stands on one of the game's 40 fight backgrounds, where a fight puts it,
+  at its size, with its shadow on the ground (**Shadow**) and, with **Fight camera**, seen through
+  the fight's camera.
+- **The right side:** the model's facts (its version, meshes, triangles, bones, motions), its
+  textures, each opening the 3D textures tab at it, and RQ MOD's Lua lines (`rq.monster.model` for a
+  monster's model, `rq.battle.start`'s `background`, `rq.dungeon.place`'s `look`). **Save this frame
+  as PNG...** saves the view at its size, see-through where nothing is drawn.
+- **Export the model as glTF (.glb)...** writes the model as one glTF binary file: its meshes, its
+  textures (as PNG, inside the file), its materials (the game's alpha tests and blending as glTF's,
+  each one's choice said in words where glTF cannot do both), its skeleton and each point's weights
+  (the four largest, as the game uses), each motion as an animation named by its file, a room's walk
+  mesh as an object of its own, and what glTF has no place for as properties named `rq_*`: the game's
+  names, its motions' frames as the game plays them, a material's flags, light map and frames. The
+  points' colours are written as a glTF reader reads them, and each mesh's UVs are moved by whole
+  squares onto their picture (the game keeps most a square away, and its textures repeat, so the
+  model draws the same). A file is written under another name and takes its own once whole.
+- **`--export`** writes one model (`--select`), a kind's (`--kind chara,map,bg,etc`) or every one
+  (`--all`), to a folder with `export.json`: what each file holds and points of each model as the
+  renderer places them, to check the files against in another program.
+- **The Names tab** shows each monster's 3D model as its picture, with **Open in the 3D tab**.
+- **`--shot 3d`** draws the 3D tab: `--select` takes a model's folder, `Kind/folder` or a monster's
+  model number, with `--motion`, `--frame`, `--fight`, `--fight-camera`, `--walk` and `--bones`.
+- **`--check`** reads every 3D model and the files beside it (motions, texture animations,
+  materials), draws each model through each of its motions, plays the game's motions as a fight
+  does, stands each monster on a fight background with its shadow, and exports a room and a monster,
+  checking that the view draws the same after. The report adds `3d`: the counts, and the gaps the
+  game's own files hold (five motion files the engine refuses, as their bones are not the model's).
+- **The 3D renderer** is the library `rance_3d` (`src/core/3d`), apart from `rance_core`, so a program
+  that takes `rance_core` takes no 3D code: a copy of RQ MOD's engine's (`src/core/COPIES` names each
+  file), on cglm 0.9.7 (MIT), which meson fetches from its wrap. The meson option `3d` (`auto`) builds
+  it; the releases build with `-D3d=enabled`, and cglm's license is in the zip. A fatal error inside
+  the renderer drops that model, not the program. The tab needs OpenGL 3.1; with less it says so, and
+  the other tabs work.
+
 ## 1.1.0 (not released)
 
 The Flash tab plays a file as Rance Quest's engine plays it, and says whether the game would play it

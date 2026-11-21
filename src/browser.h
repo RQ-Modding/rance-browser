@@ -113,6 +113,16 @@ struct shot3d {
 /* Checked against the model picked; false with a message. */
 bool tab3d_shot(const struct shot3d *s, char *err, size_t n);
 const char *tab3d_error(void);             /* what failed for the model shown, or "" */
+/* For the Names tab, a model by its number (rq.Chara's model: 100000 plus its MonsterInfo entry):
+ * its folder ("gokiburi"), or NULL when no folder of Chara or Etc draws it (or no 3D view). */
+const char *tab3d_model_folder(int model);
+/* Its picture at px by px pixels: the model on nothing, on the first frame of its idle as a fight plays
+ * it, seen as the 3D tab first shows a monster. Asked here, drawn by tab3d_pics_make (the thumbnail's
+ * tex is 0 until then) and kept; NULL when it has none. */
+struct thumb *tab3d_model_pic(int model, int px);
+void tab3d_pics_make(void);                /* draws pictures asked for, about 12 ms of them a call */
+bool tab3d_pics_idle(void);                /* none asked and not yet drawn */
+void tab3d_open_model(int model);          /* the 3D tab on the model, with its entry's motions */
 
 /* A batch save, a few files per frame with a progress window (tab_pictures.c). */
 typedef bool (*batch_fn)(int i, const char *dir);

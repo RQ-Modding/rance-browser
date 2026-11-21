@@ -67,7 +67,8 @@ static void usage(void)
 	       "            [--motion NAME] [--fight BG] [--fight-camera] [--walk] [--bones] [--size WxH] [--scale F]\n"
 	       "      TAB: cgs, flash, music, sounds, 3d, textures, pictures, dungeons or names\n"
 	       "      --select N: the CG number (cgs), else the place in the list; a Flash file's name (flash),\n"
-	       "      a model's folder, or Kind/folder (3d: Chara/gokiburi, Etc/takarabako)\n"
+	       "      a model's folder, Kind/folder (3d: Chara/gokiburi, Etc/takarabako) or a model's number\n"
+	       "      (3d: 100122, rq.Chara's model, with that MonsterInfo entry's motions)\n"
 	       "      --grid: the grid of pictures; --frame N: the Flash file's frame (from 1), or the motion's\n"
 	       "      (3d; default: the frame the game puts it on)\n"
 	       "      --file PATH: a .swf or .aff from disk in the Flash tab\n"
@@ -561,8 +562,20 @@ int main(int argc, char **argv)
 	/* The 3D tab's model, motion, frame and fight, checked before the window opens. */
 	if (A.shot_path && A.shot_tab == TAB_3D) {
 		char why[512] = "";
-		if (!A.select_name)
+		if (!A.select_name && A.select > 100000) {
+			/* a model's number, opened as the Names tab's "Open in the 3D tab" opens it */
+			if (!tab3d_model_folder(A.select)) {
+				fprintf(stderr, APP_EXE ": %s has no 3D model numbered %d\n", G.title, A.select);
+				return 1;
+			}
+			tab3d_open_model(A.select);
+		} else if (!A.select_name && A.select >= tab3d_count()) {
+			fprintf(stderr, APP_EXE ": --select %d: %s has %d 3D models (0 to %d), or a model's number from 100001\n",
+			        A.select, G.title, tab3d_count(), tab3d_count() - 1);
+			return 1;
+		} else if (!A.select_name) {
 			tab3d_select(A.select);
+		}
 		struct shot3d s = { A.motion, A.frame, A.frame_given, A.fight, A.fight_camera, A.walk, A.bones };
 		if (!tab3d_shot(&s, why, sizeof why)) {
 			fprintf(stderr, APP_EXE ": %s\n", why);
@@ -669,8 +682,9 @@ int main(int argc, char **argv)
 		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(igGetDrawData());
 		if (fbo) {
-			/* Wait until the thumbnails on screen are made and the frame stays the same. */
-			quiet = pics_idle() ? quiet + 1 : 0;
+			/* Wait until the thumbnails on screen are made (the Names tab's 3D pictures too) and the
+			 * frame stays the same. */
+			quiet = pics_idle() && tab3d_pics_idle() ? quiet + 1 : 0;
 			if ((UI.frame > 30 && quiet > 20) || UI.frame > 1500) {
 				code = shot_save(A.w, A.h, A.shot_path) ? 0 : 1;
 				if (code)

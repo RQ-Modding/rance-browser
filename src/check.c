@@ -317,6 +317,29 @@ static cJSON *check_3d(void)
 		fail_3d(NULL, text);
 		cJSON_AddStringToObject(o, "draw_skipped", why);
 	}
+	/* The Names tab's 3D pictures: each model of models.tsv drawn by a MonsterInfo entry whose folder is
+	 * in Chara or Etc, as the tab finds it (the drawing itself is every model's, above). */
+	if (G.rq) {
+		int named = 0, lost = 0;
+		for (int k = 0; k < G.nkinds; k++)
+			for (int j = 0; j < G.kinds[k].n; j++) {
+				const struct id_entry *e = &G.kinds[k].e[j];
+				if (!e->model)
+					continue;
+				named++;
+				const struct rb3d_entry *en = rb3d_list_entry(&l, e->model);
+				bool found = en && en->poly && (rb3d_list_find(&l, RB3D_CHARA, en->poly) >= 0 ||
+				                                rb3d_list_find(&l, RB3D_ETC, en->poly) >= 0);
+				if (!found && ++lost <= 5) {
+					char text[512];
+					snprintf(text, sizeof text, "names: %s %d (%s): its model %d is drawn by no folder of Chara or Etc",
+					         G.kinds[k].kind, e->no, e->name, e->model);
+					fail_3d(NULL, text);
+				}
+			}
+		cJSON_AddNumberToObject(o, "names_with_a_model", named);
+		cJSON_AddNumberToObject(o, "names_whose_model_has_no_folder", lost);
+	}
 	if (gl)
 		SDL_GL_DeleteContext(gl);
 	if (win)
@@ -340,6 +363,7 @@ static cJSON *check_names(void)
 	cJSON_AddNumberToObject(o, "pictures_not_in_game", missing);
 	if (missing)
 		fail("%s: %d pictures name a CG the game does not have", "names", missing);
+	cJSON_AddNumberToObject(o, "models", G.nmodels);
 	return o;
 }
 

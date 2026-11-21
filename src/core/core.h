@@ -139,6 +139,8 @@ struct id_entry {
 	char *name, *key, *detail;
 	int cg;            /* a picture from pictures.tsv, or 0 */
 	char *use;         /* what that picture is ("face"), or NULL */
+	int model;         /* a 3D model from models.tsv (rq.Chara's model: 100000 plus its MonsterInfo
+	                      entry), or 0 */
 };
 
 struct id_kind {
@@ -199,6 +201,7 @@ struct game {
 	int npictures;       /* names with a picture */
 	int npicture_lines;  /* pictures.tsv lines read */
 	int npicture_missing; /* lines whose CG the game does not have */
+	int nmodels;         /* names with a 3D model (models.tsv) */
 	char font[1024];   /* the game's font, or "" */
 	char errors[2048]; /* what failed to open, for the status line */
 };

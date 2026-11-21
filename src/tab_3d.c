@@ -31,6 +31,11 @@ bool tab3d_shot(const struct shot3d *s, char *err, size_t n)
 	return false;
 }
 const char *tab3d_error(void) { return ""; }
+const char *tab3d_model_folder(int model) { (void)model; return NULL; }
+struct thumb *tab3d_model_pic(int model, int px) { (void)model; (void)px; return NULL; }
+void tab3d_pics_make(void) { }
+bool tab3d_pics_idle(void) { return true; }
+void tab3d_open_model(int model) { (void)model; }
 
 #else
 
@@ -78,6 +83,7 @@ static struct {
 	/* the model shown: its MonsterInfo entries, its motions, its textures */
 	int ents[MAX_ENTRIES], nent;
 	int entry;              /* the entry shown (its no), or -1 */
+	int want_entry;         /* the entry to show when the model picked loads (the Names tab's), or -1 */
 	struct choice *ch;
 	int nch, cur;
 	int *tex, ntex;         /* indexes in G.sets[PK_TEX] */
@@ -95,7 +101,8 @@ static struct {
 	int shot_choice, shot_frame;
 	bool shot_frame_given;
 	bool prefs;
-} T = { .kind = -1, .dirty = true, .sel = -1, .loaded = -1, .entry = -1, .cur = -1, .fight = -1, .playing = true };
+} T = { .kind = -1, .dirty = true, .sel = -1, .loaded = -1, .entry = -1, .want_entry = -1, .cur = -1, .fight = -1,
+        .playing = true };
 
 /* ---- helpers ---- */
 
@@ -478,7 +485,8 @@ static void load(void)
 		return;
 	const struct rb3d_model *m = &T.l.m[T.sel];
 	find_entries(T.sel);
-	T.entry = m->entry;
+	T.entry = T.want_entry > 0 ? T.want_entry : m->entry;
+	T.want_entry = -1;
 	make_choices(m);
 	T.cur = T.shot ? T.shot_choice : first_playable();
 	list_textures(m);
@@ -1250,8 +1258,9 @@ bool tab3d_shot(const struct shot3d *s, char *err, size_t n)
 	T.fight_cam[0] = s->fight_camera;
 	T.d.walk = s->walk;
 	T.d.skeleton = s->bones;
-	/* The motion is checked here, with the list, before the window opens. */
-	T.entry = m->entry;
+	/* The motion is checked here, with the list, before the window opens (in the entry a model's
+	 * number picked). */
+	T.entry = T.want_entry > 0 ? T.want_entry : m->entry;
 	make_choices(m);
 	int c = s->motion ? choice_named(s->motion) : first_playable();
 	if (c < 0) {
@@ -1279,6 +1288,179 @@ const char *tab3d_error(void)
 	if (T.sel >= 0 && T.loaded == T.sel && !T.ok)
 		return T.err[0] ? T.err : "The model did not load";
 	return T.err;
+}
+
+/* ---- the Names tab's pictures of a model ---- */
+
+/* A picture asked by the Names tab, drawn by a view of its own so the tab's model stays as it is. Each
+ * is allocated apart, so a thumbnail handed out stays where it is. */
+struct model_pic {
+	int model, px;
+	struct thumb t;          /* state 1 asked, 2 drawn, 3 none */
+};
+
+static struct {
+	struct rb3d_view *v;
+	int px;                  /* the view's size */
+	bool no_view;
+	struct model_pic **p;
+	int n, cap;
+	int asked;               /* pictures in state 1 */
+} P;
+
+/* The model of Chara (else Etc) that model's MonsterInfo entry draws, as the list links them; -1. */
+static int model_index(int model)
+{
+	const struct rb3d_entry *e = rb3d_list_entry(&T.l, model);
+	if (!e || !e->poly)
+		return -1;
+	int k = rb3d_list_find(&T.l, RB3D_CHARA, e->poly);
+	return k >= 0 ? k : rb3d_list_find(&T.l, RB3D_ETC, e->poly);
+}
+
+const char *tab3d_model_folder(int model)
+{
+	init();
+	int k = model_index(model);
+	return k >= 0 ? T.l.m[k].folder : NULL;
+}
+
+struct thumb *tab3d_model_pic(int model, int px)
+{
+	init();
+	for (int i = 0; i < P.n; i++)
+		if (P.p[i]->model == model && P.p[i]->px == px)
+			return P.p[i]->t.state == 3 ? NULL : &P.p[i]->t;
+	if (P.no_view || !G.f.red || px < 8 || model_index(model) < 0)
+		return NULL;
+	if (P.n == P.cap) {
+		P.cap = P.cap ? P.cap * 2 : 64;
+		P.p = xrealloc(P.p, P.cap * sizeof *P.p);
+	}
+	struct model_pic *mp = xcalloc(1, sizeof *mp);
+	mp->model = model;
+	mp->px = px;
+	mp->t.state = 1;
+	P.p[P.n++] = mp;
+	P.asked++;
+	return &mp->t;
+}
+
+/* Draws a picture asked for: the model alone, on the frame a fight puts its idle (slot 0) on, from where
+ * the 3D tab first shows a monster, on nothing. False when it does not load or draw. */
+static bool draw_pic(struct model_pic *mp)
+{
+	int k = model_index(mp->model);
+	if (k < 0)
+		return false;
+	const struct rb3d_model *m = &T.l.m[k];
+	char err[512];
+	if (!P.v) {
+		P.v = rb3d_view_new(G.f.red, mp->px, mp->px, err, sizeof err);
+		if (!P.v) {
+			P.no_view = true;
+			return false;
+		}
+		P.px = mp->px;
+	} else if (P.px != mp->px) {
+		if (!rb3d_view_resize(P.v, mp->px, mp->px, err, sizeof err))
+			return false;
+		P.px = mp->px;
+	}
+	if (!rb3d_view_load(P.v, m->path, err, sizeof err))
+		return false;
+	const struct rb3d_entry *e = rb3d_list_entry(&T.l, mp->model);
+	for (int i = 0; e && i < e->nmotions; i++) {
+		const struct rb3d_motion *mo = &e->motions[i];
+		int mot = mo->slot == 0 ? rb3d_model_mot(m, mo->data) : -1;
+		if (mot < 0)
+			continue;
+		/* a motion that does not play leaves the rest pose */
+		if (rb3d_view_motion(P.v, m->mots_raw[mot], err, sizeof err)) {
+			struct rb3d_play play;
+			rb3d_fight_play(mo, &play);
+			rb3d_view_play(P.v, &play);
+		}
+		break;
+	}
+	struct rb3d_draw d;
+	rb3d_draw_default(&d, RB3D_CHARA);
+	d.back = RB3D_BACK_ALPHA;
+	/* the clock stands at 0: the frame the play put it on */
+	if (!rb3d_view_draw(P.v, 0, &d, err, sizeof err))
+		return false;
+	int w, h;
+	uint8_t *rgba = rb3d_view_rgba(P.v, &w, &h);
+	if (!rgba)
+		return false;
+	/* Cut to what is drawn, with a pixel round it: the camera frames the sphere round the model's box,
+	 * so a monster standing up would leave most of a square empty. Nothing drawn keeps the square. */
+	int x0 = w, y0 = h, x1 = -1, y1 = -1;
+	for (int y = 0; y < h; y++)
+		for (int x = 0; x < w; x++)
+			if (rgba[((size_t)y * w + x) * 4 + 3] > 8) {
+				if (x < x0) x0 = x;
+				if (x > x1) x1 = x;
+				if (y < y0) y0 = y;
+				if (y > y1) y1 = y;
+			}
+	if (x1 >= 0) {
+		x0 = x0 > 0 ? x0 - 1 : 0;
+		y0 = y0 > 0 ? y0 - 1 : 0;
+		x1 = x1 < w - 1 ? x1 + 1 : w - 1;
+		y1 = y1 < h - 1 ? y1 + 1 : h - 1;
+		int cw = x1 - x0 + 1, ch = y1 - y0 + 1;
+		for (int y = 0; y < ch; y++)
+			memmove(rgba + (size_t)y * cw * 4, rgba + ((size_t)(y0 + y) * w + x0) * 4, (size_t)cw * 4);
+		w = cw;
+		h = ch;
+	}
+	mp->t.tex = tex_from_rgba(rgba, w, h);
+	mp->t.w = w;
+	mp->t.h = h;
+	free(rgba);
+	return mp->t.tex != 0;
+}
+
+void tab3d_pics_make(void)
+{
+	if (!P.asked)
+		return;
+	Uint32 start = SDL_GetTicks();
+	/* the newest first: the rows on screen now */
+	for (int i = P.n - 1; i >= 0 && P.asked; i--) {
+		struct model_pic *mp = P.p[i];
+		if (mp->t.state != 1)
+			continue;
+		mp->t.state = draw_pic(mp) ? 2 : 3;
+		P.asked--;
+		if (SDL_GetTicks() - start >= 12)
+			break;
+	}
+}
+
+bool tab3d_pics_idle(void)
+{
+	return P.asked == 0;
+}
+
+void tab3d_open_model(int model)
+{
+	init();
+	int k = model_index(model);
+	const struct rb3d_entry *e = rb3d_list_entry(&T.l, model);
+	if (k < 0 || !e)
+		return;
+	/* in the list: all kinds, no search */
+	T.kind = -1;
+	T.search[0] = 0;
+	T.dirty = true;
+	tab3d_select(k);
+	if (T.loaded == k)
+		set_entry(e->no);
+	else
+		T.want_entry = e->no;
+	UI.want_tab = TAB_3D;
 }
 
 #endif /* RB_3D */

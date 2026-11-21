@@ -53,10 +53,11 @@ games_c = custom_target('games_c',
     output : 'games_embed.c',
     command : [py, files('tools/embed_games.py'), '@OUTPUT@', '@INPUT@'])
 
-# RQ MOD's names (rq.ids) and their pictures, for Rance Quest Magnum's Names tab. Inside RQ MOD the
-# engine's data/ids; alone, the copy in games/rq-ids (scripts in RQ MOD keep it the same). The paths
-# go to the scripts as plain arguments, since a subproject may not take files from outside itself as
-# inputs; each script writes a depfile so the build runs again when they change.
+# RQ MOD's names (rq.ids), their pictures and the monsters' 3D models, for Rance Quest Magnum's Names
+# tab. Inside RQ MOD the engine's data/ids; alone, the copy in games/rq-ids (scripts in RQ MOD keep it
+# the same). The paths go to the scripts as plain arguments, since a subproject may not take files
+# from outside itself as inputs; each script writes a depfile so the build runs again when they
+# change.
 rq_ids_dir = get_option('rq_ids_dir')
 if rq_ids_dir == ''
     rq_ids_dir = meson.current_source_dir() / 'games/rq-ids'
@@ -70,6 +71,10 @@ rq_pictures_c = custom_target('rq_pictures_tsv',
     output : 'rq_pictures_tsv.c',
     depfile : 'rq_pictures_tsv.c.d',
     command : [py, embed, rq_ids_dir / 'pictures.tsv', '@OUTPUT@', 'rq_pictures_tsv', '@DEPFILE@'])
+rq_models_c = custom_target('rq_models_tsv',
+    output : 'rq_models_tsv.c',
+    depfile : 'rq_models_tsv.c.d',
+    command : [py, embed, rq_ids_dir / 'models.tsv', '@OUTPUT@', 'rq_models_tsv', '@DEPFILE@'])
 
 # The Lua lines for RQ MOD, checked against the loader's rq.lua when it is given, so a renamed call
 # fails the build instead of leaving a stale line.
@@ -89,7 +94,7 @@ rance_core_lib = static_library('rance_core',
     ['src/core/core.c', 'src/core/game.c', 'src/core/games.c', 'src/core/sets.c',
      'src/core/pics.c', 'src/core/player.c', 'src/core/mixer.c', 'src/core/swf.c',
      'src/core/swf_check.c', 'src/core/flash_player.c', 'src/core/cJSON.c',
-     games_c, rq_ids_c, rq_pictures_c],
+     games_c, rq_ids_c, rq_pictures_c, rq_models_c],
     c_args : c_warnings + ['-DCIMGUI_NO_EXPORT'],
     include_directories : [core_inc, cimgui_inc],
     dependencies : core_deps)

@@ -1,5 +1,6 @@
 /* The Names tab: rq.ids' kinds as tables, with a picture where the id extract job found one
- * (a character's face, an item's icon), and the key as a Lua line. */
+ * (a character's face, an item's icon; a monster's 3D model, drawn by the 3D tab's code), and the key
+ * as a Lua line. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,7 +37,8 @@ static void refilter(void)
 	for (int i = 0; i < k->n; i++) {
 		struct id_entry *e = &k->e[i];
 		if (!N.search[0] || ui_number_match(e->no, N.search) || ui_match(e->name, N.search) ||
-		    ui_match(e->key, N.search) || ui_match(e->detail, N.search))
+		    ui_match(e->key, N.search) || ui_match(e->detail, N.search) ||
+		    (e->model && ui_match(tab3d_model_folder(e->model), N.search)))
 			N.idx[N.n++] = i;
 	}
 	N.idx_kind = N.kind;
@@ -123,6 +125,11 @@ static void list(void)
 				V2 pos = igGetCursorScreenPos();
 				if (t && t->tex)
 					draw_fit_image(t->tex, t->w, t->h, pos, rh - S(4));
+			} else if (e->model) {
+				struct thumb *t = tab3d_model_pic(e->model, (int)S(64));
+				V2 pos = igGetCursorScreenPos();
+				if (t && t->tex)
+					draw_fit_image(t->tex, t->w, t->h, pos, rh - S(4));
 			}
 			igTableNextColumn();
 			igTextUnformatted(e->name, NULL);
@@ -178,6 +185,30 @@ static void details(void)
 				tab_cgs_select(e->cg);
 		}
 	}
+	if (e->model) {
+		igSeparatorText("Its 3D model");
+		const char *folder = tab3d_model_folder(e->model);
+		igText("Model %d%s%s", e->model, folder ? ", " : "", folder ? folder : "");
+		/* drawn at twice the size, so the part cut out comes down to 160, not up */
+		struct thumb *t = folder ? tab3d_model_pic(e->model, (int)S(320)) : NULL;
+		if (t) {
+			V2 pos = igGetCursorScreenPos();
+			igDummy(v2(S(160), S(160)));
+			if (t->tex)
+				draw_fit_image(t->tex, t->w, t->h, pos, S(160));
+			igPushTextWrapPos(0);
+			igTextDisabled("On the first frame of its idle, as a fight plays it.");
+			igPopTextWrapPos();
+			if (igButton("Open in the 3D tab", v2(-1, 0)))
+				tab3d_open_model(e->model);
+		} else {
+			igPushTextWrapPos(0);
+			igTextDisabled("%s", !tab3d_count() ? "This build has no 3D view." :
+			               folder ? "The 3D view could not draw it here (the 3D tab says why)." :
+			               "No folder of the game's models draws it.");
+			igPopTextWrapPos();
+		}
+	}
 }
 
 void tab_names(void)
@@ -186,6 +217,8 @@ void tab_names(void)
 		igTextDisabled("The names could not be read.");
 		return;
 	}
+	/* the monsters' pictures the rows asked for last frame */
+	tab3d_pics_make();
 	refilter();
 	int pos = pos_of(N.sel);
 	if (pos < 0 && N.n)

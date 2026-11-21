@@ -31,6 +31,8 @@ extern const char rq_ids_json[];
 extern const unsigned rq_ids_json_len;
 extern const char rq_pictures_tsv[];
 extern const unsigned rq_pictures_tsv_len;
+extern const char rq_models_tsv[];
+extern const unsigned rq_models_tsv_len;
 
 const char *const flash_folder_names[FLASH_NFOLDERS] = { "Battle", "Monster", "System", "Other" };
 
@@ -783,6 +785,34 @@ static void read_pictures(void)
 	}
 }
 
+/* models.tsv: kind, number, model (rq.Chara's model: 100000 plus its MonsterInfo entry); written by
+ * RQ MOD's id extract job. The 3D tab draws the pictures (tab3d_model_pic). */
+static void read_models(void)
+{
+	const char *s = rq_models_tsv, *end = s + rq_models_tsv_len;
+	while (s < end) {
+		const char *nl = memchr(s, '\n', end - s);
+		char line[256];
+		size_t len = (nl ? nl : end) - s;
+		if (len >= sizeof line)
+			len = sizeof line - 1;
+		memcpy(line, s, len);
+		line[len] = 0;
+		s = nl ? nl + 1 : end;
+		if (!line[0] || line[0] == '#')
+			continue;
+		char kind[64];
+		int no, model;
+		if (sscanf(line, "%63[^\t]\t%d\t%d", kind, &no, &model) < 3 || model <= 100000)
+			continue;
+		struct id_entry *ie = find_id(kind, no);
+		if (ie && !ie->model) {
+			ie->model = model;
+			G.nmodels++;
+		}
+	}
+}
+
 static void link_music_names(void)
 {
 	for (int k = 0; k < G.nkinds; k++) {
@@ -825,6 +855,7 @@ bool game_open(const char *dir)
 	if (G.rq) {
 		read_ids();
 		read_pictures();
+		read_models();
 		link_music_names();
 	}
 	find_font();

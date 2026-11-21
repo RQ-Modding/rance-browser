@@ -8,7 +8,7 @@
 #                   editor) takes as subproject('rance-browser').get_variable('rance_core_dep'),
 #                   with cimgui in it.
 project('rance-browser', 'c', 'cpp',
-        version : '1.0.1',
+        version : '1.1.0',
         meson_version : '>= 0.59',
         default_options : ['c_std=c11', 'cpp_std=c++17', 'warning_level=1'])
 add_project_arguments('-D_DEFAULT_SOURCE', language : 'c')
@@ -86,7 +86,8 @@ core_deps = [sdl2, sndfile, zlib, libm, gl, libsys4_dep]
 
 rance_core_lib = static_library('rance_core',
     ['src/core/core.c', 'src/core/game.c', 'src/core/games.c', 'src/core/sets.c',
-     'src/core/pics.c', 'src/core/player.c', 'src/core/swf.c', 'src/core/cJSON.c',
+     'src/core/pics.c', 'src/core/player.c', 'src/core/mixer.c', 'src/core/swf.c',
+     'src/core/swf_check.c', 'src/core/flash_player.c', 'src/core/cJSON.c',
      games_c, rq_ids_c, rq_pictures_c],
     c_args : c_warnings + ['-DCIMGUI_NO_EXPORT'],
     include_directories : [core_inc, cimgui_inc],

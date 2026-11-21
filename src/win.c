@@ -220,6 +220,50 @@ bool win_pick_save(const char *title, const char *name, const char *ext, char *o
 	return ok;
 }
 
+bool win_pick_open(const char *title, const char *what, const char *patterns, char *out, size_t n)
+{
+	wchar_t file[MAX_PATH * 2] = { 0 };
+	wchar_t *wt = wide(title), *ww = wide(what), *wp = wide(patterns);
+	const char *last = settings_get("open_dir");
+	wchar_t *wl = last ? wide(last) : NULL;
+
+	/* "Flash files\0*.aff;*.swf\0All files\0*.*\0\0" */
+	wchar_t filter[256];
+	int k = swprintf(filter, 100, L"%ls", ww);
+	k++;
+	k += swprintf(filter + k, 100, L"%ls", wp);
+	k++;
+	memcpy(filter + k, L"All files\0*.*\0", 15 * sizeof(wchar_t));
+
+	OPENFILENAMEW of = { 0 };
+	of.lStructSize = sizeof of;
+	of.hwndOwner = owner();
+	of.lpstrFilter = filter;
+	of.lpstrFile = file;
+	of.nMaxFile = MAX_PATH * 2;
+	of.lpstrTitle = wt;
+	of.lpstrInitialDir = wl;
+	of.Flags = OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST | OFN_EXPLORER;
+	bool ok = GetOpenFileNameW(&of) != 0;
+	if (ok)
+		narrow(file, out, n);
+	free(wt);
+	free(ww);
+	free(wp);
+	free(wl);
+	if (ok) {
+		char dir[1024];
+		snprintf(dir, sizeof dir, "%s", out);
+		char *a = strrchr(dir, '\\'), *b = strrchr(dir, '/');
+		char *s = a > b ? a : b;
+		if (s) {
+			*s = 0;
+			settings_set("open_dir", dir);
+		}
+	}
+	return ok;
+}
+
 void win_message(const char *title, const char *text)
 {
 	wchar_t *wt = wide(title), *wx = wide(text);

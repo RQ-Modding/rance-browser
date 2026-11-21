@@ -9,6 +9,7 @@
 #include "system4/cg.h"
 #include "system4/file.h"
 #include "swf.h"
+#include "swf_check.h"
 #include "cJSON.h"
 
 #include "browser.h"
@@ -117,6 +118,58 @@ static cJSON *check_flash(void)
 	cJSON_AddNumberToObject(o, "decoded", decoded);
 	cJSON_AddNumberToObject(o, "bitmaps_in_decoded", bitmaps);
 	cJSON_AddNumberToObject(o, "sounds_in_decoded", sounds);
+
+	/* Every file by the engine's rules (swf_check.c), then played to its last frame as the Flash
+	 * tab plays it, and back to its first. */
+	int plays = 0, warned = 0, played = 0, back = 0, frames = 0, started = 0, jumps = 0, most = 0;
+	for (int i = 0; i < G.nflash; i++) {
+		size_t size = 0;
+		uint8_t *raw = game_read_flash(&G.h, i, &size);
+		if (!raw) {
+			fail("Flash %s (%d) could not be read", G.flash[i].base, i);
+			continue;
+		}
+		struct swfc c;
+		int code = 3;
+		struct fplay *p = fplay_open(raw, size, &c, &code);
+		if (code == 0)
+			plays++;
+		else
+			fail("Flash %s (%d): the engine's rules refuse it", G.flash[i].base, i);
+		if (c.warnings)
+			warned++;
+		if (p) {
+			int n = fplay_frames(p);
+			for (int k = 1; k <= n + 8 && fplay_frame(p) < n; k++) {
+				fplay_seek(p, k);
+				if (fplay_objects(p) > most)
+					most = fplay_objects(p);
+			}
+			if (fplay_frame(p) == n)
+				played++;
+			else
+				fail("Flash %s (%d) did not play to its last frame", G.flash[i].base, i);
+			frames += fplay_frame(p);
+			started += fplay_started(p);
+			jumps += fplay_jumps(p);
+			if (fplay_seek(p, 1), fplay_frame(p) == 1)
+				back++;
+			fplay_close(p);
+		} else if (code == 0) {
+			fail("Flash %s (%d): the player did not open it", G.flash[i].base, i);
+		}
+		swfc_free(&c);
+		free(raw);
+	}
+	cJSON_AddNumberToObject(o, "checked", G.nflash);
+	cJSON_AddNumberToObject(o, "plays", plays);
+	cJSON_AddNumberToObject(o, "with_warnings", warned);
+	cJSON_AddNumberToObject(o, "played", played);
+	cJSON_AddNumberToObject(o, "back_to_first", back);
+	cJSON_AddNumberToObject(o, "frames_played", frames);
+	cJSON_AddNumberToObject(o, "sounds_started", started);
+	cJSON_AddNumberToObject(o, "jumps", jumps);
+	cJSON_AddNumberToObject(o, "most_objects", most);
 	return o;
 }
 

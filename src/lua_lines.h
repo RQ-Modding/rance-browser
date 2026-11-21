@@ -12,6 +12,10 @@
 #define LUA_FLASH_BITMAPS   "rq.image.flash_bitmaps(\"%s\")"
 /* rq.sound.play_flash(key, opts) */
 #define LUA_FLASH_SOUND     "rq.sound.play_flash(\"%s\", { index = %d })"
+/* rq.image.add_flash(key, path): a file of the mod's in the place of one of the game's, or its own */
+#define LUA_FLASH_ADD       "rq.image.add_flash(\"%s\", \"flash/%s\")"
+/* rq.image.play_flash(key, opts) */
+#define LUA_FLASH_PLAY      "rq.image.play_flash(\"%s\", { x = %d, y = %d })"
 /* rq.music.replace(no, path) */
 #define LUA_MUSIC_REPLACE   "rq.music.replace(%d, \"music/%d.ogg\")"
 /* rq.music.play(no) */

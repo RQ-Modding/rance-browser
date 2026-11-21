@@ -24,6 +24,8 @@ void win_init(void);
 bool win_exe_dir(char *out, size_t n);
 bool win_pick_folder(const char *title, char *out, size_t n);
 bool win_pick_save(const char *title, const char *name, const char *ext, char *out, size_t n);
+/* A file to open: what (the filter's name) and patterns ("*.aff;*.swf"). */
+bool win_pick_open(const char *title, const char *what, const char *patterns, char *out, size_t n);
 void win_message(const char *title, const char *text);
 void win_attach_console(void);
 bool win_relaunch(const char *game_dir);   /* start the program again on another game */
@@ -74,6 +76,11 @@ void cgs_select_first(int no);
 void set_select(int kind, int i);
 void pictures_grid(int kind, bool on);
 void flash_select(int i);
+bool flash_select_name(const char *name);  /* by the file's name, without its folder; false: none */
+void flash_shot(int frame, bool grid);     /* --shot: paused on frame (from 1), or the pictures */
+bool flash_open_file(const char *path);    /* a .swf or .aff from disk, shown in the Flash tab */
+bool flash_has_file(void);                 /* one was opened */
+void flash_leave(void);                    /* another tab: its playing and its sounds stop */
 void music_select(int no);
 void sounds_select(int no);
 void names_select(int kind);

@@ -1,10 +1,14 @@
 /* rance-browser.exe: the window, the tabs, and the command line.
  *
- *   rance-browser [--game DIR] [--scale F]   the window (--scale: the size of the text and layout,
- *                                            the display's scale by default)
+ *   rance-browser [--game DIR] [--scale F] [FILE.aff|FILE.swf]
+ *                                            the window (--scale: the size of the text and layout,
+ *                                            the display's scale by default; a Flash file from disk
+ *                                            opens in the Flash tab)
  *   rance-browser --check [--game DIR] [--out FILE]
- *                                            read a sample of everything, print the counts as JSON
- *   rance-browser --shot TAB FILE.png [--select N] [--grid] [--size WxH] [--scale F]
+ *                                            read a sample of everything, check and play every Flash
+ *                                            file, print the counts as JSON
+ *   rance-browser --shot TAB FILE.png [--select N|NAME] [--grid] [--frame N] [--file PATH]
+ *                 [--size WxH] [--scale F]
  *                                            draw one tab offscreen and save it (the guides' pictures)
  *
  * The game folder: --game, else the folder above the program's own (RQ MOD puts it in the game's
@@ -33,7 +37,10 @@ static struct {
 	int shot_tab;
 	const char *shot_path;
 	int select;
+	const char *select_name;   /* --select with a name: a Flash file's */
 	bool grid;
+	int frame;                 /* --frame: the Flash tab's frame */
+	const char *file;          /* --file, or a .swf or .aff given alone */
 	int w, h;
 	bool size_given;
 	float scale;   /* --scale, or 0 */
@@ -43,11 +50,14 @@ static void usage(void)
 {
 	win_attach_console();
 	printf(APP_NAME " " BROWSER_VERSION ": the files of AliceSoft's System 4 games.\n\n"
-	       "  " APP_EXE " [--game DIR] [--scale F]\n"
+	       "  " APP_EXE " [--game DIR] [--scale F] [FILE.aff|FILE.swf]\n"
 	       "  " APP_EXE " --check [--game DIR] [--out FILE]\n"
-	       "  " APP_EXE " --shot TAB FILE.png [--game DIR] [--select N] [--grid] [--size WxH] [--scale F]\n"
+	       "  " APP_EXE " --shot TAB FILE.png [--game DIR] [--select N|NAME] [--grid] [--frame N] [--file PATH]\n"
+	       "            [--size WxH] [--scale F]\n"
 	       "      TAB: cgs, flash, music, sounds, textures, pictures, dungeons or names\n"
-	       "      --select N: the CG number (cgs), else the place in the list; --grid: the grid of pictures\n"
+	       "      --select N: the CG number (cgs), else the place in the list; a Flash file's name (flash)\n"
+	       "      --grid: the grid of pictures; --frame N: the Flash file's frame (from 1);\n"
+	       "      --file PATH: a .swf or .aff from disk in the Flash tab\n"
 	       "  --scale F: the size of the text and the layout, 1 to 4 (default: the display's scale;\n"
 	       "      1 for --shot)\n");
 }
@@ -127,9 +137,21 @@ static void parse_args(int argc, char **argv)
 				if (!strcmp(tab, tab_keys[t]))
 					A.shot_tab = t;
 		} else if (!strcmp(a, "--select") && i + 1 < argc) {
-			A.select = atoi(argv[++i]);
+			const char *v = argv[++i];
+			char *end = NULL;
+			long n = strtol(v, &end, 10);
+			if (end && end != v && !*end)
+				A.select = (int)n;
+			else
+				A.select_name = v;
 		} else if (!strcmp(a, "--grid")) {
 			A.grid = true;
+		} else if (!strcmp(a, "--frame") && i + 1 < argc) {
+			A.frame = atoi(argv[++i]);
+		} else if (!strcmp(a, "--file") && i + 1 < argc) {
+			A.file = argv[++i];
+		} else if (a[0] != '-' && strlen(a) > 4 && (!strcasecmp(a + strlen(a) - 4, ".aff") || !strcasecmp(a + strlen(a) - 4, ".swf"))) {
+			A.file = a;
 		} else if (!strcmp(a, "--size") && i + 1 < argc) {
 			sscanf(argv[++i], "%dx%d", &A.w, &A.h);
 			A.size_given = true;
@@ -234,7 +256,7 @@ bool tab_shown(int t)
 {
 	switch (t) {
 	case TAB_CGS: return true;
-	case TAB_FLASH: return G.nflash > 0;
+	case TAB_FLASH: return G.nflash > 0 || flash_has_file();
 	case TAB_MUSIC: return G.nmusic > 0;
 	case TAB_SOUNDS: return G.nsounds > 0;
 	case TAB_TEXTURES: return G.sets[PK_TEX].n > 0;
@@ -314,10 +336,12 @@ static void frame_ui(void)
 			char label[64];
 			snprintf(label, sizeof label, "%s###%s", tab_labels[t], tab_keys[t]);
 			if (igBeginTabItem(label, NULL, want == t ? ImGuiTabItemFlags_SetSelected : 0)) {
-				/* Music, a sound or a Flash sound stops when another tab opens. */
+				/* Music, a sound or a Flash file's sounds stop when another tab opens. */
 				if (shown != t) {
-					if (shown >= 0)
+					if (shown >= 0) {
 						player_stop();
+						flash_leave();
+					}
 					shown = t;
 				}
 				igBeginChild_Str("tab", v2(0, -status_h), ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar);
@@ -385,7 +409,15 @@ static void select_for_shot(void)
 {
 	switch (A.shot_tab) {
 	case TAB_CGS: cgs_select_first(A.select); pictures_grid(PK_CG, A.grid); break;
-	case TAB_FLASH: flash_select(A.select); break;
+	case TAB_FLASH:
+		if (A.file)
+			flash_open_file(A.file);
+		else if (A.select_name)
+			flash_select_name(A.select_name);
+		else
+			flash_select(A.select);
+		flash_shot(A.frame, A.grid);
+		break;
 	case TAB_MUSIC: music_select(A.select); break;
 	case TAB_SOUNDS: sounds_select(A.select); break;
 	case TAB_TEXTURES: set_select(PK_TEX, A.select); pictures_grid(PK_TEX, A.grid); break;
@@ -442,8 +474,26 @@ int main(int argc, char **argv)
 		on_error(msg);
 		return 1;
 	}
+	/* A Flash file from disk opens the Flash tab, a game with none of its own too. */
+	if (A.file) {
+		if (flash_open_file(A.file))
+			UI.want_tab = TAB_FLASH;
+		else if (A.shot_path) {
+			fprintf(stderr, APP_EXE ": %s is not a .swf or .aff file\n", A.file);
+			return 1;
+		} else
+			ui_status("Not a .swf or .aff file: %s", A.file);
+	}
 	if (A.shot_path && !tab_shown(A.shot_tab)) {
 		fprintf(stderr, APP_EXE ": %s has no %s tab\n", G.title, tab_keys[A.shot_tab]);
+		return 1;
+	}
+	/* A name is a Flash file's: a shot of another file would pass for it. */
+	if (A.shot_path && A.select_name && (A.shot_tab != TAB_FLASH || (!A.file && !flash_select_name(A.select_name)))) {
+		if (A.shot_tab != TAB_FLASH)
+			fprintf(stderr, APP_EXE ": --select takes a name only for the flash tab\n");
+		else
+			fprintf(stderr, APP_EXE ": %s has no Flash file named %s\n", G.title, A.select_name);
 		return 1;
 	}
 	settings_set("game", dir);
@@ -516,6 +566,14 @@ int main(int argc, char **argv)
 				run = false;
 			if (ev.type == SDL_WINDOWEVENT && ev.window.event == SDL_WINDOWEVENT_CLOSE)
 				run = false;
+			/* A .swf or .aff dropped on the window plays in the Flash tab. */
+			if (ev.type == SDL_DROPFILE) {
+				if (flash_open_file(ev.drop.file))
+					UI.want_tab = TAB_FLASH;
+				else
+					ui_status("Drop a .swf or .aff file to play it: %s", base_name(ev.drop.file));
+				SDL_free(ev.drop.file);
+			}
 			/* Moved to a screen with another scale. */
 			if (!A.shot_path && !A.scale && ev.type == SDL_WINDOWEVENT && ev.window.event == SDL_WINDOWEVENT_DISPLAY_CHANGED) {
 				float s = display_scale(ev.window.data1);
@@ -555,6 +613,7 @@ int main(int argc, char **argv)
 		}
 	}
 	player_close();
+	mixer_shutdown();
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	igDestroyContext(NULL);

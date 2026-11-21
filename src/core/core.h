@@ -2,11 +2,13 @@
  *
  * A game's profile, the game folder found from its ini as the engine finds it, the CGs, the Flash
  * files, the music, the sounds, the textures and other pictures, RQ MOD's names (rq.ids) for Rance
- * Quest Magnum, GL textures and thumbnails of the pictures, and a player for the music and sounds.
- * They read with libsys4 and xsystem4's own readers, so a picture or a loop point reads as the game
- * reads it. Rance Browser is one program over them; another (a scene editor) can link them too, as
- * the dependency rance_core_dep of this project. The thumbnails and the drawing helpers take Dear
- * ImGui (cimgui) and OpenGL 3, as the program's window does. */
+ * Quest Magnum, GL textures and thumbnails of the pictures, a player for the music and sounds, a
+ * mixer that plays several sounds at once, and a Flash player that plays a Flash file as RQ MOD's
+ * engine does, with the checker of the engine's rules (swf_check.h). They read with libsys4 and
+ * xsystem4's own readers, so a picture or a loop point reads as the game reads it. Rance Browser is
+ * one program over them; another (a scene editor) can link them too, as the dependency
+ * rance_core_dep of this project. The thumbnails and the drawing helpers take Dear ImGui (cimgui)
+ * and OpenGL 3, as the program's window does. */
 #ifndef RANCE_CORE_H
 #define RANCE_CORE_H
 
@@ -269,5 +271,61 @@ void player_set_volume(float v);
 float player_volume(void);
 const char *player_title(void);
 bool player_probe(const uint8_t *data, size_t size, bool full, int64_t *frames_out, int *rate_out, int *channels_out);
+
+/* ---- the mixer: several sounds at once (mixer.c) ---- */
+
+void mixer_sound(int no);                        /* a game sound, over what plays */
+void mixer_music(int no, int effect, int ms);    /* as SYS_PlayBGM; effect and ms -1: the game's defaults (at once) */
+int mixer_music_now(void);
+void mixer_stop(int fade_ms);                    /* everything, over fade_ms */
+double mixer_sound_ms(int no);                   /* a sound's length in ms, 0 when unknown */
+/* A Flash file's sound: its samples as the file holds them (8 or 16 bits, little-endian), over
+ * what plays, at vol (0 to 1). */
+void mixer_pcm(const uint8_t *pcm, size_t len, int rate, int channels, int bits, float vol);
+int mixer_voices(void);                          /* the sounds playing now */
+void mixer_shutdown(void);
+int mixer_check(void);                           /* the mixer's own checks, without a device: 0 when every one holds */
+
+/* ---- the Flash player (flash_player.c) ---- */
+
+struct swf;
+struct swfc;
+struct fplay;
+
+/* What is under a drawn frame: nothing (the colours multiplied by the alpha, for fplay_image), a
+ * checkerboard, black or white. */
+enum { FPLAY_CLEAR, FPLAY_CHECKER, FPLAY_BLACK, FPLAY_WHITE };
+
+/* Checks a Flash file by the engine's rules into *c (swf_check.h), and opens it when the game plays
+ * it: an .aff, or a SWF uncompressed or compressed with zlib. NULL when the game would not (c says
+ * why; *code, when given, is swfc_check's answer). Free c with swfc_free whatever this returns; the
+ * player keeps nothing of data or c. It starts before its first frame: fplay_seek(p, 1) shows it. */
+struct fplay *fplay_open(const uint8_t *data, size_t size, struct swfc *c, int *code);
+void fplay_close(struct fplay *p);
+const struct swf *fplay_swf(const struct fplay *p);   /* the file as read (swf.h) */
+int fplay_width(const struct fplay *p);     /* the stage, as the engine sizes it: x_max / 20 */
+int fplay_height(const struct fplay *p);
+int fplay_frames(const struct fplay *p);    /* the header's frame count: the game's players play this many */
+double fplay_rate(const struct fplay *p);   /* the header's frames a second (the game plays at 30) */
+int fplay_frame(const struct fplay *p);     /* the frame shown, from 1; 0 before the first */
+bool fplay_ended(const struct fplay *p);    /* a stop action, or the file's end, was met */
+/* The engine's seek, as the game's T_PartsFlash calls it for a frame by the clock: a frame ahead
+ * walks the tags between (their sounds play), one behind walks again from the start with the
+ * sounds before it quiet. A gotoFrame on the way moves the frame shown. False when it was there. */
+bool fplay_seek(struct fplay *p, int frame);
+int fplay_goto(struct fplay *p, int frame); /* as rq.sprite's: a stop forgotten, then the seek; the frame shown */
+int fplay_next(struct fplay *p);            /* the next frame's tags; the frame shown */
+void fplay_sound(struct fplay *p, bool on, float volume);   /* each StartSound through the mixer; off at first */
+int fplay_objects(const struct fplay *p);   /* on the display list now */
+int fplay_started(const struct fplay *p);   /* sounds started so far (with the sound off too) */
+int fplay_jumps(const struct fplay *p);     /* gotoFrame actions followed so far */
+/* The frame shown, drawn as the engine draws it into a texture of the player's (stage size times
+ * scale, the stage's top row first) over `back`. Drawn again only when something changed; 0
+ * without OpenGL. */
+unsigned fplay_render(struct fplay *p, float scale, int back);
+/* The frame shown at the stage's size (*w by *h), clear around it, as straight-alpha RGBA to free. */
+uint8_t *fplay_rgba(struct fplay *p, int *w, int *h);
+/* A texture of FPLAY_CLEAR drawn over what is under it, as the engine blends it. */
+void fplay_image(ImDrawList *dl, unsigned tex, V2 a, V2 b);
 
 #endif /* RANCE_CORE_H */

@@ -2,6 +2,46 @@
 
 Each version, newest first. A version in RQ MOD's package is named in RQ MOD's own CHANGELOG.
 
+## 1.1.0 (not released)
+
+The Flash tab plays a file as Rance Quest's engine plays it, and says whether the game would play it
+at all.
+
+- **The player.** A Flash file plays in the Flash tab as RQ MOD's engine plays it: its frames at the
+  game's 30 a second (Rance Quest plays every Flash file at 30, whatever the file says; another game's
+  at the file's own rate), its actions (stop, play, gotoFrame), its sounds at their frames over each
+  other, its blend modes and colour changes, each frame drawn with OpenGL as the engine draws it.
+  Play and Pause (Space), the first and the last frame, a frame back or on (Comma and Period), a
+  slider over the frames, Loop, Sounds, the speed (1, 1/2, 1/4, 1/10), what lies under it (squares,
+  black or white) and the zoom. **Its pictures** shows the bitmaps' grid as before.
+- **What the game makes of it.** Every file is checked by RQ MOD's rules, the engine's reader's and
+  its player's: the game plays it, plays it with warnings, would not play it, or cannot read it. Each
+  problem and warning comes with its frame, its tag and what to do. Then what the file is: its
+  container and version, size, frames and length at the game's rate, its pictures (and how many have
+  soft edges), shapes, sprites and sounds, how often the sounds start, its blend modes, colour changes
+  and jumps. A file the game would not play is not played here either.
+- **A file from disk.** **Open a .swf or .aff file...** above the list, a file dropped on the window,
+  or its path on the command line: a mod's own animation is checked and played before it goes into a
+  mod, with RQ MOD's Lua lines for it (`rq.image.add_flash`, `rq.image.play_flash`). A game file gets
+  the line that replaces it with a file of the same size (the game places it by its size) and the one
+  that plays it.
+- **Save this frame as PNG...** saves the frame shown, its see-through kept.
+- **Soft edges as drawn.** A Flash picture's colours are stored multiplied by its alpha where it has
+  soft edges; they are divided back as RQ MOD's engine now does, so glows and soft edges show and save
+  brighter, as drawn. 1.0.1 showed them darker than the game's art.
+- **`--check`** checks every Flash file by the engine's rules and plays each one to its last frame and
+  back to its first. The report adds `plays`, `with_warnings`, `played`, `back_to_first`,
+  `frames_played`, `sounds_started`, `jumps` and `most_objects`; a file the rules refuse, or one that
+  does not reach its end, fails the check.
+- **`--shot flash`** takes `--frame N` (the frame, from 1), `--file PATH` (a file from disk) and
+  `--select NAME` (a file by its name; a name the game does not have fails the shot instead of drawing
+  the first file).
+- **The library** (`rance_core`) adds the mixer, several sounds at once and music with its fades
+  (from RQ Scene Editor), and the Flash player (`fplay_*` in `core.h`), which draws into a texture any
+  Dear ImGui window shows. With them come RQ MOD's Flash checker (`swf_check.c`, a copy of the
+  engine's) and the engine's fixes to the Flash reader: a tag it does not know, a file cut short, an
+  empty sprite or a length past the file's end no longer close the program.
+
 ## 1.0.1 (2026-11-20)
 
 The readers as a library, for another program to share; nothing changes in the window.

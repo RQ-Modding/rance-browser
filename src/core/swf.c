@@ -98,7 +98,10 @@ static void free_tag_list(struct swf_tag *tags)
 			free_place_object((struct swf_tag_place_object *)tag);
 			break;
 		default:
-			ERROR("unknown tag %d", tag->type);
+			// RQ MOD (2.63.0): a tag parse_tag did not know is a bare tag (create_simple_tag).
+			// This was an ERROR, which closed the game on freeing a file it never played.
+			free(tag);
+			break;
 		}
 		tag = next;
 	}
@@ -291,6 +294,20 @@ static struct swf_tag_define_bits_lossless *parse_define_bits_lossless(struct bu
 		pixels[i + 2] = pixels[i + 3];
 		pixels[i + 3] = alpha;
 	}
+	// RQ MOD (2.63.0): a DefineBitsLossless2's colours are multiplied by its alpha (the SWF
+	// format, and every Flash file of Rance Quest), and the parts draw straight alpha, so a soft
+	// edge or a glow came out darker than drawn. Divided back here.
+	if (type == TAG_DEFINE_BITS_LOSSLESS2) {
+		for (unsigned long i = 0; i < len; i += 4) {
+			unsigned a = pixels[i + 3];
+			if (a == 255)
+				continue;
+			for (int k = 0; k < 3; k++) {
+				unsigned v = a ? (pixels[i + k] * 255u + a / 2) / a : 0;
+				pixels[i + k] = v > 255 ? 255 : (uint8_t)v;
+			}
+		}
+	}
 	tag->data = pixels;
 
 	return tag;
@@ -472,7 +489,12 @@ static struct swf_tag *parse_tag(struct buffer *r)
 	int type = code_and_len >> 6;
 	uint32_t len = code_and_len & 0x3f;
 	if (len == 0x3f)
-		len = buffer_read_int32(r);
+		len = buffer_remaining(r) >= 4 ? (uint32_t)buffer_read_int32(r) : UINT32_MAX;
+	// RQ MOD (2.63.0): a tag longer than the file was read past its end.
+	if (len > buffer_remaining(r)) {
+		WARNING("tag %d is %u bytes long, past the end of the file", type, len);
+		len = buffer_remaining(r);
+	}
 
 	struct buffer rr;
 	buffer_init(&rr, r->buf + r->index, len);
@@ -513,9 +535,11 @@ static struct swf_tag *parse_tag(struct buffer *r)
 
 static struct swf_tag *parse_tag_list(struct buffer *r)
 {
-	struct swf_tag *head;
+	// RQ MOD (2.63.0): an empty list (a sprite with no tags) gave back an unset pointer, and a
+	// last byte after the tags was read as a tag header past the end.
+	struct swf_tag *head = NULL;
 	struct swf_tag **tag_ptr = &head;
-	while (buffer_remaining(r) > 0) {
+	while (buffer_remaining(r) >= 2) {
 		struct swf_tag *tag = parse_tag(r);
 		*tag_ptr = tag;
 		tag_ptr = &tag->next;
@@ -653,15 +677,23 @@ struct swf *aff_load(uint8_t *data, size_t size)
 
 	// AFF -> SWF
 	size -= 16;
+	// RQ MOD (2.63.0): a file under 8 bytes, or shorter than the mask, was read past its end.
+	if (size < 8)
+		return NULL;
 	uint8_t *buf = xmalloc(size);
 	memcpy(buf, data + 16, size);
-	for (int i = 0; i < 0x40; i++) {
+	for (size_t i = 0; i < 0x40 && i < size; i++) {
 		buf[i] ^= aff_mask[i & 0xf];
 	}
 
 	// decompress
 	if (!memcmp(buf, "CWS", 3)) {
 		uint32_t raw_size = LittleEndian_getDW(buf, 4);
+		// RQ MOD (2.63.0): the size the header claims, before allocating it.
+		if (raw_size < 8 || raw_size > (512u << 20)) {
+			free(buf);
+			return NULL;
+		}
 		uint8_t *raw = xmalloc(raw_size);
 		memcpy(raw, buf, 8);
 		raw[0] = 'F';

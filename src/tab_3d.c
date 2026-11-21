@@ -893,6 +893,18 @@ static void save_frame(const struct rb3d_model *m)
 	free(px);
 }
 
+static void export_model(const struct rb3d_model *m)
+{
+	char name[300], path[2048], err[1024];
+	snprintf(name, sizeof name, "%s.glb", m->folder);
+	if (!win_pick_save("Export the model as glTF", name, "glb", path, sizeof path))
+		return;
+	if (rb3d_export_glb(T.v, &T.l, m, path, APP_NAME " " BROWSER_VERSION, NULL, err, sizeof err))
+		ui_status("Exported %s", path);
+	else
+		ui_status("Could not export %s: %s", m->folder, err);
+}
+
 static void lua_lines(const struct rb3d_model *m)
 {
 	const struct rb3d_entry *e = shown_entry();
@@ -1006,6 +1018,12 @@ static void right(void)
 			save_frame(m);
 		if (igIsItemHovered(0))
 			igSetTooltip("The view at its size, see-through where nothing is drawn");
+		if (igButton("Export the model as glTF (.glb)...", v2(-1, 0)))
+			export_model(m);
+		if (igIsItemHovered(0))
+			igSetTooltip("Its meshes, materials and pictures, its bones and one animation per MOT, for\n"
+			             "Blender and other 3D programs. What glTF cannot say (the light map, the outline,\n"
+			             "the frames the game plays) is in the file's extras, named rq_...");
 	}
 	textures();
 }

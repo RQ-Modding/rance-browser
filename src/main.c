@@ -10,6 +10,9 @@
  *   rance-browser --shot TAB FILE.png [--select N|NAME] [--grid] [--frame N] [--file PATH]
  *                 [--motion NAME] [--fight BG] [--fight-camera] [--walk] [--bones] [--size WxH] [--scale F]
  *                                            draw one tab offscreen and save it (the guides' pictures)
+ *   rance-browser --export OUT.glb --select NAME
+ *   rance-browser --export DIR (--select NAME | --kind KIND | --all)
+ *                                            3D models as glTF files, a folder's with export.json
  *
  * The game folder: --game, else the folder above the program's own (RQ MOD puts it in the game's
  * xsystem4 folder), else the program's own folder, else the last one used, else a picker. */
@@ -49,6 +52,9 @@ static struct {
 	int w, h;
 	bool size_given;
 	float scale;   /* --scale, or 0 */
+	const char *export_out;    /* --export: a .glb file or a folder */
+	const char *kind;          /* --kind, for --export */
+	bool all;                  /* --all, for --export */
 } A = { .shot_tab = -1, .select = -1, .w = 1440, .h = 860 };
 
 static void usage(void)
@@ -68,13 +74,17 @@ static void usage(void)
 	       "      --motion NAME: a MOT of the model's folder, or none (3d; default: the first the game plays);\n"
 	       "      --fight BG: a monster on a fight background (a BG folder), --fight-camera: the game's camera;\n"
 	       "      --walk, --bones: the walk mesh's and the skeleton's lines (3d)\n"
+	       "  " APP_EXE " --export OUT.glb --select NAME [--game DIR]\n"
+	       "  " APP_EXE " --export DIR (--select NAME | --kind KIND | --all) [--game DIR]\n"
+	       "      a 3D model as a glTF file (NAME as for --shot 3d); to a folder, each as DIR\\Kind\\folder.glb\n"
+	       "      with DIR\\export.json (KIND: chara, map, bg or etc, or a list: chara,map)\n"
 	       "  --scale F: the size of the text and the layout, 1 to 4 (default: the display's scale;\n"
 	       "      1 for --shot)\n");
 }
 
 static void on_error(const char *msg)
 {
-	if (A.check || A.shot_path) {
+	if (A.check || A.shot_path || A.export_out) {
 		fprintf(stderr, "%s\n", msg);
 		return;
 	}
@@ -125,7 +135,7 @@ static bool find_game(char *out, size_t n)
 		snprintf(out, n, "%s", last);
 		return true;
 	}
-	if (A.check || A.shot_path)
+	if (A.check || A.shot_path || A.export_out)
 		return false;
 	return pick_game(out, n);
 }
@@ -172,6 +182,12 @@ static void parse_args(int argc, char **argv)
 			A.bones = true;
 		} else if (!strcmp(a, "--file") && i + 1 < argc) {
 			A.file = argv[++i];
+		} else if (!strcmp(a, "--export") && i + 1 < argc) {
+			A.export_out = argv[++i];
+		} else if (!strcmp(a, "--kind") && i + 1 < argc) {
+			A.kind = argv[++i];
+		} else if (!strcmp(a, "--all")) {
+			A.all = true;
 		} else if (a[0] != '-' && strlen(a) > 4 && (!strcasecmp(a + strlen(a) - 4, ".aff") || !strcasecmp(a + strlen(a) - 4, ".swf"))) {
 			A.file = a;
 		} else if (!strcmp(a, "--size") && i + 1 < argc) {
@@ -464,7 +480,7 @@ static void core_message(const char *text)
 int main(int argc, char **argv)
 {
 	parse_args(argc, argv);
-	if (A.check)
+	if (A.check || A.export_out)
 		win_attach_console();
 	sys_silent = true;
 	sys_error_handler = on_error;
@@ -475,12 +491,27 @@ int main(int argc, char **argv)
 	if (!find_game(dir, sizeof dir)) {
 		if (A.check)
 			return run_check(dir[0] ? dir : "(none)", A.out);
-		if (A.shot_path)
+		if (A.shot_path || A.export_out)
 			fprintf(stderr, APP_EXE ": no game folder (use --game DIR)\n");
 		return 1;
 	}
 	if (A.check)
 		return run_check(dir, A.out);
+	if (A.export_out) {
+		if (A.shot_path || A.file) {
+			usage();
+			return 2;
+		}
+		/* a number for --select is a folder's name too */
+		char num[32];
+		const char *select = A.select_name;
+		if (!select && A.select >= 0) {
+			snprintf(num, sizeof num, "%d", A.select);
+			select = num;
+		}
+		struct export_args ea = { A.export_out, select, A.kind, A.all };
+		return run_export(dir, &ea);
+	}
 	if (A.shot_path && A.shot_tab < 0) {
 		usage();
 		return 2;

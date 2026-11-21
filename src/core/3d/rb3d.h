@@ -224,4 +224,18 @@ struct cJSON;
 struct cJSON *rb3d_check(struct aar_archive *red, const char *red_path, const struct rb3d_list *l, bool draw,
                          void (*fail)(void *ctx, const char *text), void *ctx);
 
+/* ---- the export (rb3d_export.c) ---- */
+
+/* Writes the model the view shows (m, loaded with rb3d_view_load(m->path); l, may be NULL, gives the
+ * game's names and motions) as a glTF 2.0 binary file at path (UTF-8): its meshes, materials and
+ * pictures, its skeleton and one animation per MOT made for its bones, glTF's axes being the
+ * engine's (y up, metres). generator names the program in the file. report (may be NULL) gets the
+ * counts, what was left out and why, and numbers from the engine's own code for a checker: bone
+ * heads and points at rest and posed on four frames of each animation, UVs, each picture's CRC and
+ * each material's alpha. The view's pose is put back. path NULL makes the whole file and writes
+ * nothing (the check's test that the view is left as it was). False with a message in err when it
+ * fails; the file is then not written. */
+bool rb3d_export_glb(struct rb3d_view *v, const struct rb3d_list *l, const struct rb3d_model *m,
+                     const char *path, const char *generator, struct cJSON *report, char *err, size_t n);
+
 #endif /* RB3D_H */

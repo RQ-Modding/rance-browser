@@ -18,6 +18,16 @@
 int run_check(const char *dir, const char *out_path);
 bool font_has_japanese(const char *path);
 
+/* ---- --export (export.c) ---- */
+
+struct export_args {
+	const char *out;      /* a .glb file (one model), else a folder */
+	const char *select;   /* a model's folder, or Kind/folder */
+	const char *kind;     /* chara, map, bg or etc */
+	bool all;
+};
+int run_export(const char *dir, const struct export_args *a);
+
 /* ---- Windows: dialogs, paths, settings (win.c) ---- */
 
 void win_init(void);

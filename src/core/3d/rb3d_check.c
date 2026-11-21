@@ -334,7 +334,8 @@ static cJSON *entries_pass(const struct rb3d_list *l, const struct facts *f, cJS
 
 struct draw_counts {
 	int loaded, drawn, motions, frames, refused_for_bones, game_motions, game_frames, game_stopped, game_loops,
-	    on_background;
+	    on_background, exports_kept;
+	bool export_room, export_fight;   /* the export's test done on a room, on a monster in a fight */
 };
 
 struct drawing {
@@ -397,6 +398,38 @@ static bool play_game_motion(struct drawing *g, const struct rb3d_draw *d, const
 	return true;
 }
 
+/* The 3D tab's Export button exports the model on show: the view must be as it was after it, the
+ * same frame drawn the same (the clock standing still), the bones' pose, the shadow and the frame
+ * put back. The file is made whole and not written, with the report, whose samples pose the model
+ * through the engine (the button asks for none, so this is the export's most). */
+static bool export_keeps_view(struct drawing *g, const struct rb3d_list *l, const struct rb3d_model *m,
+                              const struct rb3d_draw *d, const char *nm, const char *what)
+{
+	int w0 = 0, h0 = 0, w1 = 0, h1 = 0;
+	if (!draw(g, d, nm, what))
+		return false;
+	uint8_t *before = rb3d_view_rgba(g->v, &w0, &h0);
+	float f0 = rb3d_view_frame(g->v);
+	char err[512];
+	cJSON *report = cJSON_CreateObject();
+	bool ok = rb3d_export_glb(g->v, l, m, NULL, "check", report, err, sizeof err);
+	cJSON_Delete(report);
+	if (!ok)
+		failf(g->r, "%s: %s: the export: %s", nm, what, err);
+	uint8_t *after = ok && draw(g, d, nm, what) ? rb3d_view_rgba(g->v, &w1, &h1) : NULL;
+	float f1 = rb3d_view_frame(g->v);
+	bool same = before && after && w0 == w1 && h0 == h1 && !memcmp(before, after, (size_t)w0 * h0 * 4);
+	if (ok && after && !same)
+		failf(g->r, "%s: %s: the view is not drawn the same after the export", nm, what);
+	else if (ok && after && f0 != f1)
+		failf(g->r, "%s: %s: the export moved the frame from %.2f to %.2f", nm, what, f0, f1);
+	else if (same)
+		g->c.exports_kept++;
+	free(before);
+	free(after);
+	return ok && same && f0 == f1;
+}
+
 static void draw_model(struct drawing *g, const struct rb3d_list *l, int i, const struct facts *f, int bg)
 {
 	const struct rb3d_model *m = &l->m[i];
@@ -413,6 +446,10 @@ static void draw_model(struct drawing *g, const struct rb3d_list *l, int i, cons
 	if (!draw(g, &d, nm, "at rest"))
 		return;
 	g->c.drawn++;
+	if (m->kind == RB3D_MAP && !g->c.export_room) {
+		g->c.export_room = true;
+		export_keeps_view(g, l, m, &d, nm, "a room, exported");
+	}
 	/* each MOT of the folder, through all its frames */
 	for (int k = 0; k < m->nmots; k++) {
 		if (f->mot_frames[k] < 0)
@@ -470,12 +507,22 @@ static void draw_model(struct drawing *g, const struct rb3d_list *l, int i, cons
 	d.fight_camera = true;
 	if (!draw(g, &d, nm, "on a fight background"))
 		return;
+	/* once, on the first monster with bones and a motion: exported while it moves (its frame held
+	 * half-way), then at rest, where the next draw does not pose the bones again */
+	bool export_here = !g->c.export_fight && rb3d_view_mot_frames(g->v) > 2;
+	if (export_here) {
+		g->c.export_fight = true;
+		rb3d_view_set_frame(g->v, (float)(rb3d_view_mot_frames(g->v) / 2) + 0.5f);
+		export_keeps_view(g, l, m, &d, nm, "on a fight background, moving, exported");
+	}
 	if (!rb3d_view_motion(g->v, NULL, g->err, sizeof g->err)) {
 		failf(g->r, "%s: the rest pose: %s", nm, g->err);
 		return;
 	}
 	if (!draw(g, &d, nm, "on a fight background, at rest"))
 		return;
+	if (export_here)
+		export_keeps_view(g, l, m, &d, nm, "on a fight background, at rest, exported");
 	g->c.on_background++;
 }
 
@@ -513,6 +560,7 @@ static cJSON *draw_pass(const char *red_path, const struct rb3d_list *l, const s
 	cJSON_AddNumberToObject(o, "game_once_stopped_at_end", g.c.game_stopped);
 	cJSON_AddNumberToObject(o, "game_in_a_loop", g.c.game_loops);
 	cJSON_AddNumberToObject(o, "on_background", g.c.on_background);
+	cJSON_AddNumberToObject(o, "exports_kept_the_view", g.c.exports_kept);
 	if (bg >= 0)
 		cJSON_AddStringToObject(o, "background", l->m[bg].folder);
 	cJSON_AddNumberToObject(o, "ms", (int)(now_ms() - t0));

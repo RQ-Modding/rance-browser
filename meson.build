@@ -120,20 +120,23 @@ if have_3d
             output : sym + '.c',
             command : [py, embed, '@INPUT@', '@OUTPUT@', sym])
     endforeach
+    # The export writes its pictures as PNG with libpng, which libsys4 already links.
+    png = dependency('libpng', static : static_libs)
     rance_3d_lib = static_library('rance_3d',
-        ['src/core/3d/rb3d.c', 'src/core/3d/rb3d_models.c', 'src/core/3d/rb3d_check.c', 'src/core/3d/parser.c',
+        ['src/core/3d/rb3d.c', 'src/core/3d/rb3d_models.c', 'src/core/3d/rb3d_check.c',
+         'src/core/3d/rb3d_export.c', 'src/core/3d/parser.c',
          'src/core/3d/model.c', 'src/core/3d/mpr.c',
          'src/core/3d/collision.c', 'src/core/3d/reign.c', 'src/core/3d/renderer.c',
          'src/core/3d/particle.c', 'src/core/3d/s3de.c'] + rb3d_shaders,
         # -Wno-maybe-uninitialized: the later engines' effects (s3de.c) set vectors in a switch.
         c_args : c_warnings + ['-Wno-maybe-uninitialized'],
         include_directories : include_directories('src/core/3d', 'src/core/3d/include'),
-        dependencies : [sdl2, gl, libm, libsys4_dep, cglm_proj.get_variable('cglm_dep')])
+        dependencies : [sdl2, gl, libm, png, libsys4_dep, cglm_proj.get_variable('cglm_dep')])
     rance_3d_dep = declare_dependency(
         link_with : rance_3d_lib,
         include_directories : include_directories('src/core/3d'),
         compile_args : ['-DRB_3D'],
-        dependencies : [sdl2, gl, libm, libsys4_dep])
+        dependencies : [sdl2, gl, libm, png, libsys4_dep])
 else
     rance_3d_dep = declare_dependency()
 endif
@@ -143,7 +146,7 @@ endif
 browser_version = meson.project_version()
 build_note = get_option('build_note')
 
-browser_src = ['src/main.c', 'src/ui.c', 'src/win.c', 'src/check.c',
+browser_src = ['src/main.c', 'src/ui.c', 'src/win.c', 'src/check.c', 'src/export.c',
      'src/tab_pictures.c', 'src/tab_flash.c', 'src/tab_audio.c', 'src/tab_names.c', 'src/tab_3d.c',
      rq_lua_lines_c]
 # The exe's icon (res/rance-browser.ico, from res/rance-browser.png).

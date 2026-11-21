@@ -25,6 +25,7 @@
 #include "xsystem4.h"
 
 #include "rb3d.h"
+#include "rb3d_private.h"
 
 /* ---- OpenGL past 1.1 (gfx/gl.h) ---- */
 
@@ -522,6 +523,16 @@ static struct RE_instance *instance_at(const struct rb3d_view *v, int i)
 static struct RE_instance *view_inst(const struct rb3d_view *v)
 {
 	return instance_at(v, v->inst);
+}
+
+struct RE_plugin *rb3d_view_plugin(struct rb3d_view *v)
+{
+	return v->plugin;
+}
+
+struct RE_instance *rb3d_view_instance(struct rb3d_view *v)
+{
+	return view_inst(v);
 }
 
 struct view_new_args {

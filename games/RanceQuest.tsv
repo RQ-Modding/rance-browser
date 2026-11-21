@@ -16,3 +16,21 @@ folder	10_コンフィグ	Config
 folder	エイプリル企画	April Fools' event
 folder	追加キット	Added kits
 folder	２１０用	For 2.10
+# RQ MOD's looks for a map's props (rq.dungeon.place's look): MapObject.acx's number, the look
+look	201	warp
+look	202	chest
+look	203	spring
+look	204	enemy
+look	205	enemy-2
+look	206	trap
+look	207	event
+look	208	event-3
+look	210	achievement
+look	211	hidden
+look	212	exp
+look	213	gold
+look	214	red-chest
+look	215	warp-2
+look	216	event-2
+look	217	escape
+look	218	event-4

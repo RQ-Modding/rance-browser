@@ -1,6 +1,7 @@
-/* rance-browser --check: opens every archive and reads a sample of each kind, the way the tabs do,
- * then prints the counts as JSON (exit 1 when something failed). RQ MOD's scripts\check-browser.ps1
- * compares the counts with each tested game's. */
+/* rance-browser --check: opens every archive and reads a sample of each kind, the way the tabs do
+ * (every Flash file played, every 3D model drawn in a hidden window and its motions played), then
+ * prints the counts as JSON (exit 1 when something failed), for a script to compare with each tested
+ * game's. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -268,6 +269,63 @@ static cJSON *check_set(int kind)
 	return o;
 }
 
+#ifdef RB_3D
+#include <SDL.h>
+#include "rb3d.h"
+
+static void fail_3d(void *ctx, const char *text)
+{
+	(void)ctx;
+	cJSON_AddItemToArray(failures, cJSON_CreateString(text));
+}
+
+/* The 3D models (rb3d_check): their files read, then, in a hidden window as --shot makes one, each
+ * drawn and each motion played. NULL when the game has none. */
+static cJSON *check_3d(void)
+{
+	if (!G.h.red)
+		return NULL;
+	struct rb3d_prop_look looks[32];
+	int nl = 0;
+	if (G.rq && G.prof)
+		for (int i = 0; i < G.prof->nlooks && nl < 32; i++, nl++) {
+			looks[nl].object = G.prof->looks[i].object;
+			looks[nl].name = G.prof->looks[i].name;
+		}
+	static struct rb3d_list l;
+	if (!rb3d_list_read(G.h.red, G.dir, looks, nl, &l))
+		return NULL;
+	char why[512] = "";
+	SDL_Window *win = NULL;
+	SDL_GLContext gl = NULL;
+	if (SDL_Init(SDL_INIT_VIDEO) == 0) {
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		win = SDL_CreateWindow(APP_NAME " --check", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 64, 64,
+		                       SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
+		gl = win ? SDL_GL_CreateContext(win) : NULL;
+		if (gl)
+			SDL_GL_MakeCurrent(win, gl);
+	}
+	if (!gl)
+		snprintf(why, sizeof why, "%s", SDL_GetError());
+	cJSON *o = rb3d_check(G.h.red, G.f.red, &l, gl != NULL, fail_3d, NULL);
+	if (!gl) {
+		char text[640];
+		snprintf(text, sizeof text, "3D: no OpenGL window to draw the models in (%s)", why);
+		fail_3d(NULL, text);
+		cJSON_AddStringToObject(o, "draw_skipped", why);
+	}
+	if (gl)
+		SDL_GL_DeleteContext(gl);
+	if (win)
+		SDL_DestroyWindow(win);
+	SDL_Quit();
+	return o;
+}
+#endif
+
 static cJSON *check_names(void)
 {
 	cJSON *o = cJSON_CreateObject();
@@ -311,6 +369,11 @@ int run_check(const char *dir, const char *out_path)
 		cJSON *dungeons = check_set(PK_DTX);
 		cJSON_AddNumberToObject(dungeons, "dungeons", G.ndungeons);
 		cJSON_AddItemToObject(root, "dungeons", dungeons);
+#ifdef RB_3D
+		cJSON *models = check_3d();
+		if (models)
+			cJSON_AddItemToObject(root, "3d", models);
+#endif
 		if (G.rq)
 			cJSON_AddItemToObject(root, "names", check_names());
 		cJSON *font = cJSON_AddObjectToObject(root, "font");

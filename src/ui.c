@@ -11,7 +11,8 @@
 
 struct ui UI = { .want_tab = -1, .shot_select = -1 };
 
-const char *const tab_keys[TAB_COUNT] = { "cgs", "flash", "music", "sounds", "textures", "pictures", "dungeons", "names" };
+const char *const tab_keys[TAB_COUNT] = { "cgs", "flash", "music", "sounds", "3d", "textures", "pictures", "dungeons",
+                                          "names" };
 
 void ui_status(const char *fmt, ...)
 {

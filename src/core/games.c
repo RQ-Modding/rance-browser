@@ -77,6 +77,10 @@ static void parse(struct profile *p, const struct game_src *src)
 			p->ranges[p->nranges].hi = atoi(f[2]);
 			p->ranges[p->nranges].label = xstrdup(f[3]);
 			p->nranges++;
+		} else if (n >= 3 && !strcmp(f[0], "look") && p->nlooks < 32) {
+			p->looks[p->nlooks].object = atoi(f[1]);
+			p->looks[p->nlooks].name = xstrdup(f[2]);
+			p->nlooks++;
 		}
 		free(line);
 	}

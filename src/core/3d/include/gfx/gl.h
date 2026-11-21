@@ -1,6 +1,6 @@
 /* In the place of RQ MOD's include/gfx/gl.h, which takes OpenGL from GLEW: the GL 1.1 calls come
  * from opengl32 through SDL's headers, and each later call the 3D renderer makes is a pointer that
- * rb3d_gl_load() (rb3d.c) fills once through SDL_GL_GetProcAddress, so the browser needs no GLEW.
+ * rb3d.c fills through SDL_GL_GetProcAddress at the first 3D use, so the browser needs no GLEW.
  * The header guard is the engine's, so the copied files take this one. */
 
 #ifndef SYSTEM4_GFX_GL_H

@@ -27,6 +27,7 @@ with `#` and an empty line are skipped.
 | `range` | first number, last number, a label | For a game whose CG archive (`.ald`) has no folders: the CGs from the first to the last number in one group with that label. A CG in no range goes in its thousand ("7000-7999"). |
 | `mask` | first number, last number, offset | The CGs in that range take their see-through from the CG `offset` higher, when that one exists and has the same size (Rance VI's JPEG effects, each with a PMS alpha map of its size 10000 higher). Read from the numbers and sizes, not from the game's script. |
 | `rq` | `yes` | RQ MOD's game: the Names tab and the Lua lines. For Rance Quest Magnum only. |
+| `look` | a number, a name | A look of RQ MOD's for a map's prop (`rq.dungeon.place`'s `look`): the prop's number in the game's `Data/MapObject.acx` and the look's name. The 3D tab names each prop's model by it and gives its Lua line. For Rance Quest Magnum only. |
 
 ## Checking a game
 

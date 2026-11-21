@@ -24,5 +24,11 @@
 #define LUA_SOUND_PLAY      "rq.sound.play(%d)"
 /* rq.ids.<kind>.<KEY>: a table, not a call */
 #define LUA_IDS             "rq.ids.%s.%s"
+/* rq.monster.model(def): a model of the game's, for a mod's monster */
+#define LUA_MONSTER_MODEL   "rq.monster.model({ id = \"mymod:%s\", base = %d })"
+/* rq.battle.start(opts): a fight on one of the game's backgrounds */
+#define LUA_BATTLE_BG       "rq.battle.start({ enemies = { 0, rq.ids.monster.COCKROACH, 0 }, background = \"%s\" })"
+/* rq.dungeon.place(kind, x, z, opts): a mod's own object, with a prop's look */
+#define LUA_PLACE_LOOK      "rq.dungeon.place(\"custom\", x, z, { id = \"mymod:my_object\", look = \"%s\" })"
 
 #endif

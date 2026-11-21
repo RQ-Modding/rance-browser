@@ -60,6 +60,8 @@ struct profile {
 	int nranges;
 	struct { int lo, hi, offset; } masks[8];   /* CGs whose see-through is another CG (CG + offset) */
 	int nmasks;
+	struct { int object; char *name; } looks[32];   /* RQ MOD's looks for a map's props: MapObject.acx's number, the look */
+	int nlooks;
 };
 
 const struct profile *profile_find(const char *code);

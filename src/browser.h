@@ -35,7 +35,7 @@ void win_last_dir(const char *path);   /* remember the folder of a saved file */
 
 /* ---- the tabs ---- */
 
-enum tab { TAB_CGS, TAB_FLASH, TAB_MUSIC, TAB_SOUNDS, TAB_TEXTURES, TAB_PICTURES, TAB_DUNGEONS,
+enum tab { TAB_CGS, TAB_FLASH, TAB_MUSIC, TAB_SOUNDS, TAB_3D, TAB_TEXTURES, TAB_PICTURES, TAB_DUNGEONS,
            TAB_NAMES, TAB_COUNT };
 extern const char *const tab_keys[TAB_COUNT];
 bool tab_shown(int tab);   /* the game has this kind of file */
@@ -84,6 +84,25 @@ void flash_leave(void);                    /* another tab: its playing and its s
 void music_select(int no);
 void sounds_select(int no);
 void names_select(int kind);
+/* The 3D tab (tab_3d.c): the game's 3D models, drawn by the 3D view when the build has it. */
+void tab_3d(void);
+int tab3d_count(void);                     /* the game's 3D models; 0 without the 3D view */
+void tab3d_select(int i);                  /* by the place in the list */
+/* By the model's folder ("gokiburi"), with its kind's folder when two kinds have one of that name
+ * ("Etc/takarabako"); false: none. */
+bool tab3d_select_name(const char *name);
+/* What --shot draws in the 3D tab. */
+struct shot3d {
+	const char *motion;   /* a MOT's name or the game's name for one, "none": the rest pose, NULL: the first the game plays */
+	int frame;            /* the motion's frame when frame_given, else the one the game puts it on */
+	bool frame_given;
+	const char *fight;    /* a fight background (a BG folder) under a monster's model, or NULL */
+	bool fight_camera;    /* the game's fight camera */
+	bool walk, bones;     /* the walk mesh's and the skeleton's lines */
+};
+/* Checked against the model picked; false with a message. */
+bool tab3d_shot(const struct shot3d *s, char *err, size_t n);
+const char *tab3d_error(void);             /* what failed for the model shown, or "" */
 
 /* A batch save, a few files per frame with a progress window (tab_pictures.c). */
 typedef bool (*batch_fn)(int i, const char *dir);

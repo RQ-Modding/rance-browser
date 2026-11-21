@@ -8,7 +8,7 @@
  *                                            read a sample of everything, check and play every Flash
  *                                            file, print the counts as JSON
  *   rance-browser --shot TAB FILE.png [--select N|NAME] [--grid] [--frame N] [--file PATH]
- *                 [--size WxH] [--scale F]
+ *                 [--motion NAME] [--fight BG] [--fight-camera] [--walk] [--bones] [--size WxH] [--scale F]
  *                                            draw one tab offscreen and save it (the guides' pictures)
  *
  * The game folder: --game, else the folder above the program's own (RQ MOD puts it in the game's
@@ -37,10 +37,15 @@ static struct {
 	int shot_tab;
 	const char *shot_path;
 	int select;
-	const char *select_name;   /* --select with a name: a Flash file's */
+	const char *select_name;   /* --select with a name: a Flash file's or a 3D model's */
 	bool grid;
-	int frame;                 /* --frame: the Flash tab's frame */
+	int frame;                 /* --frame: the Flash tab's frame, or the 3D tab's motion's */
+	bool frame_given;          /* a 3D motion's frame 0 is a frame */
 	const char *file;          /* --file, or a .swf or .aff given alone */
+	const char *motion;        /* --motion: the 3D tab's motion */
+	const char *fight;         /* --fight: a fight background for the 3D tab's monster */
+	bool fight_camera;
+	bool walk, bones;          /* --walk, --bones: the 3D tab's lines */
 	int w, h;
 	bool size_given;
 	float scale;   /* --scale, or 0 */
@@ -53,11 +58,16 @@ static void usage(void)
 	       "  " APP_EXE " [--game DIR] [--scale F] [FILE.aff|FILE.swf]\n"
 	       "  " APP_EXE " --check [--game DIR] [--out FILE]\n"
 	       "  " APP_EXE " --shot TAB FILE.png [--game DIR] [--select N|NAME] [--grid] [--frame N] [--file PATH]\n"
-	       "            [--size WxH] [--scale F]\n"
-	       "      TAB: cgs, flash, music, sounds, textures, pictures, dungeons or names\n"
-	       "      --select N: the CG number (cgs), else the place in the list; a Flash file's name (flash)\n"
-	       "      --grid: the grid of pictures; --frame N: the Flash file's frame (from 1);\n"
+	       "            [--motion NAME] [--fight BG] [--fight-camera] [--walk] [--bones] [--size WxH] [--scale F]\n"
+	       "      TAB: cgs, flash, music, sounds, 3d, textures, pictures, dungeons or names\n"
+	       "      --select N: the CG number (cgs), else the place in the list; a Flash file's name (flash),\n"
+	       "      a model's folder, or Kind/folder (3d: Chara/gokiburi, Etc/takarabako)\n"
+	       "      --grid: the grid of pictures; --frame N: the Flash file's frame (from 1), or the motion's\n"
+	       "      (3d; default: the frame the game puts it on)\n"
 	       "      --file PATH: a .swf or .aff from disk in the Flash tab\n"
+	       "      --motion NAME: a MOT of the model's folder, or none (3d; default: the first the game plays);\n"
+	       "      --fight BG: a monster on a fight background (a BG folder), --fight-camera: the game's camera;\n"
+	       "      --walk, --bones: the walk mesh's and the skeleton's lines (3d)\n"
 	       "  --scale F: the size of the text and the layout, 1 to 4 (default: the display's scale;\n"
 	       "      1 for --shot)\n");
 }
@@ -147,7 +157,19 @@ static void parse_args(int argc, char **argv)
 		} else if (!strcmp(a, "--grid")) {
 			A.grid = true;
 		} else if (!strcmp(a, "--frame") && i + 1 < argc) {
-			A.frame = atoi(argv[++i]);
+			long n = strtol(argv[++i], NULL, 10);
+			A.frame = n < -1000000 ? -1000000 : n > 1000000 ? 1000000 : (int)n;
+			A.frame_given = true;
+		} else if (!strcmp(a, "--motion") && i + 1 < argc) {
+			A.motion = argv[++i];
+		} else if (!strcmp(a, "--fight") && i + 1 < argc) {
+			A.fight = argv[++i];
+		} else if (!strcmp(a, "--fight-camera")) {
+			A.fight_camera = true;
+		} else if (!strcmp(a, "--walk")) {
+			A.walk = true;
+		} else if (!strcmp(a, "--bones")) {
+			A.bones = true;
 		} else if (!strcmp(a, "--file") && i + 1 < argc) {
 			A.file = argv[++i];
 		} else if (a[0] != '-' && strlen(a) > 4 && (!strcasecmp(a + strlen(a) - 4, ".aff") || !strcasecmp(a + strlen(a) - 4, ".swf"))) {
@@ -247,9 +269,9 @@ static float display_scale(int display)
 
 /* ---- one frame ---- */
 
-static const char *tab_labels[TAB_COUNT] = { "CGs", "Flash", "Music", "Sounds", "3D textures", "Other pictures",
-                                             "Dungeon textures", "Names" };
-static void (*const tab_fns[TAB_COUNT])(void) = { tab_cgs, tab_flash, tab_music, tab_sounds, tab_textures,
+static const char *tab_labels[TAB_COUNT] = { "CGs", "Flash", "Music", "Sounds", "3D models", "3D textures",
+                                             "Other pictures", "Dungeon textures", "Names" };
+static void (*const tab_fns[TAB_COUNT])(void) = { tab_cgs, tab_flash, tab_music, tab_sounds, tab_3d, tab_textures,
                                                   tab_alk, tab_dungeons, tab_names };
 
 bool tab_shown(int t)
@@ -259,6 +281,7 @@ bool tab_shown(int t)
 	case TAB_FLASH: return G.nflash > 0 || flash_has_file();
 	case TAB_MUSIC: return G.nmusic > 0;
 	case TAB_SOUNDS: return G.nsounds > 0;
+	case TAB_3D: return tab3d_count() > 0;
 	case TAB_TEXTURES: return G.sets[PK_TEX].n > 0;
 	case TAB_PICTURES: return G.sets[PK_ALK].n > 0;
 	case TAB_DUNGEONS: return G.sets[PK_DTX].n > 0;
@@ -297,6 +320,7 @@ static void status_line(void)
 	add_count(counts, sizeof counts, G.nflash, "Flash file", "Flash files");
 	add_count(counts, sizeof counts, G.nmusic, "track", "tracks");
 	add_count(counts, sizeof counts, G.nsounds, "sound", "sounds");
+	add_count(counts, sizeof counts, tab3d_count(), "3D model", "3D models");
 	add_count(counts, sizeof counts, G.sets[PK_TEX].n, "texture", "textures");
 	add_count(counts, sizeof counts, G.sets[PK_ALK].n, "other picture", "other pictures");
 	add_count(counts, sizeof counts, G.sets[PK_DTX].n, "dungeon texture", "dungeon textures");
@@ -420,6 +444,7 @@ static void select_for_shot(void)
 		break;
 	case TAB_MUSIC: music_select(A.select); break;
 	case TAB_SOUNDS: sounds_select(A.select); break;
+	case TAB_3D: break;   /* picked and checked before the window opened (main) */
 	case TAB_TEXTURES: set_select(PK_TEX, A.select); pictures_grid(PK_TEX, A.grid); break;
 	case TAB_PICTURES: set_select(PK_ALK, A.select); pictures_grid(PK_ALK, A.grid); break;
 	case TAB_DUNGEONS: set_select(PK_DTX, A.select); pictures_grid(PK_DTX, A.grid); break;
@@ -488,13 +513,30 @@ int main(int argc, char **argv)
 		fprintf(stderr, APP_EXE ": %s has no %s tab\n", G.title, tab_keys[A.shot_tab]);
 		return 1;
 	}
-	/* A name is a Flash file's: a shot of another file would pass for it. */
-	if (A.shot_path && A.select_name && (A.shot_tab != TAB_FLASH || (!A.file && !flash_select_name(A.select_name)))) {
-		if (A.shot_tab != TAB_FLASH)
-			fprintf(stderr, APP_EXE ": --select takes a name only for the flash tab\n");
-		else
-			fprintf(stderr, APP_EXE ": %s has no Flash file named %s\n", G.title, A.select_name);
-		return 1;
+	/* A name is a Flash file's or a 3D model's: a shot of another would pass for it. */
+	if (A.shot_path && A.select_name) {
+		bool found = A.shot_tab == TAB_FLASH ? (A.file || flash_select_name(A.select_name))
+		           : A.shot_tab == TAB_3D ? tab3d_select_name(A.select_name) : false;
+		if (!found) {
+			if (A.shot_tab != TAB_FLASH && A.shot_tab != TAB_3D)
+				fprintf(stderr, APP_EXE ": --select takes a name only for the flash and 3d tabs\n");
+			else if (A.shot_tab == TAB_FLASH)
+				fprintf(stderr, APP_EXE ": %s has no Flash file named %s\n", G.title, A.select_name);
+			else
+				fprintf(stderr, APP_EXE ": %s has no 3D model named %s\n", G.title, A.select_name);
+			return 1;
+		}
+	}
+	/* The 3D tab's model, motion, frame and fight, checked before the window opens. */
+	if (A.shot_path && A.shot_tab == TAB_3D) {
+		char why[512] = "";
+		if (!A.select_name)
+			tab3d_select(A.select);
+		struct shot3d s = { A.motion, A.frame, A.frame_given, A.fight, A.fight_camera, A.walk, A.bones };
+		if (!tab3d_shot(&s, why, sizeof why)) {
+			fprintf(stderr, APP_EXE ": %s\n", why);
+			return 1;
+		}
 	}
 	settings_set("game", dir);
 
@@ -602,6 +644,11 @@ int main(int argc, char **argv)
 				code = shot_save(A.w, A.h, A.shot_path) ? 0 : 1;
 				if (code)
 					fprintf(stderr, APP_EXE ": could not write %s\n", A.shot_path);
+				/* A 3D model that did not load or draw: the picture shows why, and the shot fails. */
+				if (!code && A.shot_tab == TAB_3D && tab3d_error()[0]) {
+					fprintf(stderr, APP_EXE ": %s\n", tab3d_error());
+					code = 1;
+				}
 				run = false;
 			}
 			p_bind_fb(GL_FRAMEBUFFER, 0);

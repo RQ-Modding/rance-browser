@@ -1,4 +1,4 @@
-/* In the place of RQ MOD's include/sact.h and sprite.h: the one sprite the 3D view draws into, its
+/* In the place of RQ MOD's include/sact.h and sprite.h: the sprite each 3D view draws into, its
  * texture and the plugin bound to it, with the seven calls the renderer makes on a sprite (rb3d.c).
  * The engine's sprites live in its scene; the browser has none. */
 #ifndef SYSTEM4_SACT_H

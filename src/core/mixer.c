@@ -251,7 +251,7 @@ static struct voice *start_data(uint8_t *data, size_t size, bool music, int no, 
 	return v;
 }
 
-/* A voice for sound or track `no`, silent until it is let go (the device locked by the caller). */
+/* A voice for the game's sound or track `no`, playing from now on. */
 static struct voice *start(bool music, int no, float vol)
 {
 	struct audio_entry *a = entry_of(music, no);
@@ -472,6 +472,30 @@ int mixer_check(void)
 	}
 	render((int)ms + 500);
 	mc_expect(!voice_of(false, 408), "a sound ends by itself");
+
+	/* A Flash file's sound from memory: half a second of 440 Hz at 22050 Hz, 16-bit mono, twice at
+	 * once as two StartSounds of one file overlap. */
+	{
+		int n = 11025;
+		int16_t *pcm = xmalloc((size_t)n * sizeof *pcm);
+		for (int i = 0; i < n; i++)
+			pcm[i] = (int16_t)(8000 * sin(i * 2 * 3.14159265358979 * 440 / 22050));
+		mixer_pcm((const uint8_t *)pcm, (size_t)n * sizeof *pcm, 22050, 1, 16, 1.0f);
+		mixer_pcm((const uint8_t *)pcm, (size_t)n * sizeof *pcm, 22050, 1, 16, 1.0f);
+		free(pcm);   /* the mixer keeps a copy */
+		int flash = 0;
+		for (int i = 0; i < VOICES; i++)
+			flash += voices[i].on && !voices[i].done && !voices[i].music && voices[i].no == 0;
+		struct voice *f = voice_of(false, 0);
+		snprintf(what, sizeof what, "a Flash file's sound from memory, twice at once: %d voices, %d Hz, %d channel",
+		         flash, f ? f->info.samplerate : 0, f ? f->info.channels : 0);
+		mc_expect(flash == 2 && f && f->info.samplerate == 22050 && f->info.channels == 1, what);
+		peak = render(200);
+		snprintf(what, sizeof what, "the Flash sounds heard (peak %.3f)", peak);
+		mc_expect(peak > 0.1f, what);
+		render(500);
+		mc_expect(!voice_of(false, 0), "the Flash sounds end by themselves");
+	}
 
 	/* Two tracks with a loop. */
 	int a = 0, b = 0;

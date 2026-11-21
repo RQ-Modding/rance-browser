@@ -1,3 +1,5 @@
 /build/
 /build-*/
 /subprojects/.wraplock
+# cglm, which meson fetches from its wrap
+/subprojects/cglm/

@@ -4,3 +4,5 @@ option('rq_lua', type : 'string', value : '',
        description : 'RQ MOD\'s rq.lua, to check the Lua lines against (default: not checked)')
 option('build_note', type : 'string', value : '',
        description : 'A note shown after the version, such as "RQ MOD 2.55.1"')
+option('3d', type : 'feature', value : 'auto',
+       description : 'The 3D tab, on a copy of RQ MOD\'s 3D renderer and cglm (auto: when cglm is found)')

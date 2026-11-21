@@ -9,6 +9,8 @@ Rance Browser is GPL-2.0-or-later (`COPYING`). It is built from these, each unde
 | xsystem4's Flash player | kichikuou (`parts/flash.c`), Nunuhara Cabbage (`parts/render.c`, the parts' shaders) | GPL-2.0-or-later | followed in `src/core/flash_player.c`, with RQ MOD's fixes to the timeline |
 | RQ MOD's Flash checker | RQ Modding | GPL-2.0-or-later | `src/core/swf_check.c`, `src/core/swf_check.h`, a copy of RQ MOD's, so a file is judged as the game judges it |
 | xsystem4's ways of finding a game's archives and reading `.bgi` and DTEX files | Nunuhara Cabbage, kichikuou | GPL-2.0-or-later | followed in `src/core/game.c` and `src/core/sets.c` |
+| xsystem4's 3D renderer (ReignEngine, TapirEngine) | kichikuou, with Nunuhara Cabbage; `gfx/types.h` Masaki Chikama and Nunuhara Cabbage | GPL-2.0-or-later | `src/core/3d`, a copy of RQ MOD's engine (the files `src/core/COPIES` names), so a model is drawn as the game draws it; the browser's own files there stand in for the rest of the engine |
+| [cglm 0.9.7](https://github.com/recp/cglm) | Recep Aslantas and contributors | MIT | `subprojects/cglm.wrap`, which meson fetches: the 3D renderer's maths |
 | [cJSON](https://github.com/DaveGamble/cJSON) | Dave Gamble and contributors | MIT | `src/core/cJSON.c`, `src/core/cJSON.h` |
 | [Dear ImGui 1.92.9](https://github.com/ocornut/imgui) | Omar Cornut and contributors | MIT | `third_party/cimgui/imgui` |
 | [cimgui 1.92.9b](https://github.com/cimgui/cimgui) | Stephan Dilly and contributors | MIT | `third_party/cimgui` |
@@ -16,9 +18,9 @@ Rance Browser is GPL-2.0-or-later (`COPYING`). It is built from these, each unde
 | [libsndfile](https://libsndfile.github.io/libsndfile/), with libogg, libvorbis, FLAC, Opus, mpg123 and LAME | their authors | LGPL-2.1-or-later and others | linked in |
 | libjpeg-turbo, libwebp, libpng, zlib, libdeflate | their authors | BSD-style, zlib, MIT | linked in, through libsys4 |
 
-The release zip carries each linked library's license in `licenses/`, as MSYS2 installs them.
-MSYS2 installs no license file for libvorbis and LAME, so this repository carries them in
-`licenses/`.
+The release zip carries each linked library's license in `licenses/`, as MSYS2 installs them, and
+cglm's from its checkout. MSYS2 installs no license file for libvorbis and LAME, so this repository
+carries them in `licenses/`.
 
 Rance Browser began as RQ Browser in [RQ MOD](https://github.com/RQ-Modding/RQ-Mod) (loader 2.43.0
 to 2.55.0); its history came along with it.

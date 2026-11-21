@@ -67,9 +67,10 @@ jobs:
             exit 1
           fi
 
+      # The 3D tab always: meson takes cglm from its wrap (subprojects/cglm.wrap).
       - name: Build
         run: |
-          meson setup build --buildtype=release
+          meson setup build --buildtype=release -D3d=enabled
           ninja -C build
 
       # The program runs: --help prints its usage and ends with 0.
@@ -79,13 +80,14 @@ jobs:
       - name: Package
         run: |
           pkg=RanceBrowser
-          mkdir -p $pkg/licenses/imgui $pkg/licenses/cimgui
+          mkdir -p $pkg/licenses/imgui $pkg/licenses/cimgui $pkg/licenses/cglm
           cp build/rance-browser.exe README.md CHANGELOG.md CREDITS.md COPYING $pkg/
           cp -r /ucrt64/share/licenses/. $pkg/licenses/
           # MSYS2 installs no license file for libvorbis and LAME, linked in through libsndfile.
           cp -r licenses/. $pkg/licenses/
           cp third_party/cimgui/imgui/LICENSE.txt $pkg/licenses/imgui/
           cp third_party/cimgui/LICENSE $pkg/licenses/cimgui/
+          cp subprojects/cglm/LICENSE $pkg/licenses/cglm/
           cd $pkg && zip -r -9 ../RanceBrowser-${{ steps.version.outputs.version }}-windows.zip . && cd ..
           # The release's text: this version's section of CHANGELOG.md.
           awk -v v="## ${{ steps.version.outputs.version }} " 'index($0, v) == 1 { on = 1; next } /^## / { on = 0 } on' CHANGELOG.md > notes.md

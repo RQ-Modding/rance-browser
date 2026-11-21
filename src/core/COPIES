@@ -1,0 +1,48 @@
+# The files of RQ MOD's engine (github.com/RQ-Modding/RQ-Mod) that Rance Browser carries, so a file
+# is read, checked and drawn as the game does. One per line, paths from each repository's root:
+#
+#   same <browser path> <engine path>   the engine's file, unchanged (compared with LF line ends)
+#   own  <browser path> <engine path>   the browser's own file in the place of the engine's
+#   skip <engine path>                  the engine's file, left out on purpose
+#
+# A fix to a copied file goes into the engine first, then is copied here. Every file of the
+# engine's src/3d and its shaders/reign* is named, so a new one shows.
+
+# The Flash reader and checker
+same src/core/swf.c src/swf.c
+same src/core/swf.h include/swf.h
+same src/core/swf_check.c src/swf_check.c
+same src/core/swf_check.h include/swf_check.h
+
+# The 3D renderer (src/core/3d, the rance_3d library)
+same src/core/3d/3d_internal.h src/3d/3d_internal.h
+same src/core/3d/collision.c src/3d/collision.c
+same src/core/3d/model.c src/3d/model.c
+same src/core/3d/mpr.c src/3d/mpr.c
+same src/core/3d/parser.c src/3d/parser.c
+same src/core/3d/particle.c src/3d/particle.c
+same src/core/3d/reign.c src/3d/reign.c
+same src/core/3d/renderer.c src/3d/renderer.c
+same src/core/3d/s3de.c src/3d/s3de.c
+skip src/3d/debug.c
+skip src/3d/save.c
+same src/core/3d/include/reign.h include/reign.h
+same src/core/3d/include/plugin.h include/plugin.h
+same src/core/3d/include/profile.h include/profile.h
+same src/core/3d/include/gfx/gfx.h include/gfx/gfx.h
+same src/core/3d/include/gfx/types.h include/gfx/types.h
+own src/core/3d/include/gfx/gl.h include/gfx/gl.h
+own src/core/3d/include/sact.h include/sact.h
+own src/core/3d/include/vm.h include/vm.h
+own src/core/3d/include/xsystem4.h include/xsystem4.h
+own src/core/3d/include/asset_manager.h include/asset_manager.h
+own src/core/3d/include/audio.h include/audio.h
+same src/core/3d/shaders/reign.v.glsl shaders/reign.v.glsl
+same src/core/3d/shaders/reign.f.glsl shaders/reign.f.glsl
+same src/core/3d/shaders/reign_outline.v.glsl shaders/reign_outline.v.glsl
+same src/core/3d/shaders/reign_outline.f.glsl shaders/reign_outline.f.glsl
+same src/core/3d/shaders/reign_shadow.v.glsl shaders/reign_shadow.v.glsl
+same src/core/3d/shaders/reign_shadow.f.glsl shaders/reign_shadow.f.glsl
+
+# cglm, at the engine's revision
+same subprojects/cglm.wrap subprojects/cglm.wrap

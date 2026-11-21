@@ -125,6 +125,11 @@ ninja -C build
 
 The program is `build/rance-browser.exe`, linked statically: it needs only Windows' own DLLs.
 
+The 3D tab draws with a copy of RQ MOD's 3D renderer (`src/core/3d`) on
+[cglm](https://github.com/recp/cglm), which `meson setup` fetches from its wrap
+(`subprojects/cglm.wrap`). With `-D3d=disabled`, or when the default `auto` finds no cglm, the
+browser builds without the 3D tab; the releases build with `-D3d=enabled`.
+
 libjpeg-turbo 3.2.1 cannot be linked statically beside zlib (both define `z_errmsg`). Until that is
 fixed, install 3.2.0:
 `pacman -U https://repo.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libjpeg-turbo-3.2.0-1-any.pkg.tar.zst`.
@@ -138,7 +143,8 @@ names in `games/rq-ids` and checks no Lua lines.
 files, the music and sounds, the other pictures, RQ MOD's names, the thumbnails), the player, the mixer
 and the Flash player (with RQ MOD's Flash checker) are the static library `rance_core`, in `src/core`,
 described by `src/core/core.h`. Another program takes it
-as a meson subproject, with cimgui in it:
+as a meson subproject, with cimgui in it (the 3D renderer is apart, the library `rance_3d`, so it
+takes no 3D code):
 
 ```
 rance_core_dep = subproject('rance-browser').get_variable('rance_core_dep')
@@ -153,9 +159,11 @@ and calls `pics_frame()` once a frame.
 | --- | --- |
 | `src` | The window, in C. `browser.h` describes its parts. |
 | `src/core` | The readers, the library `rance_core`. `core.h` describes them. |
+| `src/core/3d` | The 3D view, the library `rance_3d`: a copy of RQ MOD's 3D renderer, and `rb3d.c` in the place of the rest of the engine. `src/core/COPIES` names each file copied from RQ MOD. |
 | `games` | The game profiles (`games/README.md`) and the copy of RQ MOD's names (`games/rq-ids`). |
 | `third_party/cimgui` | Dear ImGui and cimgui, which draw the window (MIT). |
 | `subprojects/libsys4` | libsys4, a git submodule (GPL-2.0-or-later). |
+| `subprojects/cglm.wrap` | cglm (MIT), which meson fetches for the 3D view. |
 | `tools` | Small Python scripts the build runs. |
 
 ## License

@@ -7,6 +7,7 @@
 # Its readers:      the static library rance_core (src/core), which another program (a scene
 #                   editor) takes as subproject('rance-browser').get_variable('rance_core_dep'),
 #                   with cimgui in it.
+# Its 3D view:      the static library rance_3d (src/core/3d), apart, on cglm (the option 3d).
 project('rance-browser', 'c', 'cpp',
         version : '1.1.0',
         meson_version : '>= 0.59',
@@ -100,6 +101,42 @@ rance_core_dep = declare_dependency(
     compile_args : ['-DCIMGUI_NO_EXPORT'],
     dependencies : core_deps)
 
+# ---- the 3D view: the rance_3d library (src/core/3d/rb3d.h) ----
+
+# A copy of RQ MOD's 3D renderer (src/core/3d: the engine's files unchanged, src/core/COPIES says
+# which) on cglm (MIT), from the engine's own wrap; inside RQ MOD meson shares the engine's cglm.
+# Apart from rance_core, so a program over the readers takes no 3D code. Built when cglm is found,
+# and always with -D3d=enabled, as the releases build.
+cglm_proj = subproject('cglm', required : get_option('3d'),
+                       default_options : ['default_library=static', 'install=false'])
+have_3d = cglm_proj.found()
+if have_3d
+    rb3d_shaders = []
+    foreach s : ['reign.v', 'reign.f', 'reign_outline.v', 'reign_outline.f', 'reign_shadow.v',
+                 'reign_shadow.f']
+        sym = 'rb3d_' + s.replace('.', '_') + '_glsl'
+        rb3d_shaders += custom_target(sym,
+            input : 'src/core/3d/shaders' / (s + '.glsl'),
+            output : sym + '.c',
+            command : [py, embed, '@INPUT@', '@OUTPUT@', sym])
+    endforeach
+    rance_3d_lib = static_library('rance_3d',
+        ['src/core/3d/rb3d.c', 'src/core/3d/parser.c', 'src/core/3d/model.c', 'src/core/3d/mpr.c',
+         'src/core/3d/collision.c', 'src/core/3d/reign.c', 'src/core/3d/renderer.c',
+         'src/core/3d/particle.c', 'src/core/3d/s3de.c'] + rb3d_shaders,
+        # -Wno-maybe-uninitialized: the later engines' effects (s3de.c) set vectors in a switch.
+        c_args : c_warnings + ['-Wno-maybe-uninitialized'],
+        include_directories : include_directories('src/core/3d', 'src/core/3d/include'),
+        dependencies : [sdl2, gl, libm, libsys4_dep, cglm_proj.get_variable('cglm_dep')])
+    rance_3d_dep = declare_dependency(
+        link_with : rance_3d_lib,
+        include_directories : include_directories('src/core/3d'),
+        compile_args : ['-DRB_3D'],
+        dependencies : [sdl2, gl, libm, libsys4_dep])
+else
+    rance_3d_dep = declare_dependency()
+endif
+
 # ---- the program ----
 
 browser_version = meson.project_version()
@@ -120,7 +157,7 @@ executable('rance-browser',
               '-DBROWSER_VERSION="' + browser_version + '"',
               '-DBROWSER_BUILD_NOTE="' + build_note + '"'],
     include_directories : include_directories('src'),
-    dependencies : rance_core_dep,
+    dependencies : [rance_core_dep, rance_3d_dep],
     link_args : ['-static', '-lstdc++', '-lcomdlg32', '-lole32', '-lshell32', '-luuid'],
     win_subsystem : 'windows',
     install : true)

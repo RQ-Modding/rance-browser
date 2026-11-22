@@ -1,0 +1,21 @@
+# Rance 01: Quest for Hikari: MangaGamer's English release (System 4, AliceStart.ini, Sys42VM), 1024 x 768
+# (backgrounds 1124 x 868).
+# Lines: a key, a tab, the values (games/README.md). The folders were labelled by looking at the
+# pictures in the browser (2026-11-22). A folder whose name starts with "_" holds pictures cut to
+# their figure's size, which the game's code names by path (_立ち絵／, _モンスター／).
+title	Rance 01: Quest for Hikari
+tested	yes
+
+folder	(top)	Splash screen
+folder	_立ち絵	Standing pictures
+folder	イベント	Scene CGs
+folder	背景	Backgrounds and battle backgrounds
+folder	_モンスター	Monsters and enemies
+folder	カード	Dungeon cards
+folder	チップ	Chips: items, gear and battle actions
+folder	_マルチテキストボックス	Text box background (honey paper)
+folder	システム	Interface
+folder	マルチテキストボックス	Scrolling text box parts
+folder	Ｃａｎｃｅｌ	Cancel button
+folder	ＯＫ	OK button
+folder	仮	Speed lines (placeholder)

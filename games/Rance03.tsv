@@ -1,0 +1,21 @@
+# Rance 03: Leazas Kanraku: the English release (System 4, AliceStart.ini), 1024 x 768 (backgrounds
+# 1124 x 868).
+# Lines: a key, a tab, the values (games/README.md). The folders were labelled by looking at the
+# pictures in the browser (2026-11-22). "trim_" folders hold pictures cut to their figure's size;
+# 立ち絵背 holds the same 15 pictures as trim_立ち絵背 on their full canvas. Many scene CGs are DCF
+# pictures (differences on a base).
+title	Rance 03: Leazas Kanraku
+tested	yes
+
+folder	trim_立ち絵	Standing pictures
+folder	trim_立ち絵背	Characters from behind (silhouettes)
+folder	立ち絵背	Characters from behind (silhouettes, full canvas)
+folder	イベント	Scene CGs
+folder	背景	Backgrounds and battle backgrounds
+folder	trim_モンスター	Monsters
+folder	カード	Dungeon cards
+folder	アイテム	Item and skill icons
+folder	システム	Interface
+folder	サムネ	Scene CG thumbnails
+folder	trim_システム	Party standing pictures (small)
+folder	ダンジョン	Minimap

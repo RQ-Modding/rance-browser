@@ -3,8 +3,13 @@
  * A System 4 game names its archives after its .ain (the ini's CodeName), and the engine finds them
  * by that name: <code>CG.afa or the volumes <code>GA.ald to <code>GZ.ald for the CGs,
  * <code>BA.ald (or .afa) with a .bgi for the music, <code>WA.ald (or WA.afa, Sound.afa) for the
- * sounds, <code>AFF.afa for the Flash files. This file finds them the same way (xsystem4's
- * asset_manager.c), so any System 4 game opens; a game's profile (games.c) only adds labels. */
+ * sounds, <code>Voice.afa for the voices, <code>AFF.afa for the Flash files. This file finds them
+ * the same way (xsystem4's asset_manager.c), so any System 4 game opens; a game's profile (games.c)
+ * only adds labels.
+ *
+ * The newer games (Rance 01, Rance 03) name their files in words with folders split by a full-width
+ * slash ("_立ち絵／アイ／基本.QNT"), and Rance 03 keeps its music in Sound.afa beside the sounds, each
+ * track's loop in a table of an .ex file inside the same archive (timemap_sound2.ex's SoundInfo). */
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -18,6 +23,7 @@
 #include "system4/ald.h"
 #include "system4/archive.h"
 #include "system4/cg.h"
+#include "system4/ex.h"
 #include "system4/file.h"
 #include "system4/string.h"
 #include "system4/utfsjis.h"
@@ -66,6 +72,68 @@ const char *base_name(const char *path)
 static char *utf(const char *sjis, size_t len)
 {
 	return sjis2utf(sjis, len);
+}
+
+/* The first folder separator in an archive's name: "\", "/" or the full-width "／" (U+FF0F) of the
+ * newer games. *len is its length in bytes (UTF-8), 0 when there is none. */
+static char *first_sep(char *s, int *len)
+{
+	char *a = strchr(s, '\\'), *b = strchr(s, '/'), *c = strstr(s, "\xef\xbc\x8f");
+	char *best = NULL;
+	*len = 0;
+	if (a) { best = a; *len = 1; }
+	if (b && (!best || b < best)) { best = b; *len = 1; }
+	if (c && (!best || c < best)) { best = c; *len = 3; }
+	return best;
+}
+
+/* After the last separator. */
+static const char *last_part(const char *s)
+{
+	const char *out = s;
+	for (const char *p = s; *p; p++) {
+		if (*p == '\\' || *p == '/')
+			out = p + 1;
+		else if (!strncmp(p, "\xef\xbc\x8f", 3))
+			out = p + 3;
+	}
+	return out;
+}
+
+/* A file named in words ("_立ち絵／アイ／基本.QNT"): its name after the first folder and without its
+ * extension ("アイ／基本"), for a list's line. NULL for a file named by a number ("CG12302.qnt",
+ * "10001.ogg"), whose list shows the number. */
+static char *word_title(char *name)
+{
+	const char *base = last_part(name);
+	const char *p = base;
+	if (!strncasecmp(p, "cg", 2))
+		p += 2;
+	const char *digits = p;
+	while (isdigit((unsigned char)*p))
+		p++;
+	if (p > digits && (!*p || *p == '.'))
+		return NULL;
+	int len;
+	char *sep = first_sep(name, &len);
+	char *t = xstrdup(sep && sep[len] ? sep + len : name);
+	char *dot = strrchr(t, '.');
+	if (dot && dot > last_part(t))
+		*dot = 0;
+	return t;
+}
+
+/* The first folder of a name, as a new string, or NULL when it has none. */
+static char *first_folder(char *name)
+{
+	int len;
+	char *sep = first_sep(name, &len);
+	if (!sep)
+		return NULL;
+	char *f = xmalloc(sep - name + 1);
+	memcpy(f, name, sep - name);
+	f[sep - name] = 0;
+	return f;
 }
 
 /* ---- the ini and the archives' names ---- */
@@ -143,6 +211,7 @@ static void free_files(struct game_files *f)
 	free(f->red);
 	free(f->bgi);
 	free(f->dlf);
+	free(f->voice_afa);
 	for (int i = 0; i < 26; i++) {
 		free(f->cg_ald[i]);
 		free(f->ba_ald[i]);
@@ -213,8 +282,13 @@ static bool find_files(const char *dir, struct game_files *f, char *code, size_t
 				add_file(&f->cg_afa, dir, e);
 			else if (!strcasecmp(rest, "BA.afa"))
 				add_file(&f->ba_afa, dir, e);
-			else if (!strcasecmp(rest, "WA.afa") || !strcasecmp(rest, "Sound.afa"))
+			else if (!strcasecmp(rest, "WA.afa"))
 				add_file(&f->wa_afa, dir, e);
+			else if (!strcasecmp(rest, "Sound.afa") && !f->wa_afa) {
+				add_file(&f->wa_afa, dir, e);
+				f->sound_afa = true;
+			} else if (!strcasecmp(rest, "Voice.afa"))
+				add_file(&f->voice_afa, dir, e);
 			else if (!strcasecmp(rest, "AFF.afa"))
 				add_file(&f->aff, dir, e);
 		} else if (!strcasecmp(ext, "bgi")) {
@@ -299,6 +373,10 @@ bool handles_open(struct handles *h, const char *dir)
 	h->aff = open_afa(f->aff, quiet);
 	h->ba = open_audio(f->ba_afa, f->ba_ald, f->nba_ald, quiet);
 	h->wa = open_audio(f->wa_afa, f->wa_ald, f->nwa_ald, quiet);
+	if (!h->ba && f->sound_afa)
+		h->ba = h->wa;   /* the music is in the sound archive: the same numbers read it */
+	struct afa_archive *v = open_afa(f->voice_afa, quiet);
+	h->voice = v ? &v->ar : NULL;
 	if (f->red) {
 		int err = 0;
 		h->red = aar_open(f->red, 0, &err);
@@ -314,8 +392,9 @@ void handles_close(struct handles *h)
 	if (h->cg) archive_free(h->cg);
 	if (h->aff) archive_free(&h->aff->ar);
 	if (h->red) archive_free(&h->red->ar);
-	if (h->ba) archive_free(h->ba);
+	if (h->ba && h->ba != h->wa) archive_free(h->ba);
 	if (h->wa) archive_free(h->wa);
+	if (h->voice) archive_free(h->voice);
 	sets_close(h);
 	memset(h, 0, sizeof *h);
 }
@@ -406,13 +485,13 @@ static void list_cgs_afa(void)
 		c->no = e->no + 1;
 		c->index = (int)i;
 		c->size = e->size;
-		char *sep = strchr(c->name, '\\');
-		if (sep) {
-			*sep = 0;
-			c->folder = folder_index(c->name, folder_label(c->name), 0);
-			*sep = '\\';
+		c->title = word_title(c->name);
+		char *folder = first_folder(c->name);
+		if (folder) {
+			c->folder = folder_index(folder, folder_label(folder), 0);
+			free(folder);
 		} else {
-			c->folder = folder_index("(top)", NULL, 0);
+			c->folder = folder_index("(top)", folder_label("(top)"), 0);
 		}
 	}
 }
@@ -599,6 +678,7 @@ static void audio_iter(struct archive_data *d, void *user)
 	struct audio_entry *a = &l->e[l->n++];
 	memset(a, 0, sizeof *a);
 	a->no = d->no + 1;
+	a->shown_no = a->no;
 	a->size = (uint32_t)d->size;
 	a->file = utf(d->name ? d->name : "", 0);
 }
@@ -617,6 +697,170 @@ static void list_audio(struct archive *ar, struct audio_entry **out, int *n)
 	qsort(l.e, l.n, sizeof *l.e, cmp_audio);
 	*out = l.e;
 	*n = l.n;
+}
+
+static bool is_ex(const char *file)
+{
+	const char *ext = file_extension(file);
+	return ext && !strcasecmp(ext, "ex");
+}
+
+/* The file's name without its extension is `stem`. */
+static bool same_stem(const char *file, const char *stem)
+{
+	size_t n = strlen(stem);
+	return !strncmp(file, stem, n) && file[n] == '.' && !strchr(file + n + 1, '.');
+}
+
+/* A string of an .ex file in UTF-8. Its padding is not always zeros: Rance 03's timemap_sound2.ex
+ * ends some names in a 0x01, so control bytes at the end are cut off. */
+static struct string *ex_utf(const char *s, size_t n)
+{
+	char *u = sjis2utf(s, n);
+	size_t len = strlen(u);
+	while (len && (unsigned char)u[len - 1] < 0x20)
+		u[--len] = 0;
+	struct string *r = make_string(u, len);
+	free(u);
+	return r;
+}
+
+/* An .ex file read from memory, with its strings in UTF-8; NULL when it is not one. */
+static struct ex *read_ex(const uint8_t *data, size_t size)
+{
+	if (size < 32 || memcmp(data, "HEAD", 4) || memcmp(data + 8, "EXTF", 4) || memcmp(data + 20, "DATA", 4))
+		return NULL;
+	return ex_read_conv(data, size, ex_utf);
+}
+
+/* The table of loops in a sound archive (Rance 03's timemap_sound2.ex): SoundInfo, a row a file
+ * by its name without the extension, its Group (1 the music, 2 the looping sounds) and its loop in
+ * sample frames. The ex to free, or NULL. */
+static struct ex *read_loop_table(struct archive *ar, struct audio_entry *e, int n)
+{
+	for (int i = 0; i < n; i++) {
+		if (!is_ex(e[i].file))
+			continue;
+		size_t size = 0;
+		uint8_t *data = game_read_audio(ar, e[i].no, &size);
+		struct ex *ex = data ? read_ex(data, size) : NULL;
+		free(data);
+		if (ex && ex_get_table(ex, "SoundInfo")) {
+			G.loop_table = xstrdup(e[i].file);
+			return ex;
+		}
+		if (ex)
+			ex_free(ex);
+	}
+	return NULL;
+}
+
+static int ex_int(struct ex_table *t, unsigned row, int col, int dflt)
+{
+	struct ex_value *v = col >= 0 ? ex_table_get(t, row, col) : NULL;
+	return v && v->type == EX_INT ? v->i : dflt;
+}
+
+/* A sound archive that holds the music too (Sound.afa, when the game has no BA archive): the
+ * tracks go to the music, each with its loop from the SoundInfo table, the rest stay sounds, and
+ * the table's own file is neither. Without the table, the folder 音楽 ("music") is the music. */
+static void name_in_words(struct audio_entry *e, int n)
+{
+	for (int i = 0; i < n; i++) {
+		e[i].name = word_title(e[i].file);
+		e[i].folder = e[i].name ? first_folder(e[i].file) : NULL;
+	}
+}
+
+static void split_sound_archive(void)
+{
+	struct audio_entry *all = G.sounds;
+	int n = G.nsounds;
+	name_in_words(all, n);
+	bool *music = xcalloc(n ? n : 1, sizeof *music);
+	bool by_table = false;
+	struct ex *ex = read_loop_table(G.h.wa, all, n);
+	struct ex_table *t = ex ? ex_get_table(ex, "SoundInfo") : NULL;
+	int cn = t ? ex_col_from_name(t, "Name") : -1;
+	int cg = t ? ex_col_from_name(t, "Group") : -1;
+	int cb = t ? ex_col_from_name(t, "LoopBeginSample") : -1;
+	int ce = t ? ex_col_from_name(t, "LoopEndSample") : -1;
+	for (unsigned r = 0; t && cn >= 0 && r < t->nr_rows; r++) {
+		struct ex_value *vn = ex_table_get(t, r, cn);
+		if (!vn || vn->type != EX_STRING)
+			continue;
+		for (int i = 0; i < n; i++) {
+			if (!same_stem(all[i].file, vn->s->text))
+				continue;
+			if (ex_int(t, r, cg, 0) == 1) {
+				music[i] = true;
+				by_table = true;
+			}
+			int b = ex_int(t, r, cb, 0), e = ex_int(t, r, ce, 0);
+			if (e > b && b >= 0) {
+				all[i].has_loop = true;
+				all[i].loop_count = 0;
+				all[i].loop_start = b;
+				all[i].loop_end = e;
+				all[i].volume = 100;
+			}
+		}
+	}
+	if (ex)
+		ex_free(ex);
+	if (!by_table)
+		for (int i = 0; i < n; i++)
+			if (all[i].folder && !strcmp(all[i].folder, "音楽"))
+				music[i] = true;
+	G.music = xcalloc(n ? n : 1, sizeof *G.music);
+	G.sounds = xcalloc(n ? n : 1, sizeof *G.sounds);
+	G.nmusic = G.nsounds = 0;
+	for (int i = 0; i < n; i++) {
+		if (is_ex(all[i].file))
+			continue;
+		if (music[i]) {
+			/* a track's folder is its second one (ＡＤＶ in 音楽／ＡＤＶ／のんき), for the tab's
+			 * folders: the first is 音楽 for all of them */
+			struct audio_entry *m = &G.music[G.nmusic++];
+			*m = all[i];
+			m->folder = m->name ? first_folder((char *)m->name) : NULL;
+		} else {
+			G.sounds[G.nsounds++] = all[i];
+		}
+	}
+	free(music);
+	free(all);
+}
+
+/* The voices (Rance 03's Voice.afa: 10001.ogg ...): each shown by its file's number, in a folder
+ * by its thousand ("10000-10999"); one named in words in its first folder. The archive's .ex
+ * (timemap_sound.ex) is not a voice. */
+static void list_voices(void)
+{
+	struct audio_entry *all = NULL;
+	int n = 0;
+	list_audio(G.h.voice, &all, &n);
+	G.voices = xcalloc(n ? n : 1, sizeof *G.voices);
+	G.nvoices = 0;
+	for (int i = 0; i < n; i++) {
+		struct audio_entry *a = &all[i];
+		if (is_ex(a->file))
+			continue;
+		a->name = word_title(a->file);
+		if (a->name) {
+			a->folder = first_folder(a->file);
+		} else {
+			const char *base = last_part(a->file);
+			int no = atoi(base + (strncasecmp(base, "cg", 2) ? 0 : 2));
+			if (no > 0)
+				a->shown_no = no;
+			char f[32];
+			snprintf(f, sizeof f, "%d-%d", a->shown_no / 1000 * 1000, a->shown_no / 1000 * 1000 + 999);
+			a->folder = xstrdup(f);
+		}
+		G.voices[G.nvoices++] = *a;
+	}
+	free(all);
 }
 
 /* The .bgi: each track's loop, in sample frames. Its bytes have their halves swapped. Two forms of
@@ -848,9 +1092,17 @@ bool game_open(const char *dir)
 		return false;
 	list_cgs();
 	list_flash();
-	list_audio(G.h.ba, &G.music, &G.nmusic);
-	list_audio(G.h.wa, &G.sounds, &G.nsounds);
-	read_bgi();
+	if (G.h.ba == G.h.wa && G.h.wa) {
+		list_audio(G.h.wa, &G.sounds, &G.nsounds);
+		split_sound_archive();
+	} else {
+		list_audio(G.h.ba, &G.music, &G.nmusic);
+		list_audio(G.h.wa, &G.sounds, &G.nsounds);
+		if (G.f.wa_afa)
+			name_in_words(G.sounds, G.nsounds);
+		read_bgi();
+	}
+	list_voices();
 	sets_list();
 	if (G.rq) {
 		read_ids();

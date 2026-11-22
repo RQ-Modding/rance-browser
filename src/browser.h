@@ -85,8 +85,8 @@ void win_last_dir(const char *path);   /* remember the folder of a saved file */
 
 /* ---- the tabs ---- */
 
-enum tab { TAB_CGS, TAB_FLASH, TAB_MUSIC, TAB_SOUNDS, TAB_3D, TAB_TEXTURES, TAB_PICTURES, TAB_DUNGEONS,
-           TAB_NAMES, TAB_COUNT };
+enum tab { TAB_CGS, TAB_FLASH, TAB_MUSIC, TAB_SOUNDS, TAB_VOICES, TAB_3D, TAB_TEXTURES, TAB_PICTURES,
+           TAB_DUNGEONS, TAB_NAMES, TAB_COUNT };
 extern const char *const tab_keys[TAB_COUNT];
 bool tab_shown(int tab);   /* the game has this kind of file */
 
@@ -119,6 +119,7 @@ void tab_dungeons(void);
 void tab_flash(void);
 void tab_music(void);
 void tab_sounds(void);
+void tab_voices(void);
 void tab_names(void);
 void tab_cgs_select(int no);           /* from the Names tab: open CG no in the CGs tab */
 /* What --shot --select picks; with -1 the first one. */
@@ -133,6 +134,7 @@ bool flash_has_file(void);                 /* one was opened */
 void flash_leave(void);                    /* another tab: its playing and its sounds stop */
 void music_select(int no);
 void sounds_select(int no);
+void voices_select(int no);
 void names_select(int kind);
 /* The 3D tab (tab_3d.c): the game's 3D models, drawn by the 3D view when the build has it. */
 void tab_3d(void);

@@ -21,7 +21,11 @@ contains nothing of their games: it reads the copy on your own computer.
 | --- | --- |
 | Rance Quest Magnum | Tested. Also shows RQ MOD's names for characters, items and music, and the Lua line a mod uses for each file. |
 | Rance VI - Collapse of Zeth (MangaGamer's English release) | Tested. |
-| Other System 4 games (Sengoku Rance, Rance 01, Rance 03, Rance IX, Rance X, and AliceSoft's other System 4 games) | Open, marked **not tested**: the browser finds their files by the rules every System 4 game follows, but nobody has checked them yet. Some kinds of file may be missing or read wrong. |
+| Sengoku Rance | Tested. |
+| Rance 01: Quest for Hikari | Tested. |
+| Rance 02: The Rebellious Maidens | Tested. |
+| Rance 03: Leazas Kanraku | Tested. Its music with each track's loop, and its voices. |
+| Other System 4 games (Rance IX, Rance X, and AliceSoft's other System 4 games) | Open, marked **not tested**: the browser finds their files by the rules every System 4 game follows, but nobody has checked them yet. Some kinds of file may be missing or read wrong. |
 
 Games on older engines (System 3 and before: Rance 1 to 5D, Kichikuou Rance) do not open.
 
@@ -36,8 +40,9 @@ Each tab appears when the game has that kind of file.
 | **CGs** | Every picture of the CG archive by its number: characters, scenes, backgrounds, the interface, effects. A grid or one at a time, with zoom. | `<game>CG.afa`, or `<game>GA.ald` to `<game>GZ.ald` |
 | **Flash** | The game's Flash animations (Rance Quest's battle effects, marks and cut-ins), played as the game plays them, with what the game makes of each file and the pictures and sounds inside it. A `.swf` or `.aff` from disk too. | `<game>AFF.afa` |
 | **3D models** | Rance Quest's 3D models (its monsters and figures, rooms, fight backgrounds and props), drawn as the game draws them, with their motions; a monster on one of the game's fight backgrounds with its shadow. Each one exports as a glTF file (`.glb`). | `Data\ReignData.red` |
-| **Music** | The tracks, with a player that loops each one where the game does. | `<game>BA.ald` or `.afa`, with the `.bgi` |
+| **Music** | The tracks, with a player that loops each one where the game does. | `<game>BA.ald` or `.afa`, with the `.bgi`; or `Sound.afa` with its table of tracks (Rance 03) |
 | **Sounds** | The sound effects. | `<game>WA.ald`, `WA.afa` or `Sound.afa` |
+| **Voices** | The voices, by number (Rance 03's). | `<game>Voice.afa` |
 | **3D textures** | The textures of the 3D models (Rance Quest), with RQ MOD's line that changes one. | `Data\ReignData.red` |
 | **Other pictures** | Pictures kept in `.alk` files (Rance VI's event pictures, the AliceSoft logo). | `*.alk` |
 | **Dungeon textures** | Each dungeon's walls, floors, ceilings, stairs, doors, sky and light maps (Rance VI). | a `.dlf` file |
@@ -63,7 +68,8 @@ It also finds the game without asking when it sits in the game's folder, or in a
 - **Search:** a number, a part of a file name, or a group's name.
 - **Groups:** the box above each list. For a game with a profile, the CGs' groups have English labels
   (Rance VI's "Standing pictures", "Scene CGs", "Backgrounds"...); otherwise they are the archive's own
-  folders or ranges of a thousand numbers.
+  folders or ranges of a thousand numbers. Music, sounds and voices have the archive's folders when
+  it has some (Rance 03's), and voices a folder per thousand.
 
 Nothing is written into the game's folder. The program keeps a small `rance-browser.json` beside
 itself, with the last game folder and the last folder you saved into.
@@ -136,11 +142,12 @@ rance-browser --recolor FILE.png OUT.rgba HUE[,SATURATION[,LIGHTNESS]]
 
 - A `.aff` or `.swf` path opens that file in the Flash tab.
 - `--check` opens every archive, decodes the first, middle and last picture of each group, reads
-  every track's loop and every sound, checks every Flash file and plays it to its end, reads every 3D
-  model and motion and draws each model through its motions and each texture's UV map, and prints
-  the counts as JSON (exit 1 when something failed).
-- `--shot` draws one tab without a window and saves it: `cgs`, `flash`, `music`, `sounds`, `3d`,
-  `textures`, `pictures`, `dungeons` or `names`. In the Flash tab, `--select` also takes a file's name,
+  every track's loop and every sound, the first, middle and last voice of each folder, checks every
+  Flash file and plays it to its end, reads every 3D model and motion and draws each model through
+  its motions and each texture's UV map, and prints the counts as JSON (exit 1 when something
+  failed).
+- `--shot` draws one tab without a window and saves it: `cgs`, `flash`, `music`, `sounds`, `voices`,
+  `3d`, `textures`, `pictures`, `dungeons` or `names`. In the Flash tab, `--select` also takes a file's name,
   `--frame` the frame to draw (from 1) and `--file` a file from disk. In the 3D tab, `--select` takes
   a model's folder (`gokiburi`, or `Chara/gokiburi` when two kinds have one of that name) or a
   monster's model number from the game's data (`100122`, with the motions of its entry in the game's

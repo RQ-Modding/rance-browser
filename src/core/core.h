@@ -81,6 +81,8 @@ struct cg_entry {
 	int index;         /* index in the archive: the AFA's table, or the ALD's number - 1 */
 	uint32_t size;
 	char *name;        /* the file's name in the archive, UTF-8 */
+	char *title;       /* the list's line where the archive names its files in words (Rance 01's
+	                      "アイ／基本"), or NULL: "CG <no>" */
 	const char *use;   /* "Rance: face", from the names' pictures, or NULL */
 };
 
@@ -95,11 +97,13 @@ struct flash_entry {
 };
 
 struct audio_entry {
-	int no;
+	int no;            /* the archive's number, which reads it (game_read_audio) */
+	int shown_no;      /* the number the list shows: no, or a voice file's own (10001.ogg) */
 	uint32_t size;
-	char *file;        /* 00012.ogg */
-	const char *name;  /* rq.ids.music's name, or NULL */
-	bool has_loop;     /* a line in the .bgi */
+	char *file;        /* 00012.ogg, or 効果音／お腹.ogg */
+	const char *name;  /* rq.ids.music's name, the file's name in words without its folder, or NULL */
+	const char *folder;   /* the archive's first folder (効果音), a voice's thousand, or NULL */
+	bool has_loop;     /* a line in the .bgi, or a row of the sound archive's SoundInfo table */
 	int loop_count, loop_start, loop_end, volume;
 };
 
@@ -160,6 +164,8 @@ struct game_files {
 	char *ba_afa, *wa_afa;
 	char *ba_ald[26], *wa_ald[26];
 	int nba_ald, nwa_ald;
+	bool sound_afa;              /* wa_afa is <code>Sound.afa: the newer games keep the music in it too */
+	char *voice_afa;             /* <code>Voice.afa (Rance 03), or NULL */
 	char *aff;
 	char *red;
 	char *bgi;
@@ -175,7 +181,8 @@ struct handles {
 	struct afa_archive *cg_afa;  /* the same when it is an AFA (its table has the folders) */
 	struct afa_archive *aff;
 	struct aar_archive *red;
-	struct archive *ba, *wa;
+	struct archive *ba, *wa;     /* ba is wa when the music is in the sound archive (Sound.afa) */
+	struct archive *voice;
 	struct alk_archive *alk[MAX_ALK];
 	void *dlf;                   /* the .dlf's FILE* */
 };
@@ -195,6 +202,8 @@ struct game {
 	struct flash_entry *flash; int nflash;
 	struct audio_entry *music; int nmusic;
 	struct audio_entry *sounds; int nsounds;
+	struct audio_entry *voices; int nvoices;
+	char *loop_table;    /* the sound archive's file with the loops (timemap_sound2.ex), or NULL */
 	struct pic_set sets[PK_NKINDS];   /* PK_TEX, PK_ALK and PK_DTX; PK_CG's is unused */
 	int ndungeons;       /* dungeons with textures */
 	struct id_kind *kinds; int nkinds;

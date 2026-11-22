@@ -2,6 +2,36 @@
 
 Each version, newest first. A version in RQ MOD's package is named in RQ MOD's own CHANGELOG.
 
+## 1.4.0 (not released)
+
+Four more games with profiles: Sengoku Rance, Rance 01, Rance 02 and Rance 03, each with English
+labels for its CG groups. The newer games' archives are read by their folders, Rance 03's music is
+found in its sound archive with each track's loop, and voices have a tab of their own.
+
+- **The newer games' folders** (Rance 01 and 03): their archives name each file by a path whose
+  folders are split by a full-width slash (`イベント／...`), which the browser now reads as folders, as
+  it reads `\` and `/`. Each CG goes in its first folder (Rance 03's 12, Rance 01's 13), and a CG
+  named in words is listed by its name after that folder instead of the folder's name alone. The
+  sounds of such an archive are listed by their names in words, in their folders, and **Save as
+  OGG...** names the file as the archive does.
+- **Rance 03's music:** the game keeps its music and its sounds in one archive (`Sound.afa`) with a
+  table of the tracks and their loops in it (`timemap_sound2.ex`). The Music tab lists the table's
+  50 tracks, each with its loop, in a folder by its kind (ADV, ダンジョン, 戦闘...); the Sounds tab
+  the other 268. A game with such an archive and no table gets the folder `音楽` ("music") as its
+  music.
+- **Voices** (a new tab, after Sounds): the game's voice archive (`<game>Voice.afa`, Rance 03's
+  17,913), each voice by its file's number, in a folder per thousand, with the player and **Save as
+  OGG...**. A folder box above the list, as on the Music and Sounds tabs, which now have one too
+  when their files have folders.
+- **The profiles:** `games/Rance7.tsv` (Sengoku Rance), `rance02.tsv`, `Rance01.tsv` and
+  `Rance03.tsv`, each with the game's title and labels for its CG groups, made by looking at the
+  pictures: number ranges for Sengoku Rance and Rance 02, the archive's folders for Rance 01 and 03.
+- **On the command line:** `--shot voices`; `--check` reads the first, middle and last voice of each
+  folder, and its report gains `voices`.
+- **The copy of RQ MOD's 3D renderer** follows RQ MOD 2.65.3, which draws the 3D with the game's
+  anti-aliasing when the game's 3D setting asks for it. The browser's views keep it off, so nothing
+  they draw changes.
+
 ## 1.3.0 (2026-11-22)
 
 Rance Quest's 3D textures as RQ MOD changes them: a model's textures listed as RQ MOD lists them, a

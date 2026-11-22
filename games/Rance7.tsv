@@ -1,0 +1,38 @@
+# Sengoku Rance: MangaGamer's English release (System 4.0), 800 x 600.
+# Lines: a key, a tab, the values (games/README.md). The ranges were labelled by looking at the
+# pictures in the browser (2026-11-22); a range may hold a few pictures of another kind.
+title	Sengoku Rance
+tested	yes
+
+# 0-9999: the story's pictures.
+range	0	999	Standing pictures and faces
+range	1000	4499	Scene CGs
+range	4500	4999	Extra characters and blank pictures
+range	5000	5999	Faces: other characters
+range	6000	6999	Event pictures
+range	7000	8999	Faces: monsters
+range	9000	9999	Backgrounds
+
+# 10000-29999: the interface, the items and the battle sprites.
+range	10000	10450	Interface and the map of Japan
+range	10451	10699	Clans: crests, names and map screens
+range	10700	11996	Interface: CG mode
+range	11997	12499	Item icons
+range	12500	12999	Title screen
+range	13000	13299	Battle sprites: commanders
+range	13300	13999	Battle sprites: commanders attacking
+range	14000	17999	Battle sprites: soldiers
+range	19000	19999	Battle backgrounds
+range	20000	29999	Battle background overlays
+
+# 30000-49999: battle effects, as the frames of their animations.
+range	30000	30109	Battle effects (small)
+range	30110	39999	Victory and defeat banners
+range	40000	47999	Battle effects
+range	49000	49999	Battle effects (small)
+
+# 50000-64999: copies at other sizes, and the start screens.
+range	50000	59999	Faces, small (CG - 50000)
+range	60000	60999	Message cursor
+range	61000	64989	Scene CG thumbnails (CG - 60000)
+range	64990	64999	Warning and logo screens

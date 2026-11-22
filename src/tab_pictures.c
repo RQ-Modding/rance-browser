@@ -45,7 +45,9 @@ static struct pic_entry *entry(struct plist *p, int i)
 
 static void title_of(struct plist *p, int i, char *buf, size_t n)
 {
-	if (p->kind == PK_CG)
+	if (p->kind == PK_CG && G.cgs[i].title)
+		snprintf(buf, n, "%s", G.cgs[i].title);   /* a file named in words: Rance 01's アイ／基本 */
+	else if (p->kind == PK_CG)
 		snprintf(buf, n, "CG %d", G.cgs[i].no);
 	else
 		snprintf(buf, n, "%s", entry(p, i)->title);

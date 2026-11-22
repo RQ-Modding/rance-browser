@@ -6,12 +6,17 @@ browser was checked on it, and labels for its CGs. The program carries the profi
 or changed profile needs a new build.
 
 One file per game, named after the game's `.ain` without `.ain`, as the game's ini names it
-(`CodeName = "Rance6.ain"` gives `Rance6.tsv`). Add the file to `game_tsvs` in `meson.build`.
+(`CodeName = "Rance6.ain"` gives `Rance6.tsv`; the case does not matter, Rance 02's is
+`rance02.ain`). Add the file to `game_tsvs` in `meson.build`.
 
 | Game | Profile | Checked |
 | --- | --- | --- |
 | Rance Quest Magnum | `RanceQuest.tsv` | yes: every tab, with RQ MOD's names and Lua lines |
 | Rance VI - Collapse of Zeth (MangaGamer's release) | `Rance6.tsv` | yes: CGs, music, sounds, other pictures, dungeon textures |
+| Sengoku Rance | `Rance7.tsv` | yes: CGs (ranges), music, sounds, other pictures |
+| Rance 01: Quest for Hikari | `Rance01.tsv` | yes: CGs (folders), music, sounds |
+| Rance 02: The Rebellious Maidens | `rance02.tsv` | yes: CGs (ranges), music, sounds, other pictures |
+| Rance 03: Leazas Kanraku | `Rance03.tsv` | yes: CGs (folders), music with its loops from the sound archive's table, sounds, voices |
 
 ## The format
 
@@ -23,7 +28,7 @@ with `#` and an empty line are skipped.
 | `title` | the name | The window's title and the status line. Without it, the ini's `GameName`. |
 | `tested` | `yes` or `no` | `yes` takes away the "not tested" mark. Say `yes` only after the checks below. |
 | `font` | a path in the game's folder | A font for the window, used when it is there (Rance Quest's `Data/NotoSansRQM-Regular.ttf`). Without it, Windows' Segoe UI, with a Japanese font of Windows for the glyphs it lacks. |
-| `folder` | the archive's folder, a label | For a game whose CG archive (`.afa`) has folders: an English label beside the folder's own name. |
+| `folder` | the archive's folder, a label | For a game whose CG archive (`.afa`) has folders: an English label beside the folder's own name. The first folder of a file's path, split at `\`, `/` or the newer games' full-width `／`; `(top)` for the files outside any folder. |
 | `range` | first number, last number, a label | For a game whose CG archive (`.ald`) has no folders: the CGs from the first to the last number in one group with that label. A CG in no range goes in its thousand ("7000-7999"). |
 | `mask` | first number, last number, offset | The CGs in that range take their see-through from the CG `offset` higher, when that one exists and has the same size (Rance VI's JPEG effects, each with a PMS alpha map of its size 10000 higher). Read from the numbers and sizes, not from the game's script. |
 | `rq` | `yes` | RQ MOD's game: the Names tab and the Lua lines. For Rance Quest Magnum only. |

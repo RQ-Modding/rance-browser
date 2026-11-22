@@ -82,7 +82,7 @@ static void usage(void)
 	       "  " APP_EXE " --check [--game DIR] [--out FILE]\n"
 	       "  " APP_EXE " --shot TAB FILE.png [--game DIR] [--select N|NAME] [--grid] [--frame N] [--file PATH]\n"
 	       "            [--motion NAME] [--fight BG] [--fight-camera] [--walk] [--bones] [--size WxH] [--scale F]\n"
-	       "      TAB: cgs, flash, music, sounds, 3d, textures, pictures, dungeons or names\n"
+	       "      TAB: cgs, flash, music, sounds, voices, 3d, textures, pictures, dungeons or names\n"
 	       "      --select N: the CG number (cgs), else the place in the list; a Flash file's name (flash),\n"
 	       "      a model's folder, Kind/folder (3d: Chara/gokiburi, Etc/takarabako) or a model's number\n"
 	       "      (3d: 100122, rq.Chara's model, with that MonsterInfo entry's motions)\n"
@@ -358,10 +358,10 @@ static float display_scale(int display)
 
 /* ---- one frame ---- */
 
-static const char *tab_labels[TAB_COUNT] = { "CGs", "Flash", "Music", "Sounds", "3D models", "3D textures",
+static const char *tab_labels[TAB_COUNT] = { "CGs", "Flash", "Music", "Sounds", "Voices", "3D models", "3D textures",
                                              "Other pictures", "Dungeon textures", "Names" };
-static void (*const tab_fns[TAB_COUNT])(void) = { tab_cgs, tab_flash, tab_music, tab_sounds, tab_3d, tab_textures,
-                                                  tab_alk, tab_dungeons, tab_names };
+static void (*const tab_fns[TAB_COUNT])(void) = { tab_cgs, tab_flash, tab_music, tab_sounds, tab_voices, tab_3d,
+                                                  tab_textures, tab_alk, tab_dungeons, tab_names };
 
 bool tab_shown(int t)
 {
@@ -370,6 +370,7 @@ bool tab_shown(int t)
 	case TAB_FLASH: return G.nflash > 0 || flash_has_file();
 	case TAB_MUSIC: return G.nmusic > 0;
 	case TAB_SOUNDS: return G.nsounds > 0;
+	case TAB_VOICES: return G.nvoices > 0;
 	case TAB_3D: return tab3d_count() > 0;
 	case TAB_TEXTURES: return G.sets[PK_TEX].n > 0;
 	case TAB_PICTURES: return G.sets[PK_ALK].n > 0;
@@ -409,6 +410,7 @@ static void status_line(void)
 	add_count(counts, sizeof counts, G.nflash, "Flash file", "Flash files");
 	add_count(counts, sizeof counts, G.nmusic, "track", "tracks");
 	add_count(counts, sizeof counts, G.nsounds, "sound", "sounds");
+	add_count(counts, sizeof counts, G.nvoices, "voice", "voices");
 	add_count(counts, sizeof counts, tab3d_count(), "3D model", "3D models");
 	add_count(counts, sizeof counts, G.sets[PK_TEX].n, "texture", "textures");
 	add_count(counts, sizeof counts, G.sets[PK_ALK].n, "other picture", "other pictures");
@@ -533,6 +535,7 @@ static void select_for_shot(void)
 		break;
 	case TAB_MUSIC: music_select(A.select); break;
 	case TAB_SOUNDS: sounds_select(A.select); break;
+	case TAB_VOICES: voices_select(A.select); break;
 	case TAB_3D: break;   /* picked and checked before the window opened (main) */
 	case TAB_TEXTURES: set_select(PK_TEX, A.select); pictures_grid(PK_TEX, A.grid); break;
 	case TAB_PICTURES: set_select(PK_ALK, A.select); pictures_grid(PK_ALK, A.grid); break;

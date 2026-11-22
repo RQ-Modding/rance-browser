@@ -1,0 +1,29 @@
+# Rance 02: The Rebellious Maidens: MangaGamer's English release (System 4, AliceStart.ini, Sys42VM), 800 x 600.
+# Lines: a key, a tab, the values (games/README.md). The ranges were labelled by looking at the
+# pictures in the browser (2026-11-22); a range may hold a few pictures of another kind.
+title	Rance 02: The Rebellious Maidens
+tested	yes
+
+# The story's pictures.
+range	0	999	Standing pictures
+range	1000	1999	Faces
+range	2000	2499	Backgrounds (framed)
+range	2500	2999	Battle backgrounds
+range	10000	10999	Scene CGs
+range	11000	11399	Small framed cut-ins
+range	11400	11999	Small framed pictures of places
+range	15000	15999	Scene CG thumbnails
+range	19000	19999	Animation frames (chibi Sill and Rance)
+
+# Battle and dungeon.
+range	12000	12999	Battle sprites: Rance and Sill from behind, enemies
+range	21000	21999	Party bars and digits (small)
+range	23000	23999	Party bars and digits (large)
+range	24000	24999	Dungeon maps and party markers
+range	34000	37999	Battle effects
+
+# The interface.
+range	22000	22999	Screen frames, compass, game over and digits
+range	27000	27799	Menus: save, load, config, CG and music mode
+range	27800	27999	Staff credits
+range	29000	29999	Logos and warning

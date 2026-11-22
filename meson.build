@@ -9,7 +9,7 @@
 #                   with cimgui in it.
 # Its 3D view:      the static library rance_3d (src/core/3d), apart, on cglm (the option 3d).
 project('rance-browser', 'c', 'cpp',
-        version : '1.3.0',
+        version : '1.4.0',
         meson_version : '>= 0.59',
         default_options : ['c_std=c11', 'cpp_std=c++17', 'warning_level=1'])
 add_project_arguments('-D_DEFAULT_SOURCE', language : 'c')
@@ -48,7 +48,11 @@ cimgui_lib = static_library('cimgui',
 
 # The games' profiles (games/*.tsv): titles, labels for the CG folders or number ranges.
 game_tsvs = files(
+    'games/Rance01.tsv',
+    'games/rance02.tsv',
+    'games/Rance03.tsv',
     'games/Rance6.tsv',
+    'games/Rance7.tsv',
     'games/RanceQuest.tsv',
 )
 games_c = custom_target('games_c',

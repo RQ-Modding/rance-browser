@@ -230,6 +230,39 @@ static cJSON *check_sounds(void)
 	return o;
 }
 
+/* The voices: many (Rance 03 has 17,913), so the first, middle and last of each folder are read,
+ * and the count by folder. */
+static cJSON *check_voices(void)
+{
+	cJSON *o = cJSON_CreateObject();
+	cJSON *folders = cJSON_CreateObject();
+	int probed = 0;
+	for (int first = 0; first < G.nvoices;) {
+		const char *f = G.voices[first].folder ? G.voices[first].folder : "(top)";
+		int last = first;
+		while (last + 1 < G.nvoices && !strcmp(G.voices[last + 1].folder ? G.voices[last + 1].folder : "(top)", f))
+			last++;
+		cJSON_AddNumberToObject(folders, f, last - first + 1);
+		int pick[3] = { first, (first + last) / 2, last };
+		for (int k = 0; k < 3; k++) {
+			if (k && pick[k] == pick[k - 1])
+				continue;
+			size_t size = 0;
+			uint8_t *data = game_read_audio(G.h.voice, G.voices[pick[k]].no, &size);
+			if (data && player_probe(data, size, false, NULL, NULL, NULL))
+				probed++;
+			else
+				fail("%s %d could not be read", "voice", G.voices[pick[k]].shown_no);
+			free(data);
+		}
+		first = last + 1;
+	}
+	cJSON_AddItemToObject(o, "folders", folders);
+	cJSON_AddNumberToObject(o, "count", G.nvoices);
+	cJSON_AddNumberToObject(o, "read", probed);
+	return o;
+}
+
 /* A set of pictures (3D textures, other pictures, dungeon textures): its count by folder, and the
  * first, middle and last picture of each folder decoded. */
 static cJSON *check_set(int kind)
@@ -548,6 +581,7 @@ int run_check(const char *dir, const char *out_path)
 		cJSON_AddItemToObject(root, "flash", check_flash());
 		cJSON_AddItemToObject(root, "music", check_music());
 		cJSON_AddItemToObject(root, "sounds", check_sounds());
+		cJSON_AddItemToObject(root, "voices", check_voices());
 		cJSON_AddItemToObject(root, "textures", check_set(PK_TEX));
 		cJSON_AddItemToObject(root, "pictures", check_set(PK_ALK));
 		cJSON *dungeons = check_set(PK_DTX);

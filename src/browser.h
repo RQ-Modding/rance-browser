@@ -17,25 +17,54 @@
 
 int run_check(const char *dir, const char *out_path);
 bool font_has_japanese(const char *path);
+/* --decode FILE.png OUT.rgba: RQ MOD's PNG reader (rq_pixels), or libsys4's (libsys4 true); the raw
+ * RGBA written to out and "WxH alpha=0|1" printed. 0, or 1 with the reason on stderr. */
+int run_decode(const char *in, const char *out, bool libsys4);
 
-/* ---- --export (export.c) ---- */
+/* ---- --export, --uv-map, --save-texture and the tries of the command line (export.c) ---- */
+
+/* --texture NAME=FILE.png[,FILE2.png,...]: PNGs tried on a model's texture, for --shot 3d and
+ * --export. */
+struct try_arg {
+	const char *arg;      /* as given */
+	char *name;           /* the texture, UTF-8 */
+	char **files;         /* the PNGs, in order */
+	int nfiles;
+};
+/* Splits a --texture argument; false when it is not NAME=FILE[,FILE...]. */
+bool try_arg_parse(const char *arg, struct try_arg *out);
+struct rb3d_tries;
+/* The tries for the model at path (its folder in the archive's bytes), made from the arguments by
+ * RQ MOD's rules; NULL with RQ MOD's text in why for the first it would refuse. */
+struct rb3d_tries *tries_from_args(const char *path, const struct try_arg *a, int n, char *why, size_t wn);
 
 struct export_args {
 	const char *out;      /* a .glb file (one model), else a folder */
 	const char *select;   /* a model's folder, or Kind/folder */
 	const char *kind;     /* chara, map, bg or etc */
 	bool all;
+	const struct try_arg *tries;   /* --texture, with one model only */
+	int ntries;
 };
 int run_export(const char *dir, const struct export_args *a);
+/* --uv-map NAME OUT.png or --save-texture NAME OUT.png (uv false: the game's picture) of the model
+ * select names (a folder, or Kind/folder), no window. 0, or 1 with the reason on stderr. */
+int run_texture_file(const char *dir, const char *select, const char *name, const char *out, bool uv);
 
 /* ---- Windows: dialogs, paths, settings (win.c) ---- */
 
 void win_init(void);
 bool win_exe_dir(char *out, size_t n);
+bool win_temp_dir(char *out, size_t n);   /* the user's temporary folder (UTF-8), without a \ at its end */
 bool win_pick_folder(const char *title, char *out, size_t n);
 bool win_pick_save(const char *title, const char *name, const char *ext, char *out, size_t n);
 /* A file to open: what (the filter's name) and patterns ("*.aff;*.swf"). */
 bool win_pick_open(const char *title, const char *what, const char *patterns, char *out, size_t n);
+/* Several files to open, as for win_pick_open: their paths (UTF-8) in *out, sorted by name in
+ * natural order (numbers by their value: 2 before 10), *n of them. Free each and the array. */
+bool win_pick_open_many(const char *title, const char *what, const char *patterns, char ***out, int *n);
+/* Whether a goes before b by name in natural order. */
+int natural_cmp(const char *a, const char *b);
 void win_message(const char *title, const char *text);
 void win_attach_console(void);
 bool win_relaunch(const char *game_dir);   /* start the program again on another game */
@@ -109,10 +138,19 @@ struct shot3d {
 	const char *fight;    /* a fight background (a BG folder) under a monster's model, or NULL */
 	bool fight_camera;    /* the game's fight camera */
 	bool walk, bones;     /* the walk mesh's and the skeleton's lines */
+	const struct try_arg *tries;   /* --texture: PNGs tried on the model's textures */
+	int ntries;
 };
 /* Checked against the model picked; false with a message. */
 bool tab3d_shot(const struct shot3d *s, char *err, size_t n);
 const char *tab3d_error(void);             /* what failed for the model shown, or "" */
+/* --view-only: the 3D view's frame saved as "Save this frame as PNG..." saves it; false with a
+ * message. */
+bool tab3d_save_view(const char *path, char *err, size_t n);
+/* For the 3D textures tab: the Lua line that puts a mod's PNG on the picture at raw (its archive key,
+ * Shift-JIS), when a model draws it; false (out empty) when no model's .POL names it, or without the
+ * 3D view. */
+bool tab3d_texture_line(const char *raw, char *out, size_t n);
 /* For the Names tab, a model by its number (rq.Chara's model: 100000 plus its MonsterInfo entry):
  * its folder ("gokiburi"), or NULL when no folder of Chara or Etc draws it (or no 3D view). */
 const char *tab3d_model_folder(int model);

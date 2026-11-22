@@ -1,5 +1,6 @@
 /* --check's 3D part: every model's files read by the readers of the copy beside this file (no
- * OpenGL), then, with a GL context, every model loaded and drawn, every motion of its folder played
+ * OpenGL), then, with a GL context, every model loaded and drawn, the UV map of each of its textures
+ * drawn and counted against the engine's meshes, every motion of its folder played
  * through all its frames, the game's own motions (MonsterInfo's) as a fight plays them, and each
  * monster on a fight background with its shadow, each step under the guard. What a game's files are
  * known to hold (motions made for another model's bones, names of files that are not there) is
@@ -19,6 +20,7 @@
 #include "3d_internal.h"
 #include "../cJSON.h"
 #include "rb3d.h"
+#include "rb3d_private.h"
 
 struct report {
 	void (*fail)(void *ctx, const char *text);
@@ -336,6 +338,8 @@ struct draw_counts {
 	int loaded, drawn, motions, frames, refused_for_bones, game_motions, game_frames, game_stopped, game_loops,
 	    on_background, exports_kept;
 	bool export_room, export_fight;   /* the export's test done on a room, on a monster in a fight */
+	struct rb3d_uv_counts uv;         /* the UV maps (rb3d_view_uv_check) */
+	int uv_models;
 };
 
 struct drawing {
@@ -443,6 +447,12 @@ static void draw_model(struct drawing *g, const struct rb3d_list *l, int i, cons
 		return;
 	}
 	g->c.loaded++;
+	/* every texture's UV map, each group's triangles in it against the engine's mesh */
+	char why[512];
+	if (rb3d_view_uv_check(g->v, &g->c.uv, why, sizeof why))
+		g->c.uv_models++;
+	else
+		failf(g->r, "%s: %s", nm, why);
 	if (!draw(g, &d, nm, "at rest"))
 		return;
 	g->c.drawn++;
@@ -561,6 +571,14 @@ static cJSON *draw_pass(const char *red_path, const struct rb3d_list *l, const s
 	cJSON_AddNumberToObject(o, "game_in_a_loop", g.c.game_loops);
 	cJSON_AddNumberToObject(o, "on_background", g.c.on_background);
 	cJSON_AddNumberToObject(o, "exports_kept_the_view", g.c.exports_kept);
+	cJSON *uv = cJSON_AddObjectToObject(o, "uv_maps");
+	cJSON_AddNumberToObject(uv, "models", g.c.uv_models);
+	cJSON_AddNumberToObject(uv, "maps", g.c.uv.maps);
+	cJSON_AddNumberToObject(uv, "parts", g.c.uv.parts);
+	cJSON_AddNumberToObject(uv, "triangles", g.c.uv.triangles);
+	cJSON_AddNumberToObject(uv, "triangles_skipped", g.c.uv.skipped);
+	cJSON_AddNumberToObject(uv, "light_meshes_without_light_uvs", g.c.uv.light_meshes_without_uvs);
+	cJSON_AddNumberToObject(uv, "light_models_without_light_uvs", g.c.uv.light_models_without_uvs);
 	if (bg >= 0)
 		cJSON_AddStringToObject(o, "background", l->m[bg].folder);
 	cJSON_AddNumberToObject(o, "ms", (int)(now_ms() - t0));

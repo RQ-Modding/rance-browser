@@ -9,7 +9,7 @@
 #                   with cimgui in it.
 # Its 3D view:      the static library rance_3d (src/core/3d), apart, on cglm (the option 3d).
 project('rance-browser', 'c', 'cpp',
-        version : '1.2.0',
+        version : '1.3.0',
         meson_version : '>= 0.59',
         default_options : ['c_std=c11', 'cpp_std=c++17', 'warning_level=1'])
 add_project_arguments('-D_DEFAULT_SOURCE', language : 'c')
@@ -130,7 +130,7 @@ if have_3d
     endforeach
     rance_3d_lib = static_library('rance_3d',
         ['src/core/3d/rb3d.c', 'src/core/3d/rb3d_models.c', 'src/core/3d/rb3d_check.c',
-         'src/core/3d/rb3d_export.c', 'src/core/3d/parser.c',
+         'src/core/3d/rb3d_export.c', 'src/core/3d/rb3d_textures.c', 'src/core/3d/parser.c',
          'src/core/3d/model.c', 'src/core/3d/mpr.c',
          'src/core/3d/collision.c', 'src/core/3d/reign.c', 'src/core/3d/renderer.c',
          'src/core/3d/particle.c', 'src/core/3d/s3de.c', 'src/core/3d/rq_textures.c'] + rb3d_shaders,

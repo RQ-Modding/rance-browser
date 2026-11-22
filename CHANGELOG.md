@@ -2,6 +2,49 @@
 
 Each version, newest first. A version in RQ MOD's package is named in RQ MOD's own CHANGELOG.
 
+## 1.3.0 (not released)
+
+Rance Quest's 3D textures as RQ MOD changes them: a model's textures listed as RQ MOD lists them, a
+PNG tried on one and drawn as the game would draw it, and each texture's UV map.
+
+- **Its textures** (the 3D tab) lists what the model's materials use, in the model's order, as RQ
+  MOD's `rq.image.textures` does: each texture's name, the maps it is used as (colour, alpha, light,
+  normal, specular), its size, whether it has alpha, its frames (a texture the game animates, as
+  `face.png`, `face[1].png`...), "its own alpha map" where a material cuts the picture by its own red,
+  and "not in the folder" for a name the archive lacks. A picture opens in the 3D textures tab; the
+  folder's other pictures, which no material names, are shown under the list.
+- **Save as PNG...** saves the game's picture, **Save the UV map...** the triangles the model draws
+  with that file: white lines over a faint fill, see-through elsewhere, at the picture's size, to lay
+  over it in a paint program (drawn without a window, the same bytes each time; a light map's by the
+  light UVs).
+- **Try a PNG...** puts a PNG on the texture and loads the model again, keeping the camera, the motion
+  and the fight: drawn as RQ MOD's engine draws a mod's picture, read by a copy of its PNG reader and
+  given the game's alpha kind (a solid PNG on a see-through texture keeps the game's holes). A
+  texture with frames takes a PNG per frame, picked together and taken in their names' order (frame2
+  before frame10), the order shown under it. A file RQ MOD would refuse is refused under its row with
+  RQ MOD's own words (not a PNG, too large, cut off, a frame's name, a count other than the game's).
+  **The game's** takes the try away; another model starts with none. A file gone or broken at a later
+  load draws the game's picture, said once in the status line, as the engine does.
+- **The Lua lines** follow the tries: `rq.image.texture` for every model that draws each texture (its
+  frames as a list), and for a monster's folder `rq.monster.model` with `textures`, a model of the
+  mod's own; each PNG named in the mod's `textures` folder. The 3D textures tab shows the
+  `rq.image.texture` line of a picture a model draws (a frame's as the list on its base), and says so
+  of a picture no model draws by its name.
+- **The export** writes a tried PNG as the engine draws it, each frame its own picture, and the
+  game's alpha maps as before.
+- **On the command line:** `--texture NAME=FILE.png[,FILE2.png,...]` (repeatable) with `--shot 3d` and
+  with `--export` of one model, checked before any window opens (a refusal exits 1 with RQ MOD's
+  text); `--view-only`, for `--shot 3d` to save the 3D view's frame alone; `--uv-map NAME OUT.png` and
+  `--save-texture NAME OUT.png` with `--select MODEL`, without a window; `--decode FILE.png OUT.rgba`
+  (RQ MOD's reader) and `--decode-libsys4`, the raw pixels for a check. Exit codes stay 0, 1 and 2.
+- **`--check`** also draws the UV map of every texture of every model and counts its triangles against
+  the renderer's meshes, and tries a PNG of its own on the Cockroach, deletes it and loads the model
+  again (the game's picture, the warning once). The report's `3d` gains `draw.uv_maps` and `tries`.
+- **The copies** of RQ MOD's code gain its PNG reader (`src/core/rq_pixels.c`) and its rules for a
+  mod's picture on a 3D texture (`src/core/3d/rq_textures.c`), with the renderer's `model.c` and
+  `3d_internal.h` as RQ MOD changed them; `src/core/COPIES` names them. libpng is linked in for the
+  reader as well as through libsys4.
+
 ## 1.2.0 (not released)
 
 Rance Quest's 3D models: a tab that draws them as the game draws them, and each one as a glTF file

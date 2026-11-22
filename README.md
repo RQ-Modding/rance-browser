@@ -38,7 +38,7 @@ Each tab appears when the game has that kind of file.
 | **3D models** | Rance Quest's 3D models (its monsters and figures, rooms, fight backgrounds and props), drawn as the game draws them, with their motions; a monster on one of the game's fight backgrounds with its shadow. Each one exports as a glTF file (`.glb`). | `Data\ReignData.red` |
 | **Music** | The tracks, with a player that loops each one where the game does. | `<game>BA.ald` or `.afa`, with the `.bgi` |
 | **Sounds** | The sound effects. | `<game>WA.ald`, `WA.afa` or `Sound.afa` |
-| **3D textures** | The textures of the 3D models (Rance Quest). | `Data\ReignData.red` |
+| **3D textures** | The textures of the 3D models (Rance Quest), with RQ MOD's line that changes one. | `Data\ReignData.red` |
 | **Other pictures** | Pictures kept in `.alk` files (Rance VI's event pictures, the AliceSoft logo). | `*.alk` |
 | **Dungeon textures** | Each dungeon's walls, floors, ceilings, stairs, doors, sky and light maps (Rance VI). | a `.dlf` file |
 | **Names** | Rance Quest only: RQ MOD's names, with a picture where one is known (a monster's is its 3D model, which opens in the 3D tab). | built in |
@@ -94,6 +94,18 @@ monster can stand on one of the game's fight backgrounds, with its shadow and, w
 seen as a fight sees it. **Save this frame as PNG...** saves the view, see-through where nothing is
 drawn.
 
+**Its textures**, on the right, lists the textures the model's materials use, as RQ MOD lists them:
+each one's maps (colour, alpha, light...), size, alpha and frames. **Save as PNG...** saves the game's
+picture and **Save the UV map...** the triangles the model draws with it, white on see-through at the
+picture's size, to paint over. **Try a PNG...** draws a PNG of yours on the model as RQ MOD would
+(a texture with frames takes one per frame, picked together, in their names' order), keeping the
+camera and the motion; a file RQ MOD would refuse is refused there, in RQ MOD's words, and **The
+game's** takes the try away. For Rance Quest the Lua lines follow: `rq.image.texture` for every model
+that draws the texture, and `rq.monster.model` with `textures` for a monster of a mod's own. The 3D
+textures tab shows the `rq.image.texture` line of each picture a model draws. RQ MOD's guide
+[A monster in new colours](https://rq-modding.github.io/rq-modding-docs/guide/model-textures) paints
+one, step by step.
+
 **Export the model as glTF (.glb)...** saves the model for Blender and other 3D programs: its meshes,
 its textures (as PNG, inside the file), its materials, its skeleton and each point's weights, each
 motion as an animation, a room's walk mesh as an object of its own, and what glTF has no place for as
@@ -110,15 +122,19 @@ rance-browser [--game DIR] [--scale F] [FILE.aff|FILE.swf]
 rance-browser --check [--game DIR] [--out FILE]
 rance-browser --shot TAB FILE.png [--game DIR] [--select N|NAME] [--grid] [--frame N] [--file PATH]
               [--motion NAME] [--fight BG] [--fight-camera] [--walk] [--bones] [--size WxH] [--scale F]
-rance-browser --export OUT.glb --select NAME [--game DIR]
+              [--texture NAME=FILE.png[,...]]... [--view-only]
+rance-browser --export OUT.glb --select NAME [--game DIR] [--texture NAME=FILE.png[,...]]...
 rance-browser --export DIR (--select NAME | --kind KIND | --all) [--game DIR]
+rance-browser --uv-map NAME OUT.png --select MODEL [--game DIR]
+rance-browser --save-texture NAME OUT.png --select MODEL [--game DIR]
+rance-browser --decode FILE.png OUT.rgba     (or --decode-libsys4)
 ```
 
 - A `.aff` or `.swf` path opens that file in the Flash tab.
 - `--check` opens every archive, decodes the first, middle and last picture of each group, reads
   every track's loop and every sound, checks every Flash file and plays it to its end, reads every 3D
-  model and motion and draws each model through its motions, and prints the counts as JSON (exit 1
-  when something failed).
+  model and motion and draws each model through its motions and each texture's UV map, and prints
+  the counts as JSON (exit 1 when something failed).
 - `--shot` draws one tab without a window and saves it: `cgs`, `flash`, `music`, `sounds`, `3d`,
   `textures`, `pictures`, `dungeons` or `names`. In the Flash tab, `--select` also takes a file's name,
   `--frame` the frame to draw (from 1) and `--file` a file from disk. In the 3D tab, `--select` takes
@@ -126,12 +142,24 @@ rance-browser --export DIR (--select NAME | --kind KIND | --all) [--game DIR]
   monster's model number from the game's data (`100122`, with the motions of its entry in the game's
   monster table), `--motion` a motion file of its folder (or `none`), `--frame` the motion's
   frame, `--fight` a fight background's folder (`bgA_00_douk`) and `--fight-camera` the fight's camera;
-  `--walk` and `--bones` draw the walk mesh and the skeleton.
+  `--walk` and `--bones` draw the walk mesh and the skeleton. `--texture NAME=FILE.png` tries a PNG
+  on the model's texture NAME (a texture with frames: a PNG per frame, in order, after the `=`), as
+  often as there are textures to try, and `--view-only` saves the 3D view's frame alone, see-through
+  where nothing is drawn, instead of the window.
 - `--export` saves a model as a `.glb` file, or a folder of them: `--kind` takes `chara`, `map`, `bg`
   or `etc` (or a list, `chara,map`) and `--all` takes every model, each written as
   `DIR\<Kind>\<folder>.glb`, with `DIR\export.json`: what each file holds and points of each model as
-  the game's renderer places them, to check the files against in another program.
+  the game's renderer places them, to check the files against in another program. With one model,
+  `--texture` tries PNGs on it as for `--shot 3d`.
+- `--uv-map NAME OUT.png` saves the UV map of the texture NAME of the model `--select` names (a folder
+  or `Kind/folder`), and `--save-texture NAME OUT.png` the game's picture (its first frame), without a
+  window; each prints the picture's size.
+- `--decode FILE.png OUT.rgba` reads a PNG with RQ MOD's reader and writes its pixels raw (8-bit RGBA,
+  rows from the top), printing `WxH alpha=0|1`; `--decode-libsys4` reads it with libsys4's. For
+  checks.
 - `--scale` sets the size of the text and the layout (1 to 4; by default the screen's scale).
+- The exit code is 0 when it worked, 1 when it did not (a PNG RQ MOD would refuse, with RQ MOD's text
+  on stderr) and 2 for a command line that does not make sense.
 
 ## How a game is found
 

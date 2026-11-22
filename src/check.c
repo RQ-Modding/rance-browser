@@ -11,6 +11,7 @@
 #include "system4/file.h"
 #include "swf.h"
 #include "swf_check.h"
+#include "rq_pixels.h"
 #include "cJSON.h"
 
 #include "browser.h"
@@ -279,6 +280,103 @@ static void fail_3d(void *ctx, const char *text)
 	cJSON_AddItemToArray(failures, cJSON_CreateString(text));
 }
 
+/* The model at path loaded and drawn on its rest pose, from where the 3D tab first shows a monster:
+ * its RGBA, or NULL with why. */
+static uint8_t *load_and_draw(struct rb3d_view *v, const char *path, int *w, int *h, char *why, size_t n)
+{
+	if (!rb3d_view_load(v, path, why, n))
+		return NULL;
+	struct rb3d_draw d;
+	rb3d_draw_default(&d, RB3D_CHARA);
+	d.back = RB3D_BACK_ALPHA;
+	if (!rb3d_view_draw(v, 0, &d, why, n))
+		return NULL;
+	uint8_t *px = rb3d_view_rgba(v, w, h);
+	if (!px)
+		snprintf(why, n, "the frame could not be read back");
+	return px;
+}
+
+/* A tried file gone at a load, as the engine reads a mod's picture again at each load: the
+ * Cockroach drawn plain, with a PNG of ours (written to the temporary folder) tried on gokiburi.png,
+ * then with that file deleted and loaded again, twice. The game's picture again, the warning once,
+ * nothing closed. */
+static cJSON *check_gone_file(const struct rb3d_list *l)
+{
+	cJSON *o = cJSON_CreateObject();
+	char dir[1024], png[1200], why[1200] = "", text[1400];
+	int k = rb3d_list_find(l, RB3D_CHARA, "gokiburi");
+	if (k < 0 || !win_temp_dir(dir, sizeof dir)) {
+		fail_3d(NULL, "3D tries: no Cockroach (gokiburi) or no temporary folder");
+		return o;
+	}
+	const char *path = l->m[k].path;
+	snprintf(png, sizeof png, "%s\\rance-browser-check-%llu.png", dir, (unsigned long long)SDL_GetPerformanceCounter());
+	enum { SIDE = 64 };
+	static uint8_t magenta[SIDE * SIDE * 4];
+	for (int i = 0; i < SIDE * SIDE; i++) {
+		magenta[i * 4 + 0] = 255;
+		magenta[i * 4 + 1] = 0;
+		magenta[i * 4 + 2] = 255;
+		magenta[i * 4 + 3] = 255;
+	}
+	if (!save_png(png, magenta, SIDE, SIDE)) {
+		snprintf(text, sizeof text, "3D tries: could not write %s", png);
+		fail_3d(NULL, text);
+		return o;
+	}
+	struct rb3d_view *v = rb3d_view_new(G.f.red, 96, 96, why, sizeof why);
+	uint8_t *plain = NULL, *tried = NULL, *gone = NULL, *again = NULL;
+	int w = 0, h = 0, warnings = -1, after = -1;
+	struct rb3d_tries *t = NULL;
+	if (v && (plain = load_and_draw(v, path, &w, &h, why, sizeof why))) {
+		t = rb3d_tries_new(G.h.red, path);
+		const char *files[1] = { png };
+		if (rb3d_tries_png(t, "gokiburi.png", files, NULL, 1, why, sizeof why)) {
+			rb3d_view_set_tries(v, t);
+			tried = load_and_draw(v, path, &w, &h, why, sizeof why);
+			remove_utf8(png);
+			if (tried && (gone = load_and_draw(v, path, &w, &h, why, sizeof why))) {
+				warnings = rb3d_tries_warnings(t);
+				again = load_and_draw(v, path, &w, &h, why, sizeof why);
+				after = rb3d_tries_warnings(t);
+				cJSON_AddStringToObject(o, "warning", rb3d_tries_warning(t));
+			}
+		} else {
+			rb3d_tries_free(t);
+		}
+	}
+	remove_utf8(png);
+	size_t bytes = (size_t)w * h * 4;
+	bool differs = plain && tried && memcmp(plain, tried, bytes) != 0;
+	bool back = plain && gone && again && !memcmp(plain, gone, bytes) && !memcmp(plain, again, bytes);
+	cJSON_AddBoolToObject(o, "tried_drawn", differs);
+	cJSON_AddBoolToObject(o, "gone_drawn_as_the_game", back);
+	cJSON_AddNumberToObject(o, "warnings", warnings);
+	cJSON_AddNumberToObject(o, "warnings_after_another_load", after);
+	if (!plain || !tried || !gone || !again) {
+		snprintf(text, sizeof text, "3D tries: the Cockroach did not load or draw: %s", why);
+		fail_3d(NULL, text);
+	} else {
+		if (!differs)
+			fail_3d(NULL, "3D tries: a PNG tried on gokiburi.png drew the game's picture");
+		if (!back)
+			fail_3d(NULL, "3D tries: with the tried file gone, the Cockroach is not drawn as the game draws it");
+		if (warnings != 1 || after != 1) {
+			snprintf(text, sizeof text, "3D tries: %d warnings for the file gone, then %d after another load (1 and 1)", warnings,
+			         after);
+			fail_3d(NULL, text);
+		}
+	}
+	free(plain);
+	free(tried);
+	free(gone);
+	free(again);
+	if (v)
+		rb3d_view_free(v);
+	return o;
+}
+
 /* The 3D models (rb3d_check): their files read, then, in a hidden window as --shot makes one, each
  * drawn and each motion played. NULL when the game has none. */
 static cJSON *check_3d(void)
@@ -339,6 +437,8 @@ static cJSON *check_3d(void)
 			}
 		cJSON_AddNumberToObject(o, "names_with_a_model", named);
 		cJSON_AddNumberToObject(o, "names_whose_model_has_no_folder", lost);
+		if (gl)
+			cJSON_AddItemToObject(o, "tries", check_gone_file(&l));
 	}
 	if (gl)
 		SDL_GL_DeleteContext(gl);
@@ -365,6 +465,35 @@ static cJSON *check_names(void)
 		fail("%s: %d pictures name a CG the game does not have", "names", missing);
 	cJSON_AddNumberToObject(o, "models", G.nmodels);
 	return o;
+}
+
+/* --decode and --decode-libsys4, for the checks: a PNG read as RQ MOD reads a mod's picture on a 3D
+ * texture (rq_pixels, with its limit of 4096 a side), or as libsys4 reads one of the game's. */
+int run_decode(const char *in, const char *out, bool libsys4)
+{
+	size_t size = 0;
+	uint8_t *data = file_exists(in) && file_size(in) == 0 ? xcalloc(16, 1) : file_read(in, &size);
+	if (!data) {
+		fprintf(stderr, APP_EXE ": %s cannot be read\n", in);
+		return 1;
+	}
+	char why[300] = "";
+	struct cg *cg = libsys4 ? (cg_check_format(data) == ALCG_PNG ? cg_load_buffer(data, size) : NULL)
+	                        : rq_pixels_png(data, size, RQ_PIXELS_TEXTURE_SIDE, why, sizeof why);
+	free(data);
+	if (!cg || !cg->pixels) {
+		fprintf(stderr, APP_EXE ": %s: %s\n", in, libsys4 ? "libsys4 does not read it" : why);
+		cg_free(cg);
+		return 1;
+	}
+	bool ok = save_bytes(out, cg->pixels, (size_t)cg->metrics.w * cg->metrics.h * 4);
+	if (ok)
+		printf("%dx%d alpha=%d\n", cg->metrics.w, cg->metrics.h, cg->metrics.has_alpha ? 1 : 0);
+	else
+		fprintf(stderr, APP_EXE ": could not write %s\n", out);
+	fflush(stdout);
+	cg_free(cg);
+	return ok ? 0 : 1;
 }
 
 int run_check(const char *dir, const char *out_path)

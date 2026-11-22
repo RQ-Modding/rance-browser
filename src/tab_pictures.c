@@ -479,10 +479,20 @@ static void details(struct plist *p)
 		snprintf(line, sizeof line, LUA_CG_REPLACE, c->no, c->no);
 		ui_lua_line("cg", line);
 		note("Put your PNG at that path in your mod's folder. The Pictures guide on RQ MOD's docs site explains the fit and moving pictures.");
+	} else if (p->kind == PK_TEX && G.rq) {
+		char line[2048];
+		if (tab3d_texture_line(entry(p, p->sel)->raw, line, sizeof line)) {
+			igSeparatorText("Change it from a mod");
+			ui_lua_line("tex", line);
+			note("Put your PNG (a PNG per frame for a list) at that path in your mod's folder: every model that draws this texture "
+			     "draws it, from the model's next load. The 3D tab tries one on a model first (Its textures).");
+		} else {
+			igSeparatorText("What it is");
+			note("A picture in a 3D folder that no model draws by this name, so RQ MOD takes no picture for it. Save it to look at it.");
+		}
 	} else if (p->kind == PK_TEX) {
 		igSeparatorText("What it is");
-		note(G.rq ? "A 3D model's texture. A mod's own textures on the game's models come later, in RQ MOD's 3D project. Save it to look at it or to start painting."
-		          : "A 3D model's texture, from the 3D engine's archive.");
+		note("A 3D model's texture, from the 3D engine's archive.");
 	} else if (p->kind == PK_ALK) {
 		igSeparatorText("What it is");
 		note("A picture in an .alk file, which the game reads by its position in the file (the number after the name).");

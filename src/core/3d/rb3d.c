@@ -317,11 +317,14 @@ int wav_seek(int id, int pos) { return 0; }
 int wav_get_unused_channel(void) { return -1; }
 int wav_prepare_from_archive_data(int id, int metadata_no, struct archive_data *dfile) { return 0; }
 
-/* The engine's modloader_texture.c (left out): a mod's picture on one of a model's textures. None
- * here: the game's own picture is drawn. */
+/* The tries of the load under way (rb3d_view_load sets them around its guarded load), or NULL. */
+static struct rb3d_tries *load_tries;
+
+/* The engine's modloader_texture.c (left out): a mod's picture on one of a model's textures, here
+ * the view's tries (rb3d_textures.c), by the engine's rule. */
 struct cg *RE_mod_texture(struct archive_data *game, const char *path, const char *name, int kind)
 {
-	return NULL;
+	return load_tries ? rb3d_tries_answer(load_tries, game, path, name, kind) : NULL;
 }
 
 /* The engine's debug.c (left out): its JSON of a sprite and its debugger's hooks. */
@@ -520,6 +523,7 @@ struct rb3d_view {
 	vec3 (*bone_boxes)[2];    /* each bone's box: the vertices it moves, at rest (invalid: none) */
 	vec3 motion_box[2];       /* the box the model fills through its motion's frames, in its space */
 	bool has_motion_box;
+	struct rb3d_tries *tries; /* PNGs tried on the model's textures (rb3d_view_set_tries), or NULL */
 };
 
 static struct RE_instance *instance_at(const struct rb3d_view *v, int i)
@@ -628,7 +632,20 @@ void rb3d_view_free(struct rb3d_view *v)
 		glDeleteTextures(1, &v->tex_matte);
 	forget_overlays(v);
 	free(v->bg_path);
+	rb3d_tries_free(v->tries);
 	free(v);
+}
+
+void rb3d_view_set_tries(struct rb3d_view *v, struct rb3d_tries *t)
+{
+	if (v->tries != t)
+		rb3d_tries_free(v->tries);
+	v->tries = t;
+}
+
+struct rb3d_tries *rb3d_view_tries(struct rb3d_view *v)
+{
+	return v->tries;
 }
 
 struct resize_args {
@@ -904,8 +921,11 @@ bool rb3d_view_load(struct rb3d_view *v, const char *path, char *err, size_t n)
 	v->shown = 0;
 	struct load_args a = { v, path, false };
 	/* bg_path goes only after the load, so the cache keeps the background's model for the fight
-	 * that is set again on the next model. */
+	 * that is set again on the next model. The tries are the model's only: set just around its load
+	 * (a fight background loads without them). */
+	load_tries = rb3d_tries_for(v->tries, path) ? v->tries : NULL;
 	bool ok = rb3d_guard(load_fn, &a, err, n);
+	load_tries = NULL;
 	free(v->bg_path);
 	v->bg_path = NULL;
 	if (!ok) {

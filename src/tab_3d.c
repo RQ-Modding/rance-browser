@@ -4,7 +4,10 @@
  * fight backgrounds with its shadow and the fight's camera; a room with its walk mesh; a fight
  * background; a map's prop. Its facts and textures, a frame saved as PNG, and for Rance Quest Magnum
  * RQ MOD's Lua lines: rq.monster.model for a monster's model, rq.battle.start's background and
- * rq.dungeon.place's look. Without the 3D view in the build (its option 3d) the tab is not shown. */
+ * rq.dungeon.place's look. Its textures as RQ MOD lists them (rq.image.textures), each saved as PNG
+ * or as its UV map, and a mod's PNG tried on one as the engine draws it (rq.image.texture), with the
+ * Lua lines that put it there. Without the 3D view in the build (its option 3d) the tab is not
+ * shown. */
 #include <ctype.h>
 #include <math.h>
 #include <stdarg.h>
@@ -14,6 +17,7 @@
 #include <strings.h>
 
 #include "system4.h"
+#include "system4/utfsjis.h"
 
 #include "browser.h"
 #include "lua_lines.h"
@@ -31,6 +35,19 @@ bool tab3d_shot(const struct shot3d *s, char *err, size_t n)
 	return false;
 }
 const char *tab3d_error(void) { return ""; }
+bool tab3d_save_view(const char *path, char *err, size_t n)
+{
+	(void)path;
+	snprintf(err, n, "this build has no 3D view");
+	return false;
+}
+bool tab3d_texture_line(const char *raw, char *out, size_t n)
+{
+	(void)raw;
+	(void)out;
+	(void)n;
+	return false;
+}
 const char *tab3d_model_folder(int model) { (void)model; return NULL; }
 struct thumb *tab3d_model_pic(int model, int px) { (void)model; (void)px; return NULL; }
 void tab3d_pics_make(void) { }
@@ -86,7 +103,16 @@ static struct {
 	int want_entry;         /* the entry to show when the model picked loads (the Names tab's), or -1 */
 	struct choice *ch;
 	int nch, cur;
-	int *tex, ntex;         /* indexes in G.sets[PK_TEX] */
+	int *tex, ntex;         /* indexes in G.sets[PK_TEX]: the pictures in its folder */
+	/* its textures, as RQ MOD lists them, and what is tried on them (the view's tries) */
+	struct rb3d_textures rows;
+	bool rows_ok;           /* the folder has a model that reads */
+	int *row_pic;           /* each row's picture in G.sets[PK_TEX], or -1 */
+	int *other, nother;     /* the folder's pictures no row covers (indexes in G.sets[PK_TEX]) */
+	int why_row;            /* the row a refusal is shown under, or -1 */
+	char refusal[1200];     /* RQ MOD's text for a try it would refuse */
+	int warnings_seen;      /* the view's tries' warnings already told */
+	struct rb3d_tries *shot_tries;   /* --shot's --texture, handed to the view at the load */
 	/* playing */
 	bool playing;
 	int speed;
@@ -102,7 +128,7 @@ static struct {
 	bool shot_frame_given;
 	bool prefs;
 } T = { .kind = -1, .dirty = true, .sel = -1, .loaded = -1, .entry = -1, .want_entry = -1, .cur = -1, .fight = -1,
-        .playing = true };
+        .playing = true, .why_row = -1 };
 
 /* ---- helpers ---- */
 
@@ -186,6 +212,21 @@ static const struct rb3d_model *shown_model(void)
 static const struct rb3d_entry *shown_entry(void)
 {
 	return T.entry > 0 ? rb3d_list_entry(&T.l, T.entry) : NULL;
+}
+
+/* A warning the view's tries gave at a load (a tried file gone or broken since it was tried: the
+ * game's picture drawn), once: on stderr for a shot, in the status line otherwise. */
+static void tell_warnings(void)
+{
+	struct rb3d_tries *t = T.v ? rb3d_view_tries(T.v) : NULL;
+	int n = rb3d_tries_warnings(t);
+	if (n > T.warnings_seen) {
+		if (T.shot)
+			fprintf(stderr, APP_EXE ": warning: %s\n", rb3d_tries_warning(t));
+		else
+			ui_status("%s", rb3d_tries_warning(t));
+	}
+	T.warnings_seen = n;
 }
 
 /* ---- the model's entries, motions and textures (from the list, no GL) ---- */
@@ -288,6 +329,30 @@ static int choice_named(const char *name)
 	return -1;
 }
 
+/* The leaf of a path (after its last \ or /). */
+static const char *leaf_of(const char *path)
+{
+	const char *a = strrchr(path, '\\'), *b = strrchr(path, '/');
+	const char *s = a > b ? a : b;
+	return s ? s + 1 : path;
+}
+
+/* Whether the folder's picture pe (a file of the model's folder) is row r's file, or one of its frames. */
+static bool row_covers(const struct rb3d_texture *r, const struct pic_entry *pe, bool *frame)
+{
+	const char *leaf = leaf_of(pe->raw);
+	*frame = false;
+	if (!strcasecmp(leaf, r->raw))
+		return true;
+	char base[256];
+	int k = rb3d_texture_frame(leaf, base, sizeof base);
+	if (k > 0 && k < r->frames && !strcasecmp(base, r->raw)) {
+		*frame = true;
+		return true;
+	}
+	return false;
+}
+
 static void list_textures(const struct rb3d_model *m)
 {
 	/* The 3D textures' folders are Data\PolyData's four, in the same order (TEX_CHARA... and
@@ -299,6 +364,32 @@ static void list_textures(const struct rb3d_model *m)
 	for (int i = 0; i < s->n; i++)
 		if (s->e[i].folder == m->kind && s->e[i].group && !strcasecmp(s->e[i].group, m->folder))
 			T.tex[T.ntex++] = i;
+	/* the rows, RQ MOD's (no GL), and the picture each one's file is */
+	rb3d_textures_free(&T.rows);
+	T.rows_ok = G.h.red && rb3d_textures(G.h.red, m->path, &T.rows);
+	free(T.row_pic);
+	T.row_pic = xmalloc((T.rows.n ? T.rows.n : 1) * sizeof *T.row_pic);
+	free(T.other);
+	T.other = xmalloc((T.ntex ? T.ntex : 1) * sizeof *T.other);
+	T.nother = 0;
+	for (int r = 0; r < T.rows.n; r++)
+		T.row_pic[r] = -1;
+	for (int k = 0; k < T.ntex; k++) {
+		const struct pic_entry *pe = &s->e[T.tex[k]];
+		bool covered = false;
+		for (int r = 0; r < T.rows.n; r++) {
+			bool frame;
+			if (row_covers(&T.rows.t[r], pe, &frame)) {
+				covered = true;
+				if (!frame && T.row_pic[r] < 0)
+					T.row_pic[r] = T.tex[k];
+			}
+		}
+		if (!covered)
+			T.other[T.nother++] = T.tex[k];
+	}
+	T.why_row = -1;
+	T.refusal[0] = 0;
 }
 
 /* ---- the view ---- */
@@ -466,6 +557,15 @@ static void unload(void)
 	free(T.tex);
 	T.tex = NULL;
 	T.ntex = 0;
+	rb3d_textures_free(&T.rows);
+	T.rows_ok = false;
+	free(T.row_pic);
+	T.row_pic = NULL;
+	free(T.other);
+	T.other = NULL;
+	T.nother = 0;
+	T.why_row = -1;
+	T.refusal[0] = 0;
 	T.nent = 0;
 	T.entry = -1;
 	T.ok = false;
@@ -494,7 +594,13 @@ static void load(void)
 	T.last = igGetTime();
 	if (!ensure_view(T.vw > 0 ? T.vw : 640, T.vh > 0 ? T.vh : 480))
 		return;
-	if (!rb3d_view_load(T.v, m->path, T.err, sizeof T.err))
+	/* the tries are a model's: another model starts with none (a shot with its --texture) */
+	rb3d_view_set_tries(T.v, T.shot_tries);
+	T.shot_tries = NULL;
+	T.warnings_seen = 0;
+	bool loaded = rb3d_view_load(T.v, m->path, T.err, sizeof T.err);
+	tell_warnings();
+	if (!loaded)
 		return;
 	T.ok = true;
 	rb3d_view_info(T.v, &T.info);
@@ -518,6 +624,36 @@ static void load(void)
 		go_frame((float)f);
 		T.clock = (f - lo) * 1000.0 / FPS;
 	}
+}
+
+/* Loads the model shown again (with what is tried on it now), on the same motion, frame and fight. */
+static void reload(void)
+{
+	const struct rb3d_model *m = shown_model();
+	if (!m || !T.v)
+		return;
+	int cur = T.cur;
+	float frame = T.frame;
+	bool playing = T.playing;
+	T.err[0] = 0;
+	T.ok = false;
+	T.fighting = false;
+	bool loaded = rb3d_view_load(T.v, m->path, T.err, sizeof T.err);
+	tell_warnings();
+	if (!loaded)
+		return;
+	T.ok = true;
+	rb3d_view_info(T.v, &T.info);
+	if (T.fight >= 0)
+		apply_fight();
+	char fight_err[512];
+	snprintf(fight_err, sizeof fight_err, "%s", T.err);
+	play_choice(cur);
+	if (!T.err[0] && fight_err[0])
+		snprintf(T.err, sizeof T.err, "%s", fight_err);
+	if (!playing && has_motion())
+		go_frame(frame);
+	T.playing = playing;
 }
 
 static void advance(void)
@@ -913,6 +1049,82 @@ static void export_model(const struct rb3d_model *m)
 		ui_status("Could not export %s: %s", m->folder, err);
 }
 
+/* A model's folder as a mod's id part: gokiburi. */
+static void model_id(const struct rb3d_model *m, char *id, size_t size)
+{
+	size_t n = 0;
+	for (const char *c = m->folder; *c && n < size - 1; c++)
+		id[n++] = (char)tolower((unsigned char)*c);
+	id[n] = 0;
+}
+
+/* The tries on the model shown, or NULL. */
+static struct rb3d_tries *shown_tries(void)
+{
+	const struct rb3d_model *m = shown_model();
+	struct rb3d_tries *t = T.v ? rb3d_view_tries(T.v) : NULL;
+	return m && rb3d_tries_for(t, m->path) ? t : NULL;
+}
+
+/* "textures/a.png" or { "textures/a.png", "textures/b.png" }: a try's PNGs as a mod would name
+ * them, each by its file's name in the mod's textures folder. */
+static void try_pictures(const struct rb3d_try *y, bool list, char *out, size_t n)
+{
+	size_t len = 0;
+	out[0] = 0;
+	if (list)
+		len += snprintf(out + len, len < n ? n - len : 0, "{ ");
+	for (int i = 0; i < y->nfiles && len < n; i++) {
+		char item[600];
+		snprintf(item, sizeof item, LUA_TEXTURE_ITEM, leaf_of(y->files[i]));
+		len += snprintf(out + len, len < n ? n - len : 0, "%s%s", i ? ", " : "", item);
+	}
+	if (list && len < n)
+		snprintf(out + len, n - len, " }");
+}
+
+/* The tries' Lua lines: every use of each texture, and for a monster's folder its own model. */
+static void try_lines(const struct rb3d_model *m, const struct rb3d_entry *e)
+{
+	struct rb3d_tries *t = shown_tries();
+	int n = rb3d_tries_count(t);
+	if (!n)
+		return;
+	igSeparatorText("What is tried, from a mod");
+	dim("Every model that draws %s, with your %s in your mod's textures folder:", plural(n, "this texture", "these textures"),
+	    plural(n, "PNG", "PNGs"));
+	char line[4096], pics[1600], entries[1800];
+	size_t elen = 0;
+	entries[0] = 0;
+	for (int i = 0; i < n; i++) {
+		struct rb3d_try y;
+		if (!rb3d_tries_get(t, i, &y))
+			continue;
+		char texture[700];
+		snprintf(texture, sizeof texture, "Data/PolyData/%s/%s/%s", rb3d_kind_folders[m->kind], m->folder, y.name);
+		if (y.nfiles == 1) {
+			snprintf(line, sizeof line, LUA_TEXTURE_PNG, texture, leaf_of(y.files[0]));
+		} else {
+			try_pictures(&y, false, pics, sizeof pics);
+			snprintf(line, sizeof line, LUA_TEXTURE_LIST, texture, pics);
+		}
+		char id[32];
+		snprintf(id, sizeof id, "try%d", i);
+		ui_lua_line(id, line);
+		try_pictures(&y, y.nfiles > 1, pics, sizeof pics);
+		char entry[1800];
+		snprintf(entry, sizeof entry, LUA_MODEL_TEXTURE, y.name, pics);
+		elen += snprintf(entries + elen, elen < sizeof entries ? sizeof entries - elen : 0, "%s%s", i ? ", " : "", entry);
+	}
+	if (m->kind == RB3D_CHARA && e) {
+		dim("Or on a mod's monster only, a model of its own:");
+		char id[128];
+		model_id(m, id, sizeof id);
+		snprintf(line, sizeof line, LUA_MONSTER_TEXTURES, id, 100000 + e->no, entries);
+		ui_lua_line("try-model", line);
+	}
+}
+
 static void lua_lines(const struct rb3d_model *m)
 {
 	const struct rb3d_entry *e = shown_entry();
@@ -922,10 +1134,7 @@ static void lua_lines(const struct rb3d_model *m)
 		dim("Model %d of the game's table, for a mod's monster; a copy of it, whose size and place can change:",
 		    100000 + e->no);
 		char id[128];
-		size_t n = 0;
-		for (const char *c = m->folder; *c && n < sizeof id - 1; c++)
-			id[n++] = (char)tolower((unsigned char)*c);
-		id[n] = 0;
+		model_id(m, id, sizeof id);
 		snprintf(line, sizeof line, LUA_MONSTER_MODEL, id, 100000 + e->no);
 		ui_lua_line("model", line);
 	} else if (m->kind == RB3D_BG && m->bg_no >= 0) {
@@ -943,22 +1152,20 @@ static void lua_lines(const struct rb3d_model *m)
 		dim("A room of the game's maps. A mod's quest map (rq.quests.define) takes the game's rooms by their "
 		    "tileset, not by this folder.");
 	}
+	if (T.loaded == T.sel)
+		try_lines(m, e);
 }
 
-static void textures(void)
+/* A grid of the folder's pictures (indexes in G.sets[PK_TEX]); a click opens one in the 3D textures tab. */
+static void picture_grid(const int *pics, int n, const char *id)
 {
-	igSeparatorText("Its textures");
-	if (!T.ntex) {
-		igTextDisabled("No pictures in its folder.");
-		return;
-	}
-	dim("%d %s in its folder; a click opens one in the 3D textures tab.", T.ntex, plural(T.ntex, "picture", "pictures"));
 	const float cell = S(76);
 	int cols = (int)(igGetContentRegionAvail().x / (cell + S(4)));
 	if (cols < 1)
 		cols = 1;
-	for (int k = 0; k < T.ntex; k++) {
-		int i = T.tex[k];
+	igPushID_Str(id);
+	for (int k = 0; k < n; k++) {
+		int i = pics[k];
 		const struct pic_entry *pe = &G.sets[PK_TEX].e[i];
 		if (k % cols)
 			igSameLine(0, S(4));
@@ -974,6 +1181,211 @@ static void textures(void)
 		struct thumb *t = pics_thumb(PK_TEX, i);
 		if (t->tex)
 			draw_fit_image(t->tex, t->w, t->h, v2(pos.x + S(4), pos.y + S(4)), cell - S(8));
+	}
+	igPopID();
+}
+
+/* "colour map", "colour and alpha map": the kinds a row is used as. */
+static void kinds_text(unsigned kinds, char *out, size_t n)
+{
+	static const struct { unsigned bit; const char *name; } k[] = {
+		{ RB3D_TEX_COLOR, "colour" }, { RB3D_TEX_ALPHA, "alpha" }, { RB3D_TEX_LIGHT, "light" },
+		{ RB3D_TEX_NORMAL, "normal" }, { RB3D_TEX_SPECULAR, "specular" },
+	};
+	const char *names[5];
+	int c = 0;
+	for (int i = 0; i < 5; i++)
+		if (kinds & k[i].bit)
+			names[c++] = k[i].name;
+	size_t len = 0;
+	out[0] = 0;
+	for (int i = 0; i < c && len < n; i++)
+		len += snprintf(out + len, n - len, "%s%s", i == 0 ? "" : i == c - 1 ? " and " : ", ", names[i]);
+	if (len < n)
+		snprintf(out + len, n - len, "%s", c ? " map" : "texture");
+}
+
+static void save_row_png(const struct rb3d_model *m, const struct rb3d_texture *r, bool uv)
+{
+	char why[1200] = "";
+	int w = 0, h = 0;
+	uint8_t *px = uv ? rb3d_uv_map(G.h.red, m->path, r->name, &w, &h, why, sizeof why)
+	                 : rb3d_texture_rgba(G.h.red, m->path, r->name, &w, &h, why, sizeof why);
+	if (!px) {
+		ui_status("Could not draw %s: %s", r->name, why);
+		return;
+	}
+	char name[600], path[2048];
+	const char *leaf = leaf_of(r->name);
+	const char *dot = strrchr(leaf, '.');
+	if (uv)
+		snprintf(name, sizeof name, "%.*s_uv.png", dot ? (int)(dot - leaf) : (int)strlen(leaf), leaf);
+	else
+		snprintf(name, sizeof name, "%.*s.png", dot ? (int)(dot - leaf) : (int)strlen(leaf), leaf);
+	if (win_pick_save(uv ? "Save the UV map as PNG" : "Save the texture as PNG", name, "png", path, sizeof path))
+		ui_status(save_png(path, px, w, h) ? "Saved %s" : "Could not write %s", path);
+	free(px);
+}
+
+/* Try a PNG (a PNG per frame for a texture with frames, picked together, taken in their names'
+ * order) on row r, then load the model again with it; a refusal stays under the row. */
+static void try_row(const struct rb3d_model *m, int r)
+{
+	const struct rb3d_texture *row = &T.rows.t[r];
+	char **files = NULL;
+	int n = 0;
+	char title[600];
+	if (row->frames > 1) {
+		snprintf(title, sizeof title, "Try %d PNGs on %s, one per frame (taken in their names' order)", row->frames, row->name);
+		if (!win_pick_open_many(title, "PNG pictures", "*.png", &files, &n))
+			return;
+	} else {
+		char one[2048];
+		snprintf(title, sizeof title, "Try a PNG on %s", row->name);
+		if (!win_pick_open(title, "PNG pictures", "*.png", one, sizeof one))
+			return;
+		files = xmalloc(sizeof *files);
+		files[n++] = xstrdup(one);
+	}
+	struct rb3d_tries *t = shown_tries();
+	bool fresh = !t;
+	if (fresh)
+		t = rb3d_tries_new(G.h.red, m->path);
+	if (rb3d_tries_png(t, row->name, (const char *const *)files, NULL, n, T.refusal, sizeof T.refusal)) {
+		if (fresh) {
+			rb3d_view_set_tries(T.v, t);
+			T.warnings_seen = 0;
+		}
+		T.why_row = -1;
+		T.refusal[0] = 0;
+		reload();
+	} else {
+		if (fresh)
+			rb3d_tries_free(t);
+		T.why_row = r;
+	}
+	for (int i = 0; i < n; i++)
+		free(files[i]);
+	free(files);
+}
+
+static void untry_row(int r)
+{
+	struct rb3d_tries *t = shown_tries();
+	if (rb3d_tries_untry(t, T.rows.t[r].name))
+		reload();
+	T.why_row = -1;
+}
+
+static void texture_row(const struct rb3d_model *m, int r)
+{
+	const struct rb3d_texture *row = &T.rows.t[r];
+	const float cell = S(64);
+	igPushID_Int(r);
+	V2 pos = igGetCursorScreenPos();
+	int pic = T.row_pic[r];
+	if (pic >= 0) {
+		if (igSelectable_Bool("##pic", false, 0, v2(cell, cell))) {
+			set_select(PK_TEX, pic);
+			UI.want_tab = TAB_TEXTURES;
+		}
+		if (igIsItemHovered(0))
+			igSetTooltip("Open it in the 3D textures tab");
+		struct thumb *th = pics_thumb(PK_TEX, pic);
+		if (th->tex)
+			draw_fit_image(th->tex, th->w, th->h, v2(pos.x + S(3), pos.y + S(3)), cell - S(6));
+	} else {
+		igDummy(v2(cell, cell));
+	}
+	igSameLine(0, S(8));
+	igBeginGroup();
+	igTextWrapped("%s", row->name);
+	char kinds[80];
+	kinds_text(row->kinds, kinds, sizeof kinds);
+	if (row->missing) {
+		dim("%s · not in the folder", kinds);
+	} else {
+		char frames[48] = "";
+		if (row->frames > 1)
+			snprintf(frames, sizeof frames, " · %d frames", row->frames);
+		dim("%s · %d x %d · alpha %s%s%s", kinds, row->w, row->h, row->alpha ? "yes" : "no", frames,
+		    row->alpha_map ? " · its own alpha map" : "");
+	}
+	struct rb3d_tries *t = shown_tries();
+	int k = rb3d_tries_find(t, row->name);
+	struct rb3d_try y;
+	if (k >= 0 && rb3d_tries_get(t, k, &y)) {
+		char files[1600];
+		size_t len = 0;
+		files[0] = 0;
+		for (int i = 0; i < y.nfiles && len < sizeof files; i++)
+			len += snprintf(files + len, sizeof files - len, "%s%s", i ? ", " : "", leaf_of(y.files[i]));
+		igPushStyleColor_Vec4(ImGuiCol_Text, v4(0.45f, 0.85f, 0.5f, 1));
+		if (y.nfiles > 1)
+			igTextWrapped("Tried, frame by frame in this order: %s", files);
+		else
+			igTextWrapped("Tried: %s", files);
+		igPopStyleColor(1);
+	}
+	if (!row->missing) {
+		if (igSmallButton("Save as PNG..."))
+			save_row_png(m, row, false);
+		if (igIsItemHovered(0))
+			igSetTooltip("The game's picture%s", row->frames > 1 ? " (its first frame)" : "");
+		igSameLine(0, S(6));
+		if (igSmallButton("Save the UV map..."))
+			save_row_png(m, row, true);
+		if (igIsItemHovered(0))
+			igSetTooltip("The triangles the model draws with this file, white on see-through at the picture's\n"
+			             "size: lay it over the picture in a paint program");
+		if (T.ok && T.loaded == T.sel) {
+			/* the tries on a line of their own, so the panel's width keeps them in view */
+			if (igSmallButton(row->frames > 1 ? "Try PNGs..." : "Try a PNG..."))
+				try_row(m, r);
+			if (igIsItemHovered(0)) {
+				if (row->frames > 1)
+					igSetTooltip("A PNG per frame, %d picked together, taken in their names' order (frame2 before\n"
+					             "frame10), drawn as RQ MOD draws a mod's pictures", row->frames);
+				else
+					igSetTooltip("A PNG drawn on the model as RQ MOD draws a mod's picture");
+			}
+			if (k >= 0) {
+				igSameLine(0, S(6));
+				if (igSmallButton("The game's"))
+					untry_row(r);
+				if (igIsItemHovered(0))
+					igSetTooltip("The game's own picture again");
+			}
+		}
+	}
+	if (T.why_row == r && T.refusal[0])
+		red_text("%s", T.refusal);
+	igEndGroup();
+	igPopID();
+}
+
+static void textures(const struct rb3d_model *m)
+{
+	igSeparatorText("Its textures");
+	if (!T.rows_ok) {
+		if (!T.ntex) {
+			igTextDisabled("No pictures in its folder.");
+			return;
+		}
+		dim("%d %s in its folder; a click opens one in the 3D textures tab.", T.ntex, plural(T.ntex, "picture", "pictures"));
+		picture_grid(T.tex, T.ntex, "all");
+		return;
+	}
+	if (!T.rows.n)
+		igTextDisabled("Its materials name no texture.");
+	else
+		dim("%d %s its materials use, as RQ MOD lists them; a picture opens in the 3D textures tab.", T.rows.n,
+		    plural(T.rows.n, "texture", "textures"));
+	for (int r = 0; r < T.rows.n; r++)
+		texture_row(m, r);
+	if (T.nother) {
+		dim("%d other %s in its folder, which no material names:", T.nother, plural(T.nother, "picture", "pictures"));
+		picture_grid(T.other, T.nother, "other");
 	}
 }
 
@@ -1033,7 +1445,8 @@ static void right(void)
 			             "Blender and other 3D programs. What glTF cannot say (the light map, the outline,\n"
 			             "the frames the game plays) is in the file's extras, named rq_...");
 	}
-	textures();
+	if (T.loaded == T.sel)
+		textures(m);
 }
 
 /* ---- the list ---- */
@@ -1278,6 +1691,103 @@ bool tab3d_shot(const struct shot3d *s, char *err, size_t n)
 	T.shot_choice = c;
 	T.shot_frame = s->frame;
 	T.shot_frame_given = s->frame_given;
+	/* the PNGs tried, checked now as the engine checks a mod's (the view takes them at the load) */
+	rb3d_tries_free(T.shot_tries);
+	T.shot_tries = NULL;
+	if (s->ntries && !(T.shot_tries = tries_from_args(m->path, s->tries, s->ntries, err, n)))
+		return false;
+	return true;
+}
+
+bool tab3d_save_view(const char *path, char *err, size_t n)
+{
+	if (!T.ok || !T.v) {
+		snprintf(err, n, "%s", tab3d_error()[0] ? tab3d_error() : "no model is shown");
+		return false;
+	}
+	struct rb3d_draw d;
+	draw_params(&d);
+	d.back = RB3D_BACK_ALPHA;
+	int w = 0, h = 0;
+	uint8_t *px = draw(&d) ? rb3d_view_rgba(T.v, &w, &h) : NULL;
+	if (!px) {
+		snprintf(err, n, "could not draw the frame%s%s", T.err[0] ? ": " : "", T.err);
+		return false;
+	}
+	bool ok = save_png(path, px, w, h);
+	free(px);
+	if (!ok)
+		snprintf(err, n, "could not write %s", path);
+	return ok;
+}
+
+/* ---- the 3D textures tab's Lua line ---- */
+
+/* The last folder asked, with its rows. */
+static struct {
+	char *folder;
+	struct rb3d_textures rows;
+	bool ok;
+} TL;
+
+bool tab3d_texture_line(const char *raw, char *out, size_t n)
+{
+	const char *slash = raw ? strrchr(raw, '\\') : NULL;
+	if (!G.h.red || !slash)
+		return false;
+	size_t fl = (size_t)(slash - raw);
+	if (!TL.folder || strlen(TL.folder) != fl || strncmp(TL.folder, raw, fl)) {
+		free(TL.folder);
+		rb3d_textures_free(&TL.rows);
+		TL.folder = xmalloc(fl + 1);
+		memcpy(TL.folder, raw, fl);
+		TL.folder[fl] = 0;
+		TL.ok = rb3d_textures(G.h.red, TL.folder, &TL.rows);
+	}
+	if (!TL.ok)
+		return false;
+	const char *leaf = slash + 1;
+	const struct rb3d_texture *r = NULL;
+	for (int i = 0; i < TL.rows.n && !r; i++)
+		if (!strcasecmp(TL.rows.t[i].raw, leaf))
+			r = &TL.rows.t[i];
+	if (!r) {
+		/* a frame of a colour texture: the list on its base (the engine refuses the frame's name) */
+		char base[256];
+		int k = rb3d_texture_frame(leaf, base, sizeof base);
+		for (int i = 0; k > 0 && i < TL.rows.n && !r; i++)
+			if (!strcasecmp(TL.rows.t[i].raw, base) && (TL.rows.t[i].kinds & RB3D_TEX_COLOR) && k < TL.rows.t[i].frames)
+				r = &TL.rows.t[i];
+	}
+	if (!r || r->missing)
+		return false;
+	char *folder = sjis2utf(TL.folder, 0);
+	for (char *c = folder; *c; c++)
+		if (*c == '\\')
+			*c = '/';
+	char texture[1200];
+	snprintf(texture, sizeof texture, "%s/%s", folder, r->name);
+	free(folder);
+	if (r->frames <= 1) {
+		snprintf(out, n, LUA_TEXTURE_PNG, texture, r->name);
+		return true;
+	}
+	/* the frames as the game names them: face.png, face[1].png, face[2].png... */
+	char items[1800];
+	size_t len = 0;
+	items[0] = 0;
+	const char *dot = strrchr(r->name, '.');
+	int stem = dot ? (int)(dot - r->name) : (int)strlen(r->name);
+	for (int k = 0; k < r->frames && len < sizeof items; k++) {
+		char name[400], item[500];
+		if (k == 0)
+			snprintf(name, sizeof name, "%s", r->name);
+		else
+			snprintf(name, sizeof name, "%.*s[%d]%s", stem, r->name, k, dot ? dot : "");
+		snprintf(item, sizeof item, LUA_TEXTURE_ITEM, name);
+		len += snprintf(items + len, sizeof items - len, "%s%s", k ? ", " : "", item);
+	}
+	snprintf(out, n, LUA_TEXTURE_LIST, texture, items);
 	return true;
 }
 

@@ -37,6 +37,8 @@
 
 #include "3d_internal.h"
 #include "reign.h"
+#include "rq_pixels.h"
+#include "rq_textures.h"
 #include "../cJSON.h"
 #include "rb3d.h"
 #include "rb3d_private.h"
@@ -419,14 +421,27 @@ struct export {
 
 /* ---- pictures ---- */
 
-static struct cg *read_cg(struct export *x, const char *name)
+/* A picture of the model's folder as the engine loads it as kind (enum pol_texture_type, or 0 for
+ * the colour file read again as its own alpha map), model.c's load_texture: a PNG tried on it (the
+ * view's tries) drawn with the game's alpha kind, else the game's. */
+static struct cg *read_cg(struct export *x, const char *name, int kind)
 {
 	if (!name || !name[0])
 		return NULL;
 	struct archive_data *d = RE_get_aar_entry(x->aar, x->mdl->path, name, "");
 	if (!d)
 		return NULL;
-	struct cg *cg = cg_load_data(d);
+	struct rb3d_tries *t = rb3d_view_tries(x->v);
+	struct cg *cg = kind && t ? rb3d_tries_answer(t, d, x->mdl->path, name, kind) : NULL;
+	if (cg) {
+		struct cg_metrics game;
+		bool game_alpha = cg_get_metrics_data(d, &game) ? game.has_alpha : cg->metrics.has_alpha;
+		struct cg *game_cg = game_alpha && !cg->metrics.has_alpha ? cg_load_data(d) : NULL;
+		rq_pixels_game_alpha(cg, game_alpha, game_cg);
+		cg_free(game_cg);
+	} else {
+		cg = cg_load_data(d);
+	}
 	archive_free_data(d);
 	if (cg && (!cg->pixels || cg->metrics.w <= 0 || cg->metrics.h <= 0)) {
 		cg_free(cg);
@@ -481,16 +496,16 @@ static char *stem_of(const char *sjis)
 }
 
 /* The picture name of the model's folder as the file holds it (bake: BAKE_*, amap the alpha map
- * for BAKE_TIMES_MAP and BAKE_FROM_MAP). Each made once; -1 when the file is not there or does not
- * read. */
-static int get_image(struct export *x, const char *name, const char *amap, int bake)
+ * for BAKE_TIMES_MAP and BAKE_FROM_MAP), each read as the engine loads it (kind, amap_kind: read_cg).
+ * Each made once; -1 when the file is not there or does not read. */
+static int get_image(struct export *x, const char *name, int kind, const char *amap, int amap_kind, int bake)
 {
 	char key[800];
 	snprintf(key, sizeof key, "%d|%s|%s", bake, name ? name : "", amap ? amap : "");
 	for (int i = 0; i < x->nimg; i++)
 		if (!strcmp(x->img[i].key, key))
 			return i;
-	struct cg *cg = read_cg(x, name);
+	struct cg *cg = read_cg(x, name, kind);
 	if (!cg) {
 		note_missing(x, name);
 		return -1;
@@ -501,7 +516,7 @@ static int get_image(struct export *x, const char *name, const char *amap, int b
 	bool baked = false;
 	int kept_min = 256;
 	if (bake == BAKE_TIMES_MAP || bake == BAKE_FROM_MAP) {
-		struct cg *am = read_cg(x, amap);
+		struct cg *am = read_cg(x, amap, amap_kind);
 		if (!am) {
 			note_missing(x, amap);
 		} else {
@@ -618,7 +633,10 @@ static int get_material(struct export *x, int mi, const struct pol_material *pm,
 	bool blend = em->is_transparent;
 	int bake = amap ? (blend ? BAKE_TIMES_MAP : BAKE_FROM_MAP) : BAKE_PLAIN;
 	const char *cname = pm->textures[COLOR_MAP];
-	int img = cname && mat->nr_color_maps > 0 ? get_image(x, cname, amap ? pm->textures[ALPHA_MAP] : NULL, bake) : -1;
+	/* the alpha map as model.c loads it: the colour's own file read again is the game's (kind 0) */
+	const char *aname = amap ? pm->textures[ALPHA_MAP] : NULL;
+	int akind = aname && cname && rq_textures_same_name(cname, aname) ? 0 : ALPHA_MAP;
+	int img = cname && mat->nr_color_maps > 0 ? get_image(x, cname, COLOR_MAP, aname, akind, bake) : -1;
 	if (!cname)
 		note_missing(x, "");
 	int mode;
@@ -667,7 +685,7 @@ static int get_material(struct export *x, int mi, const struct pol_material *pm,
 	if (both)
 		cJSON_AddBoolToObject(o, "doubleSided", 1);
 	if (pm->textures[NORMAL_MAP] && mat->normal_map) {
-		int ni = get_image(x, pm->textures[NORMAL_MAP], NULL, BAKE_GREEN);
+		int ni = get_image(x, pm->textures[NORMAL_MAP], NORMAL_MAP, NULL, 0, BAKE_GREEN);
 		if (ni >= 0) {
 			cJSON *t = cJSON_AddObjectToObject(o, "normalTexture");
 			cJSON_AddNumberToObject(t, "index", image_texture(x, ni));
@@ -704,12 +722,12 @@ static int get_material(struct export *x, int mi, const struct pol_material *pm,
 		free(a);
 	}
 	if (pm->textures[LIGHT_MAP] && mat->light_map) {
-		int li = get_image(x, pm->textures[LIGHT_MAP], NULL, BAKE_PLAIN);
+		int li = get_image(x, pm->textures[LIGHT_MAP], LIGHT_MAP, NULL, 0, BAKE_PLAIN);
 		if (li >= 0)
 			cJSON_AddStringToObject(ex, "rq_light_map", x->img[li].name);
 	}
 	if (pm->textures[SPECULAR_MAP] && mat->specular_map) {
-		int si = get_image(x, pm->textures[SPECULAR_MAP], NULL, BAKE_PLAIN);
+		int si = get_image(x, pm->textures[SPECULAR_MAP], SPECULAR_MAP, NULL, 0, BAKE_PLAIN);
 		if (si >= 0)
 			cJSON_AddStringToObject(ex, "rq_specular_map", x->img[si].name);
 	}
@@ -720,7 +738,7 @@ static int get_material(struct export *x, int mi, const struct pol_material *pm,
 		for (int k = 1; dot && k < mat->nr_color_maps; k++) {
 			char fname[300], key[16];
 			snprintf(fname, sizeof fname, "%.*s[%d]%s", (int)(dot - cname), cname, k, dot);
-			int fi = get_image(x, fname, amap ? pm->textures[ALPHA_MAP] : NULL, bake);
+			int fi = get_image(x, fname, COLOR_MAP, aname, akind, bake);
 			snprintf(key, sizeof key, "%d", k);
 			if (fi >= 0)
 				cJSON_AddStringToObject(fr, key, x->img[fi].name);

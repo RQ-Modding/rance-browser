@@ -9,10 +9,17 @@
  *                                            file, print the counts as JSON
  *   rance-browser --shot TAB FILE.png [--select N|NAME] [--grid] [--frame N] [--file PATH]
  *                 [--motion NAME] [--fight BG] [--fight-camera] [--walk] [--bones] [--size WxH] [--scale F]
+ *                 [--texture NAME=FILE.png[,...]]... [--view-only]
  *                                            draw one tab offscreen and save it (the guides' pictures)
- *   rance-browser --export OUT.glb --select NAME
+ *   rance-browser --export OUT.glb --select NAME [--texture NAME=FILE.png[,...]]...
  *   rance-browser --export DIR (--select NAME | --kind KIND | --all)
  *                                            3D models as glTF files, a folder's with export.json
+ *   rance-browser --uv-map NAME OUT.png --select MODEL
+ *   rance-browser --save-texture NAME OUT.png --select MODEL
+ *                                            a 3D texture's UV map, or the game's picture
+ *   rance-browser --decode FILE.png OUT.rgba    RQ MOD's PNG reader on a file (--decode-libsys4: libsys4's)
+ *
+ * Exit 0 when it worked, 1 when it did not, 2 for a command line that does not make sense.
  *
  * The game folder: --game, else the folder above the program's own (RQ MOD puts it in the game's
  * xsystem4 folder), else the program's own folder, else the last one used, else a picker. */
@@ -55,6 +62,13 @@ static struct {
 	const char *export_out;    /* --export: a .glb file or a folder */
 	const char *kind;          /* --kind, for --export */
 	bool all;                  /* --all, for --export */
+	struct try_arg tries[64];  /* --texture, for --shot 3d and --export */
+	int ntries;
+	bool view_only;            /* --view-only: --shot 3d saves the 3D view's frame */
+	const char *tex_name, *tex_out;   /* --uv-map or --save-texture NAME OUT.png */
+	bool uv_map;
+	const char *decode_in, *decode_out;   /* --decode or --decode-libsys4 FILE.png OUT.rgba */
+	bool decode_libsys4;
 } A = { .shot_tab = -1, .select = -1, .w = 1440, .h = 860 };
 
 static void usage(void)
@@ -74,18 +88,28 @@ static void usage(void)
 	       "      --file PATH: a .swf or .aff from disk in the Flash tab\n"
 	       "      --motion NAME: a MOT of the model's folder, or none (3d; default: the first the game plays);\n"
 	       "      --fight BG: a monster on a fight background (a BG folder), --fight-camera: the game's camera;\n"
-	       "      --walk, --bones: the walk mesh's and the skeleton's lines (3d)\n"
-	       "  " APP_EXE " --export OUT.glb --select NAME [--game DIR]\n"
+		       "      --walk, --bones: the walk mesh's and the skeleton's lines (3d)\n"
+	       "      --texture NAME=FILE.png[,FILE2.png,...]: a PNG tried on the model's texture NAME as RQ MOD\n"
+	       "      draws it (a texture's frames: a PNG each, in order); repeatable (3d)\n"
+	       "      --view-only: the 3D view's frame alone, see-through where nothing is drawn (3d)\n"
+	       "  " APP_EXE " --export OUT.glb --select NAME [--game DIR] [--texture NAME=FILE.png[,...]]...\n"
 	       "  " APP_EXE " --export DIR (--select NAME | --kind KIND | --all) [--game DIR]\n"
 	       "      a 3D model as a glTF file (NAME as for --shot 3d); to a folder, each as DIR\\Kind\\folder.glb\n"
-	       "      with DIR\\export.json (KIND: chara, map, bg or etc, or a list: chara,map)\n"
+	       "      with DIR\\export.json (KIND: chara, map, bg or etc, or a list: chara,map); --texture with\n"
+	       "      one model only\n"
+	       "  " APP_EXE " --uv-map NAME OUT.png --select MODEL [--game DIR]\n"
+	       "  " APP_EXE " --save-texture NAME OUT.png --select MODEL [--game DIR]\n"
+	       "      the UV map of a model's texture NAME at its size, or the game's picture (its first frame)\n"
+	       "  " APP_EXE " --decode FILE.png OUT.rgba    (--decode-libsys4 FILE.png OUT.rgba)\n"
+	       "      a PNG read by RQ MOD's reader (or libsys4's), its RGBA written raw; prints WxH alpha=0|1\n"
 	       "  --scale F: the size of the text and the layout, 1 to 4 (default: the display's scale;\n"
-	       "      1 for --shot)\n");
+	       "      1 for --shot)\n"
+	       "  Exit 0 when it worked, 1 when it did not, 2 for a command line that does not make sense.\n");
 }
 
 static void on_error(const char *msg)
 {
-	if (A.check || A.shot_path || A.export_out) {
+	if (A.check || A.shot_path || A.export_out || A.tex_out || A.decode_in) {
 		fprintf(stderr, "%s\n", msg);
 		return;
 	}
@@ -136,7 +160,7 @@ static bool find_game(char *out, size_t n)
 		snprintf(out, n, "%s", last);
 		return true;
 	}
-	if (A.check || A.shot_path || A.export_out)
+	if (A.check || A.shot_path || A.export_out || A.tex_out)
 		return false;
 	return pick_game(out, n);
 }
@@ -189,6 +213,23 @@ static void parse_args(int argc, char **argv)
 			A.kind = argv[++i];
 		} else if (!strcmp(a, "--all")) {
 			A.all = true;
+		} else if (!strcmp(a, "--texture") && i + 1 < argc) {
+			if (A.ntries == (int)(sizeof A.tries / sizeof A.tries[0]) || !try_arg_parse(argv[++i], &A.tries[A.ntries])) {
+				win_attach_console();
+				fprintf(stderr, APP_EXE ": --texture takes NAME=FILE.png[,FILE2.png,...]: %s\n", argv[i]);
+				exit(2);
+			}
+			A.ntries++;
+		} else if (!strcmp(a, "--view-only")) {
+			A.view_only = true;
+		} else if ((!strcmp(a, "--uv-map") || !strcmp(a, "--save-texture")) && i + 2 < argc) {
+			A.uv_map = !strcmp(a, "--uv-map");
+			A.tex_name = argv[++i];
+			A.tex_out = argv[++i];
+		} else if ((!strcmp(a, "--decode") || !strcmp(a, "--decode-libsys4")) && i + 2 < argc) {
+			A.decode_libsys4 = !strcmp(a, "--decode-libsys4");
+			A.decode_in = argv[++i];
+			A.decode_out = argv[++i];
 		} else if (a[0] != '-' && strlen(a) > 4 && (!strcasecmp(a + strlen(a) - 4, ".aff") || !strcasecmp(a + strlen(a) - 4, ".swf"))) {
 			A.file = a;
 		} else if (!strcmp(a, "--size") && i + 1 < argc) {
@@ -481,23 +522,40 @@ static void core_message(const char *text)
 int main(int argc, char **argv)
 {
 	parse_args(argc, argv);
-	if (A.check || A.export_out)
+	if (A.check || A.export_out || A.tex_out || A.decode_in || A.ntries || A.view_only)
 		win_attach_console();
 	sys_silent = true;
 	sys_error_handler = on_error;
 	win_init();
 	CORE.status = core_message;
+	/* the command line's options that go together, before anything opens */
+	if ((A.ntries && !(A.export_out || (A.shot_path && A.shot_tab == TAB_3D))) || (A.view_only && !(A.shot_path && A.shot_tab == TAB_3D)) ||
+	    (A.tex_out && (A.shot_path || A.export_out || A.check)) || (A.decode_in && (A.shot_path || A.export_out || A.check || A.tex_out))) {
+		usage();
+		return 2;
+	}
+	if (A.decode_in)
+		return run_decode(A.decode_in, A.decode_out, A.decode_libsys4);
 
 	char dir[1024] = "";
 	if (!find_game(dir, sizeof dir)) {
 		if (A.check)
 			return run_check(dir[0] ? dir : "(none)", A.out);
-		if (A.shot_path || A.export_out)
+		if (A.shot_path || A.export_out || A.tex_out)
 			fprintf(stderr, APP_EXE ": no game folder (use --game DIR)\n");
 		return 1;
 	}
 	if (A.check)
 		return run_check(dir, A.out);
+	if (A.tex_out) {
+		char num[32];
+		const char *select = A.select_name;
+		if (!select && A.select >= 0) {
+			snprintf(num, sizeof num, "%d", A.select);
+			select = num;
+		}
+		return run_texture_file(dir, select, A.tex_name, A.tex_out, A.uv_map);
+	}
 	if (A.export_out) {
 		if (A.shot_path || A.file) {
 			usage();
@@ -510,7 +568,7 @@ int main(int argc, char **argv)
 			snprintf(num, sizeof num, "%d", A.select);
 			select = num;
 		}
-		struct export_args ea = { A.export_out, select, A.kind, A.all };
+		struct export_args ea = { A.export_out, select, A.kind, A.all, A.tries, A.ntries };
 		return run_export(dir, &ea);
 	}
 	if (A.shot_path && A.shot_tab < 0) {
@@ -576,7 +634,7 @@ int main(int argc, char **argv)
 		} else if (!A.select_name) {
 			tab3d_select(A.select);
 		}
-		struct shot3d s = { A.motion, A.frame, A.frame_given, A.fight, A.fight_camera, A.walk, A.bones };
+		struct shot3d s = { A.motion, A.frame, A.frame_given, A.fight, A.fight_camera, A.walk, A.bones, A.tries, A.ntries };
 		if (!tab3d_shot(&s, why, sizeof why)) {
 			fprintf(stderr, APP_EXE ": %s\n", why);
 			return 1;
@@ -686,9 +744,16 @@ int main(int argc, char **argv)
 			 * frame stays the same. */
 			quiet = pics_idle() && tab3d_pics_idle() ? quiet + 1 : 0;
 			if ((UI.frame > 30 && quiet > 20) || UI.frame > 1500) {
-				code = shot_save(A.w, A.h, A.shot_path) ? 0 : 1;
-				if (code)
-					fprintf(stderr, APP_EXE ": could not write %s\n", A.shot_path);
+				char why[600] = "";
+				if (A.view_only) {
+					code = tab3d_save_view(A.shot_path, why, sizeof why) ? 0 : 1;
+					if (code)
+						fprintf(stderr, APP_EXE ": %s\n", why);
+				} else {
+					code = shot_save(A.w, A.h, A.shot_path) ? 0 : 1;
+					if (code)
+						fprintf(stderr, APP_EXE ": could not write %s\n", A.shot_path);
+				}
 				/* A 3D model that did not load or draw: the picture shows why, and the shot fails. */
 				if (!code && A.shot_tab == TAB_3D && tab3d_error()[0]) {
 					fprintf(stderr, APP_EXE ": %s\n", tab3d_error());

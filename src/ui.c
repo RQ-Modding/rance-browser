@@ -32,7 +32,7 @@ void ui_copy(const char *text)
 /* A Lua line the creator can select, with a Copy button. */
 void ui_lua_line(const char *id, const char *line)
 {
-	char buf[512];
+	char buf[2048];
 	snprintf(buf, sizeof buf, "%s", line);
 	igPushID_Str(id);
 	igSetNextItemWidth(igGetContentRegionAvail().x - S(56) - igGetStyle()->ItemSpacing.x);

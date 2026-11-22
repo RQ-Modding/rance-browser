@@ -48,6 +48,18 @@ static HWND owner(void)
 	return NULL;
 }
 
+bool win_temp_dir(char *out, size_t n)
+{
+	wchar_t w[MAX_PATH + 2];
+	DWORD len = GetTempPathW(MAX_PATH + 2, w);
+	if (!len || len > MAX_PATH + 1)
+		return false;
+	if (w[len - 1] == L'\\')
+		w[len - 1] = 0;
+	narrow(w, out, n);
+	return out[0] != 0;
+}
+
 bool win_exe_dir(char *out, size_t n)
 {
 	wchar_t w[MAX_PATH * 2];
@@ -262,6 +274,114 @@ bool win_pick_open(const char *title, const char *what, const char *patterns, ch
 		}
 	}
 	return ok;
+}
+
+int natural_cmp(const char *a, const char *b)
+{
+	while (*a && *b) {
+		if (*a >= '0' && *a <= '9' && *b >= '0' && *b <= '9') {
+			/* a run of digits by its value: its length without the zeros before it, then the digits */
+			const char *x = a, *y = b;
+			while (*x == '0')
+				x++;
+			while (*y == '0')
+				y++;
+			const char *xe = x, *ye = y;
+			while (*xe >= '0' && *xe <= '9')
+				xe++;
+			while (*ye >= '0' && *ye <= '9')
+				ye++;
+			if (xe - x != ye - y)
+				return (xe - x) < (ye - y) ? -1 : 1;
+			int c = strncmp(x, y, xe - x);
+			if (c)
+				return c;
+			a = xe;
+			b = ye;
+			continue;
+		}
+		int ca = (unsigned char)*a, cb = (unsigned char)*b;
+		if (ca >= 'A' && ca <= 'Z')
+			ca += 'a' - 'A';
+		if (cb >= 'A' && cb <= 'Z')
+			cb += 'a' - 'A';
+		if (ca != cb)
+			return ca < cb ? -1 : 1;
+		a++;
+		b++;
+	}
+	return *a ? 1 : *b ? -1 : 0;
+}
+
+static const char *leaf_of(const char *path)
+{
+	const char *a = strrchr(path, '\\'), *b = strrchr(path, '/');
+	const char *s = a > b ? a : b;
+	return s ? s + 1 : path;
+}
+
+static int cmp_paths(const void *x, const void *y)
+{
+	const char *a = *(const char *const *)x, *b = *(const char *const *)y;
+	int c = natural_cmp(leaf_of(a), leaf_of(b));
+	return c ? c : strcmp(a, b);
+}
+
+bool win_pick_open_many(const char *title, const char *what, const char *patterns, char ***out, int *n)
+{
+	*out = NULL;
+	*n = 0;
+	/* the folder and the names, each ended by a 0, the list by two */
+	enum { CHARS = 1 << 16 };
+	wchar_t *file = xcalloc(CHARS, sizeof(wchar_t));
+	wchar_t *wt = wide(title), *ww = wide(what), *wp = wide(patterns);
+	const char *last = settings_get("open_dir");
+	wchar_t *wl = last ? wide(last) : NULL;
+	wchar_t filter[256];
+	int k = swprintf(filter, 100, L"%ls", ww);
+	k++;
+	k += swprintf(filter + k, 100, L"%ls", wp);
+	k++;
+	memcpy(filter + k, L"All files\0*.*\0", 15 * sizeof(wchar_t));
+	OPENFILENAMEW of = { 0 };
+	of.lStructSize = sizeof of;
+	of.hwndOwner = owner();
+	of.lpstrFilter = filter;
+	of.lpstrFile = file;
+	of.nMaxFile = CHARS;
+	of.lpstrTitle = wt;
+	of.lpstrInitialDir = wl;
+	of.Flags = OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST | OFN_EXPLORER | OFN_ALLOWMULTISELECT;
+	bool ok = GetOpenFileNameW(&of) != 0;
+	if (ok) {
+		char dir[2048];
+		narrow(file, dir, sizeof dir);
+		const wchar_t *p = file + wcslen(file) + 1;
+		if (!*p) {
+			/* one file: its whole path */
+			*out = xmalloc(sizeof **out);
+			(*out)[(*n)++] = xstrdup(dir);
+			char *s = strrchr(dir, '\\');
+			if (s)
+				*s = 0;
+		} else {
+			for (; *p; p += wcslen(p) + 1) {
+				char name[1024], full[3100];
+				narrow(p, name, sizeof name);
+				snprintf(full, sizeof full, "%s%s%s", dir, dir[0] && dir[strlen(dir) - 1] == '\\' ? "" : "\\", name);
+				*out = xrealloc(*out, (*n + 1) * sizeof **out);
+				(*out)[(*n)++] = xstrdup(full);
+			}
+		}
+		qsort(*out, *n, sizeof **out, cmp_paths);
+		settings_set("open_dir", dir);
+	}
+	free(file);
+	free(wt);
+	free(ww);
+	free(wp);
+	free(wl);
+	return ok && *n > 0;
 }
 
 void win_message(const char *title, const char *text)

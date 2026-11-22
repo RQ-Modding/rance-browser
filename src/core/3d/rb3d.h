@@ -211,6 +211,95 @@ struct rb3d_info {
 };
 void rb3d_view_info(const struct rb3d_view *v, struct rb3d_info *out);
 
+/* ---- a model's textures, a mod's pictures tried on them, their UV maps (rb3d_textures.c) ---- */
+
+/* These read the archive without OpenGL. The rows, the checks and their texts are RQ MOD's own
+ * (its rq.image.textures and rq.image.texture), from the copy of its rq_textures.c, and a tried PNG
+ * is read by the copy of its reader (rq_pixels.c), with its limits, so a picture the browser takes
+ * is one the game takes. */
+
+/* How a model's materials use a texture (bits). */
+#define RB3D_TEX_COLOR    (1u << 0)
+#define RB3D_TEX_ALPHA    (1u << 1)
+#define RB3D_TEX_LIGHT    (1u << 2)
+#define RB3D_TEX_NORMAL   (1u << 3)
+#define RB3D_TEX_SPECULAR (1u << 4)
+
+/* A texture of a model, as rq.image.textures lists it. */
+struct rb3d_texture {
+	char *name;          /* as the .POL names it, UTF-8 */
+	char *raw;           /* the same in the archive's bytes (Shift-JIS) */
+	unsigned kinds;      /* RB3D_TEX_* */
+	const char *kind;    /* "color" when a material draws its colours from it, else "alpha", "light"... */
+	bool alpha_map;      /* a material also uses this colour file as its own alpha map */
+	int frames;          /* 1, or a colour map's pictures the game animates (face.png, face[1].png...) */
+	bool missing;        /* the archive has no such file: no w, h or alpha */
+	int w, h;            /* the game's picture's size */
+	bool alpha;          /* the game's picture has alpha */
+};
+struct rb3d_textures {
+	struct rb3d_texture *t;   /* in the order the .POL first names them */
+	int n;
+};
+/* The textures of the model at path (its folder in the archive's bytes, as rb3d_view_load takes it).
+ * False when the folder has no model that reads. Free with rb3d_textures_free. */
+bool rb3d_textures(struct aar_archive *red, const char *path, struct rb3d_textures *out);
+void rb3d_textures_free(struct rb3d_textures *t);
+/* For a frame's name as the game makes it ("face[2].png", the archive's bytes): its number, with the
+ * base's name in base. 0 for any other name. */
+int rb3d_texture_frame(const char *name, char *base, size_t n);
+
+/* A table of tries: PNGs put on a model's textures in the place of the game's pictures, as RQ MOD's
+ * rq.image.texture puts them, for the view to draw (rb3d_view_set_tries) and the export to write. */
+struct rb3d_tries;
+/* For the model at path (its folder in the archive's bytes). */
+struct rb3d_tries *rb3d_tries_new(struct aar_archive *red, const char *path);
+void rb3d_tries_free(struct rb3d_tries *t);
+/* Whether the tries are for the model at path. */
+bool rb3d_tries_for(const struct rb3d_tries *t, const char *path);
+/* Puts n PNGs (UTF-8 paths; a texture with frames takes one per frame, in order) on the texture
+ * name (UTF-8, as the .POL names it, any ASCII case), in the place of what was tried on it. Each file
+ * is read and checked now; shown (may be NULL: the paths) is how the texts name each file. False with
+ * RQ MOD's own text in why when RQ MOD would refuse it; the table is then as it was. */
+bool rb3d_tries_png(struct rb3d_tries *t, const char *name, const char *const *files, const char *const *shown, int n,
+                    char *why, size_t wn);
+/* Takes away what was tried on name (NULL: on every texture); false when nothing was. */
+bool rb3d_tries_untry(struct rb3d_tries *t, const char *name);
+/* What is tried on a texture. */
+struct rb3d_try {
+	const char *name;                /* the texture, UTF-8, as the .POL names it */
+	const char *shown;               /* as it was given */
+	int nfiles;
+	const char *const *files;        /* the PNGs' paths, UTF-8 */
+	const char *const *given;        /* each as it was given */
+};
+int rb3d_tries_count(const struct rb3d_tries *t);
+/* The i-th try, in the order they were made; false past the last. */
+bool rb3d_tries_get(const struct rb3d_tries *t, int i, struct rb3d_try *out);
+/* The try on name (UTF-8, any ASCII case), or -1. */
+int rb3d_tries_find(const struct rb3d_tries *t, const char *name);
+/* The warnings the loads gave: a tried file gone or broken since it was tried is the game's picture,
+ * said once per try. The last one's text, or "". */
+int rb3d_tries_warnings(const struct rb3d_tries *t);
+const char *rb3d_tries_warning(const struct rb3d_tries *t);
+
+/* The view's tries, for its next rb3d_view_load of the model they are for (and the export of it),
+ * in the place of the ones it had (freed); NULL takes them away. The view frees them. A fight
+ * background takes none. */
+void rb3d_view_set_tries(struct rb3d_view *v, struct rb3d_tries *t);
+struct rb3d_tries *rb3d_view_tries(struct rb3d_view *v);
+
+/* The UV map of the texture name (UTF-8, any ASCII case) of the model at path: an RGBA picture at
+ * the game's picture's size, see-through, with the triangles the engine draws with that file in
+ * white lines over a faint white fill, v = 0 on the top row, the same bytes every time. NULL with
+ * RQ MOD's text in why for a name that is not one of the model's textures or a file the game lacks.
+ * Free it. */
+uint8_t *rb3d_uv_map(struct aar_archive *red, const char *path, const char *name, int *w, int *h, char *why, size_t n);
+/* The game's picture of the texture name (its first frame), RGBA as the 3D textures tab saves it;
+ * NULL with a text as for rb3d_uv_map. Free it. */
+uint8_t *rb3d_texture_rgba(struct aar_archive *red, const char *path, const char *name, int *w, int *h, char *why,
+                           size_t n);
+
 /* ---- --check (rb3d_check.c) ---- */
 
 struct cJSON;

@@ -24,6 +24,7 @@
 	X(PFNGLBINDRENDERBUFFERPROC, glBindRenderbuffer) \
 	X(PFNGLBINDVERTEXARRAYPROC, glBindVertexArray) \
 	X(PFNGLBLENDEQUATIONPROC, glBlendEquation) \
+	X(PFNGLBLITFRAMEBUFFERPROC, glBlitFramebuffer) \
 	X(PFNGLBLENDFUNCSEPARATEPROC, glBlendFuncSeparate) \
 	X(PFNGLBUFFERDATAPROC, glBufferData) \
 	X(PFNGLBUFFERSUBDATAPROC, glBufferSubData) \
@@ -57,6 +58,7 @@
 	X(PFNGLGETUNIFORMLOCATIONPROC, glGetUniformLocation) \
 	X(PFNGLLINKPROGRAMPROC, glLinkProgram) \
 	X(PFNGLRENDERBUFFERSTORAGEPROC, glRenderbufferStorage) \
+	X(PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC, glRenderbufferStorageMultisample) \
 	X(PFNGLSHADERSOURCEPROC, glShaderSource) \
 	X(PFNGLUNIFORM1FPROC, glUniform1f) \
 	X(PFNGLUNIFORM1IPROC, glUniform1i) \
@@ -91,6 +93,7 @@ RB3D_GL_CALLS(RB3D_GL_EXTERN)
 #define glBindRenderbuffer rb3d_glBindRenderbuffer
 #define glBindVertexArray rb3d_glBindVertexArray
 #define glBlendEquation rb3d_glBlendEquation
+#define glBlitFramebuffer rb3d_glBlitFramebuffer
 #define glBlendFuncSeparate rb3d_glBlendFuncSeparate
 #define glBufferData rb3d_glBufferData
 #define glBufferSubData rb3d_glBufferSubData
@@ -124,6 +127,7 @@ RB3D_GL_CALLS(RB3D_GL_EXTERN)
 #define glGetUniformLocation rb3d_glGetUniformLocation
 #define glLinkProgram rb3d_glLinkProgram
 #define glRenderbufferStorage rb3d_glRenderbufferStorage
+#define glRenderbufferStorageMultisample rb3d_glRenderbufferStorageMultisample
 #define glShaderSource rb3d_glShaderSource
 #define glUniform1f rb3d_glUniform1f
 #define glUniform1i rb3d_glUniform1i

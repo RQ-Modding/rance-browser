@@ -372,10 +372,23 @@ static void free_billboard_texture(void *value)
 	free(bt);
 }
 
+static void free_msaa(struct RE_renderer *r)
+{
+	if (r->msaa.fbo)
+		glDeleteFramebuffers(1, &r->msaa.fbo);
+	if (r->msaa.color)
+		glDeleteRenderbuffers(1, &r->msaa.color);
+	if (r->msaa.depth)
+		glDeleteRenderbuffers(1, &r->msaa.depth);
+	r->msaa.fbo = r->msaa.color = r->msaa.depth = 0;
+	r->msaa.samples = 0;
+}
+
 void RE_renderer_free(struct RE_renderer *r)
 {
 	glDeleteProgram(r->program);
 	glDeleteRenderbuffers(1, &r->depth_buffer);
+	free_msaa(r);
 	ht_foreach_value(r->billboard_textures_by_no, free_billboard_texture);
 	ht_free_int(r->billboard_textures_by_no);
 	ht_foreach_value(r->billboard_textures_by_path, free_billboard_texture);
@@ -1354,6 +1367,70 @@ void RE_update_model(struct RE_plugin *plugin)
 	r->last_frame_timestamp = timestamp;
 }
 
+// The samples for the game's anti-aliasing setting (Config's 3D tab: Disabled, 2X, 4X, 8X), as many
+// as the driver allows; 0 for none.
+static int msaa_samples_wanted(void)
+{
+#ifdef USE_GLES
+	// GLES 3.0 cannot copy the background CGs into a multisampled buffer.
+	return 0;
+#else
+	static const int samples[] = { 0, 2, 4, 8 };
+	static GLint max_samples = -1;
+	int aa = RE_options.anti_aliasing;
+	if (aa <= 0)
+		return 0;
+	if (aa > 3)
+		aa = 3;
+	if (max_samples < 0)
+		glGetIntegerv(GL_MAX_SAMPLES, &max_samples);
+	int n = samples[aa] < max_samples ? samples[aa] : max_samples;
+	return n >= 2 ? n : 0;
+#endif
+}
+
+// The multisampled buffer at this size and count, made when either changes; false when the scene
+// is drawn without one.
+static bool prepare_msaa(struct RE_renderer *r, int samples, int w, int h)
+{
+	if (samples <= 0 || samples == r->msaa.failed_samples) {
+		if (r->msaa.fbo)
+			free_msaa(r);
+		return false;
+	}
+	if (r->msaa.fbo && r->msaa.samples == samples && r->msaa.w == w && r->msaa.h == h)
+		return true;
+	free_msaa(r);
+
+	GLint orig_fbo;
+	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &orig_fbo);
+	glGenRenderbuffers(1, &r->msaa.color);
+	glBindRenderbuffer(GL_RENDERBUFFER, r->msaa.color);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_RGBA8, w, h);
+	glGenRenderbuffers(1, &r->msaa.depth);
+	glBindRenderbuffer(GL_RENDERBUFFER, r->msaa.depth);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_DEPTH_COMPONENT16, w, h);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glGenFramebuffers(1, &r->msaa.fbo);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, r->msaa.fbo);
+	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, r->msaa.color);
+	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, r->msaa.depth);
+	GLenum status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, orig_fbo);
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		WARNING("3D anti-aliasing: no buffer of %d samples (0x%x), drawn without", samples, status);
+		free_msaa(r);
+		r->msaa.failed_samples = samples;
+		return false;
+	}
+	r->msaa.samples = samples;
+	r->msaa.w = w;
+	r->msaa.h = h;
+	r->msaa.checked = false;
+	NOTICE("3D anti-aliasing: %d samples", samples);
+	return true;
+}
+
 void RE_render(struct sact_sprite *sp)
 {
 	struct RE_plugin *plugin = (struct RE_plugin *)sp->plugin;
@@ -1373,18 +1450,34 @@ void RE_render(struct sact_sprite *sp)
 		glm_mat4_identity(shadow_transform);
 
 	GLuint fbo = gfx_set_framebuffer(GL_DRAW_FRAMEBUFFER, texture, 0, 0, texture->w, texture->h);
-	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, r->depth_buffer);
-	if (glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		ERROR("Incomplete framebuffer");
+	bool msaa = prepare_msaa(r, msaa_samples_wanted(), texture->w, texture->h);
+	if (!msaa) {
+		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, r->depth_buffer);
+		if (glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			ERROR("Incomplete framebuffer");
+	}
 
 	glClearColor(0.f, 0.f, 0.f, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(msaa ? GL_COLOR_BUFFER_BIT : GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Draw background CGs.
 	glDisable(GL_DEPTH_TEST);
 	for (int i = 0; i < RE_NR_BACK_CGS; i++)
 		render_back_cg(texture, &plugin->back_cg[i], r);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+
+	// With anti-aliasing the background CGs are copied into every sample of the multisampled
+	// buffer, and the scene is drawn over them there.
+	if (msaa) {
+		if (!r->msaa.checked)
+			while (glGetError() != GL_NO_ERROR)
+				;
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, r->msaa.fbo);
+		glBlitFramebuffer(0, 0, texture->w, texture->h, 0, 0, texture->w, texture->h,
+				GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		glClear(GL_DEPTH_BUFFER_BIT);
+	}
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -1456,7 +1549,26 @@ void RE_render(struct sact_sprite *sp)
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	glUseProgram(0);
-	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
+	if (msaa) {
+		// Each pixel's samples averaged into the sprite's texture.
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, r->msaa.fbo);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+		glBlitFramebuffer(0, 0, texture->w, texture->h, 0, 0, texture->w, texture->h,
+				GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		gfx_reset_framebuffer(GL_READ_FRAMEBUFFER, fbo);
+		if (!r->msaa.checked) {
+			GLenum err = glGetError();
+			r->msaa.checked = true;
+			if (err != GL_NO_ERROR) {
+				WARNING("3D anti-aliasing: %d samples failed (GL error 0x%x), drawn without",
+					r->msaa.samples, err);
+				r->msaa.failed_samples = r->msaa.samples;
+				free_msaa(r);
+			}
+		}
+	} else {
+		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
+	}
 	gfx_reset_framebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	rq_prof_end(RQ_PROF_TAPIR);

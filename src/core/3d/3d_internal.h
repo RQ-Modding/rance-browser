@@ -146,6 +146,14 @@ struct RE_renderer {
 	int viewport_height;
 	GLuint program;
 	GLuint depth_buffer;
+	// The game's anti-aliasing (RE_options.anti_aliasing): the scene drawn into a multisampled
+	// buffer, then resolved into the sprite's texture.
+	struct {
+		GLuint fbo, color, depth;
+		int samples, w, h;
+		int failed_samples;  // a count the driver refused, not tried again
+		bool checked;        // the first frame's copies checked for a GL error
+	} msaa;
 	struct shadow_renderer shadow;
 	struct outline_renderer outline;
 

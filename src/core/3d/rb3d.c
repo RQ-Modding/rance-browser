@@ -305,6 +305,10 @@ const char *display_utf0(const char *utf)
 	return utf;
 }
 
+/* The game's 3D options (reign.h): the views draw without anti-aliasing, as a game whose Config
+ * leaves it off. */
+struct RE_options RE_options;
+
 struct cg *asset_cg_load(int no)
 {
 	return NULL;

@@ -2,7 +2,7 @@
 
 Each version, newest first. A version in RQ MOD's package is named in RQ MOD's own CHANGELOG.
 
-## 1.3.0 (not released)
+## 1.3.0 (2026-11-22)
 
 Rance Quest's 3D textures as RQ MOD changes them: a model's textures listed as RQ MOD lists them, a
 PNG or colours by numbers tried on one and drawn as the game would draw them, and each texture's UV

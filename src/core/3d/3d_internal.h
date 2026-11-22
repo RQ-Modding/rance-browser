@@ -238,6 +238,13 @@ void motion_free(struct motion *motion);
 
 struct archive_data *RE_get_aar_entry(struct archive *aar, const char *dir, const char *name, const char *ext);
 
+/* RQ MOD: a mod's picture for the texture `name` of the model loaded from `path` (a mod's model
+ * with textures of its own loads from a folder marked "\*<number>\"), used as `kind` (enum
+ * pol_texture_type). `game` is the archive's file. Returns a new 8-bit RGBA cg the caller frees,
+ * or NULL to draw the game's own. Defined by the program that links the 3D code. */
+struct cg;
+struct cg *RE_mod_texture(struct archive_data *game, const char *path, const char *name, int kind);
+
 // renderer.c
 
 struct RE_renderer *RE_renderer_new(void);

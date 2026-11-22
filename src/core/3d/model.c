@@ -26,6 +26,8 @@
 
 #include "3d_internal.h"
 #include "reign.h"
+#include "rq_pixels.h"
+#include "rq_textures.h"
 
 #define FP16_MIN 6.103516e-5f
 #define NR_WEIGHTS 4
@@ -79,18 +81,35 @@ struct archive_data *RE_get_aar_entry(struct archive *aar, const char *dir, cons
 {
 	char *path = xmalloc(strlen(dir) + strlen(name) + strlen(ext) + 2);
 	sprintf(path, "%s\\%s%s", dir, name, ext);
+	// RQ MOD: a mod's model with textures of its own loads from a folder marked "\*<number>\"
+	// (rq_textures.h); its files are the folder's. RE_instance_data_exists, load_billboard_frames,
+	// the light file and RE_instance_motion_exists in reign.c build their paths without this
+	// function: only SealEngine reaches them, so they never see a marked name.
+	rq_textures_strip_mark(path);
 	struct archive_data *dfile = archive_get_by_name(aar, path);
 	free(path);
 	return dfile;
 }
 
-static GLuint load_texture(struct archive *aar, const char *path, const char *name, bool *has_alpha_out)
+// RQ MOD: `kind` (enum pol_texture_type, or 0) is how the material uses the texture. A mod's
+// picture (RE_mod_texture) is drawn in the place of the game's with the game's alpha kind, and
+// has_alpha is the game's, so the material's alpha map and transparency stay as the game made them.
+static GLuint load_texture(struct archive *aar, const char *path, const char *name, bool *has_alpha_out, int kind)
 {
 	struct archive_data *dfile = RE_get_aar_entry(aar, path, name, "");
 	if (!dfile) {
 		return 0;
 	}
-	struct cg *cg = cg_load_data(dfile);
+	struct cg *cg = kind ? RE_mod_texture(dfile, path, name, kind) : NULL;
+	if (cg) {
+		struct cg_metrics game;
+		bool game_alpha = cg_get_metrics_data(dfile, &game) ? game.has_alpha : cg->metrics.has_alpha;
+		struct cg *game_cg = game_alpha && !cg->metrics.has_alpha ? cg_load_data(dfile) : NULL;
+		rq_pixels_game_alpha(cg, game_alpha, game_cg);
+		cg_free(game_cg);
+	} else {
+		cg = cg_load_data(dfile);
+	}
 	if (!cg) {
 		WARNING("cg_load_data failed: %s", dfile->name);
 		archive_free_data(dfile);
@@ -117,7 +136,7 @@ static GLuint load_texture(struct archive *aar, const char *path, const char *na
 static GLuint *load_texture_list(struct archive *aar, const char *path, const char *name, int *nr_textures_out, bool *has_alpha_out)
 {
 	// Load the base texture (e.g. face.png)
-	GLuint tex = load_texture(aar, path, name, has_alpha_out);
+	GLuint tex = load_texture(aar, path, name, has_alpha_out, COLOR_MAP);
 	if (!tex)
 		return NULL;
 	GLuint *textures = xmalloc(10 * sizeof(GLuint));
@@ -130,7 +149,7 @@ static GLuint *load_texture_list(struct archive *aar, const char *path, const ch
 		for (;;) {
 			char next_name[100];
 			snprintf(next_name, sizeof(next_name), "%.*s[%d]%s", (int)(ext - name), name, nr_textures, ext);
-			tex = load_texture(aar, path, next_name, NULL);
+			tex = load_texture(aar, path, next_name, NULL, COLOR_MAP);
 			if (!tex)
 				break;
 			textures[nr_textures++] = tex;
@@ -158,18 +177,21 @@ static bool init_material(struct material *material, struct pol_material *m, str
 		return false;
 
 	if (m->textures[SPECULAR_MAP])
-		material->specular_map = load_texture(aar, path, m->textures[SPECULAR_MAP], NULL);
+		material->specular_map = load_texture(aar, path, m->textures[SPECULAR_MAP], NULL, SPECULAR_MAP);
 	if (m->textures[ALPHA_MAP]) {
 		if (has_alpha && !strcmp(m->textures[COLOR_MAP], m->textures[ALPHA_MAP])) {
 			// Do nothing; the alpha channel of the color map is used.
 		} else {
-			material->alpha_map = load_texture(aar, path, m->textures[ALPHA_MAP], NULL);
+			// RQ MOD: the colour file loaded again as its own alpha map (it has no alpha) keeps
+			// the game's red, whatever a mod draws in its place as the colour map.
+			material->alpha_map = load_texture(aar, path, m->textures[ALPHA_MAP], NULL,
+				rq_textures_same_name(m->textures[COLOR_MAP], m->textures[ALPHA_MAP]) ? 0 : ALPHA_MAP);
 		}
 	}
 	if (m->textures[LIGHT_MAP])
-		material->light_map = load_texture(aar, path, m->textures[LIGHT_MAP], NULL);
+		material->light_map = load_texture(aar, path, m->textures[LIGHT_MAP], NULL, LIGHT_MAP);
 	if (m->textures[NORMAL_MAP])
-		material->normal_map = load_texture(aar, path, m->textures[NORMAL_MAP], NULL);
+		material->normal_map = load_texture(aar, path, m->textures[NORMAL_MAP], NULL, NORMAL_MAP);
 
 	material->is_transparent = (has_alpha || material->alpha_map) && is_transparent_material(m);
 	material->shadow_darkness = 1.0f;
@@ -576,7 +598,7 @@ struct model *model_load(struct archive *aar, const char *path)
 					      &child->children[0].m, amt, aar, path);
 				if (child->children[1].m.textures[COLOR_MAP]) {
 					model->materials[material_offsets[i] + j].blend_texture =
-						load_texture(aar, path, child->children[1].m.textures[COLOR_MAP], NULL);
+						load_texture(aar, path, child->children[1].m.textures[COLOR_MAP], NULL, COLOR_MAP);
 					glm_vec2_copy(child->children[1].m.uv_tiling,
 						model->materials[material_offsets[i] + j].blend_uv_tiling);
 				}

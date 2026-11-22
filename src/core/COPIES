@@ -14,6 +14,10 @@ same src/core/swf.h include/swf.h
 same src/core/swf_check.c src/swf_check.c
 same src/core/swf_check.h include/swf_check.h
 
+# A mod's pictures as RQ MOD reads them, and the rules of a mod's picture on a 3D texture
+same src/core/rq_pixels.c src/rq_pixels.c
+same src/core/rq_pixels.h include/rq_pixels.h
+
 # The 3D renderer (src/core/3d, the rance_3d library)
 same src/core/3d/3d_internal.h src/3d/3d_internal.h
 same src/core/3d/collision.c src/3d/collision.c
@@ -23,6 +27,8 @@ same src/core/3d/parser.c src/3d/parser.c
 same src/core/3d/particle.c src/3d/particle.c
 same src/core/3d/reign.c src/3d/reign.c
 same src/core/3d/renderer.c src/3d/renderer.c
+same src/core/3d/rq_textures.c src/3d/rq_textures.c
+same src/core/3d/rq_textures.h src/3d/rq_textures.h
 same src/core/3d/s3de.c src/3d/s3de.c
 skip src/3d/debug.c
 skip src/3d/save.c

@@ -21,6 +21,9 @@ sndfile = dependency('sndfile', static : static_libs)
 gl = dependency('GL')
 libm = meson.get_compiler('c').find_library('m', required : false)
 libsys4_dep = subproject('libsys4').get_variable('libsys4_dep')
+# libpng, which libsys4 already links: rance_core's reader of a mod's PNG (rq_pixels.c) and the
+# glTF export's pictures.
+png = dependency('libpng', static : static_libs)
 
 py = find_program('python3', 'python', required : true)
 
@@ -88,12 +91,12 @@ rq_lua_lines_c = custom_target('rq_lua_lines',
 
 c_warnings = ['-Wno-unused-parameter', '-Wno-sign-compare', '-Wno-missing-field-initializers']
 core_inc = include_directories('src/core')
-core_deps = [sdl2, sndfile, zlib, libm, gl, libsys4_dep]
+core_deps = [sdl2, sndfile, zlib, libm, gl, png, libsys4_dep]
 
 rance_core_lib = static_library('rance_core',
     ['src/core/core.c', 'src/core/game.c', 'src/core/games.c', 'src/core/sets.c',
      'src/core/pics.c', 'src/core/player.c', 'src/core/mixer.c', 'src/core/swf.c',
-     'src/core/swf_check.c', 'src/core/flash_player.c', 'src/core/cJSON.c',
+     'src/core/swf_check.c', 'src/core/flash_player.c', 'src/core/cJSON.c', 'src/core/rq_pixels.c',
      games_c, rq_ids_c, rq_pictures_c, rq_models_c],
     c_args : c_warnings + ['-DCIMGUI_NO_EXPORT'],
     include_directories : [core_inc, cimgui_inc],
@@ -125,17 +128,15 @@ if have_3d
             output : sym + '.c',
             command : [py, embed, '@INPUT@', '@OUTPUT@', sym])
     endforeach
-    # The export writes its pictures as PNG with libpng, which libsys4 already links.
-    png = dependency('libpng', static : static_libs)
     rance_3d_lib = static_library('rance_3d',
         ['src/core/3d/rb3d.c', 'src/core/3d/rb3d_models.c', 'src/core/3d/rb3d_check.c',
          'src/core/3d/rb3d_export.c', 'src/core/3d/parser.c',
          'src/core/3d/model.c', 'src/core/3d/mpr.c',
          'src/core/3d/collision.c', 'src/core/3d/reign.c', 'src/core/3d/renderer.c',
-         'src/core/3d/particle.c', 'src/core/3d/s3de.c'] + rb3d_shaders,
+         'src/core/3d/particle.c', 'src/core/3d/s3de.c', 'src/core/3d/rq_textures.c'] + rb3d_shaders,
         # -Wno-maybe-uninitialized: the later engines' effects (s3de.c) set vectors in a switch.
         c_args : c_warnings + ['-Wno-maybe-uninitialized'],
-        include_directories : include_directories('src/core/3d', 'src/core/3d/include'),
+        include_directories : include_directories('src/core/3d', 'src/core/3d/include', 'src/core'),
         dependencies : [sdl2, gl, libm, png, libsys4_dep, cglm_proj.get_variable('cglm_dep')])
     rance_3d_dep = declare_dependency(
         link_with : rance_3d_lib,

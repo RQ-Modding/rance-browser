@@ -317,6 +317,13 @@ int wav_seek(int id, int pos) { return 0; }
 int wav_get_unused_channel(void) { return -1; }
 int wav_prepare_from_archive_data(int id, int metadata_no, struct archive_data *dfile) { return 0; }
 
+/* The engine's modloader_texture.c (left out): a mod's picture on one of a model's textures. None
+ * here: the game's own picture is drawn. */
+struct cg *RE_mod_texture(struct archive_data *game, const char *path, const char *name, int kind)
+{
+	return NULL;
+}
+
 /* The engine's debug.c (left out): its JSON of a sprite and its debugger's hooks. */
 void re_debug_init(void)
 {

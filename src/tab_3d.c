@@ -109,8 +109,9 @@ static struct {
 	bool rows_ok;           /* the folder has a model that reads */
 	int *row_pic;           /* each row's picture in G.sets[PK_TEX], or -1 */
 	int *other, nother;     /* the folder's pictures no row covers (indexes in G.sets[PK_TEX]) */
-	int why_row;            /* the row a refusal is shown under, or -1 */
+	int why_row;            /* the row a refusal is shown under (STAR_ROW: "*"'s), or -1 */
 	char refusal[1200];     /* RQ MOD's text for a try it would refuse */
+	float col[3];           /* Colours...'s hue, saturation and lightness */
 	int warnings_seen;      /* the view's tries' warnings already told */
 	struct rb3d_tries *shot_tries;   /* --shot's --texture, handed to the view at the load */
 	/* playing */
@@ -1058,6 +1059,51 @@ static void model_id(const struct rb3d_model *m, char *id, size_t size)
 	id[n] = 0;
 }
 
+/* The row of the colours on every colour texture ("*"), for a refusal under it. */
+#define STAR_ROW (-2)
+
+/* A number as a mod would write it: the shortest text that reads back as the same double. */
+static void num_text(double v, char *out, size_t n)
+{
+	snprintf(out, n, "%.15g", v);
+	if (strtod(out, NULL) != v)
+		snprintf(out, n, "%.17g", v);
+}
+
+/* "hue = 200, saturation = 1.5": a colours try's numbers as rq.TextureColors' fields, those that are
+ * not their defaults (hue alone when all are). */
+static void colors_fields(const struct rb3d_try *y, char *out, size_t n)
+{
+	char v[40], f[80];
+	size_t len = 0;
+	out[0] = 0;
+	if (y->hue != 0 || (y->saturation == 1 && y->lightness == 1)) {
+		num_text(y->hue, v, sizeof v);
+		snprintf(f, sizeof f, LUA_COLOR_HUE, v);
+		len += snprintf(out + len, len < n ? n - len : 0, "%s", f);
+	}
+	if (y->saturation != 1) {
+		num_text(y->saturation, v, sizeof v);
+		snprintf(f, sizeof f, LUA_COLOR_SATURATION, v);
+		len += snprintf(out + len, len < n ? n - len : 0, "%s%s", len ? ", " : "", f);
+	}
+	if (y->lightness != 1) {
+		num_text(y->lightness, v, sizeof v);
+		snprintf(f, sizeof f, LUA_COLOR_LIGHTNESS, v);
+		snprintf(out + len, len < n ? n - len : 0, "%s%s", len ? ", " : "", f);
+	}
+}
+
+/* "hue 200, saturation 1.5, lightness 0.8": the numbers, for a row. */
+static void colors_text(const struct rb3d_try *y, char *out, size_t n)
+{
+	char h[40], s[40], l[40];
+	num_text(y->hue, h, sizeof h);
+	num_text(y->saturation, s, sizeof s);
+	num_text(y->lightness, l, sizeof l);
+	snprintf(out, n, "hue %s, saturation %s, lightness %s", h, s, l);
+}
+
 /* The tries on the model shown, or NULL. */
 static struct rb3d_tries *shown_tries(void)
 {
@@ -1072,6 +1118,12 @@ static void try_pictures(const struct rb3d_try *y, bool list, char *out, size_t 
 {
 	size_t len = 0;
 	out[0] = 0;
+	if (y->colors) {
+		char f[200];
+		colors_fields(y, f, sizeof f);
+		snprintf(out, n, LUA_COLORS, f);
+		return;
+	}
 	if (list)
 		len += snprintf(out + len, len < n ? n - len : 0, "{ ");
 	for (int i = 0; i < y->nfiles && len < n; i++) {
@@ -1091,8 +1143,24 @@ static void try_lines(const struct rb3d_model *m, const struct rb3d_entry *e)
 	if (!n)
 		return;
 	igSeparatorText("What is tried, from a mod");
-	dim("Every model that draws %s, with your %s in your mod's textures folder:", plural(n, "this texture", "these textures"),
-	    plural(n, "PNG", "PNGs"));
+	/* the lines: one per texture tried by its name, and one per colour texture "*" reaches */
+	int lines = 0, files = 0;
+	for (int i = 0; i < n; i++) {
+		struct rb3d_try y;
+		if (!rb3d_tries_get(t, i, &y))
+			continue;
+		if (strcmp(y.name, "*"))
+			lines++;
+		files += y.nfiles;
+	}
+	for (int r = 0; r < T.rows.n; r++)
+		if (rb3d_tries_reaches(t, T.rows.t[r].name))
+			lines++;
+	if (files)
+		dim("Every model that draws %s, with your %s in your mod's textures folder:", plural(lines, "this texture", "these textures"),
+		    plural(files, "PNG", "PNGs"));
+	else
+		dim("Every model that draws %s:", plural(lines, "this texture", "these textures"));
 	char line[4096], pics[1600], entries[1800];
 	size_t elen = 0;
 	entries[0] = 0;
@@ -1100,17 +1168,35 @@ static void try_lines(const struct rb3d_model *m, const struct rb3d_entry *e)
 		struct rb3d_try y;
 		if (!rb3d_tries_get(t, i, &y))
 			continue;
-		char texture[700];
-		snprintf(texture, sizeof texture, "Data/PolyData/%s/%s/%s", rb3d_kind_folders[m->kind], m->folder, y.name);
-		if (y.nfiles == 1) {
-			snprintf(line, sizeof line, LUA_TEXTURE_PNG, texture, leaf_of(y.files[0]));
-		} else {
-			try_pictures(&y, false, pics, sizeof pics);
-			snprintf(line, sizeof line, LUA_TEXTURE_LIST, texture, pics);
-		}
 		char id[32];
 		snprintf(id, sizeof id, "try%d", i);
-		ui_lua_line(id, line);
+		char texture[700];
+		if (!strcmp(y.name, "*")) {
+			/* rq.image.texture takes no "*": a line per colour texture it reaches */
+			char f[200];
+			colors_fields(&y, f, sizeof f);
+			for (int r = 0; r < T.rows.n; r++) {
+				if (!rb3d_tries_reaches(t, T.rows.t[r].name))
+					continue;
+				snprintf(texture, sizeof texture, "Data/PolyData/%s/%s/%s", rb3d_kind_folders[m->kind], m->folder, T.rows.t[r].name);
+				snprintf(line, sizeof line, LUA_TEXTURE_COLORS, texture, f);
+				snprintf(id, sizeof id, "try%d-%d", i, r);
+				ui_lua_line(id, line);
+			}
+		} else {
+			snprintf(texture, sizeof texture, "Data/PolyData/%s/%s/%s", rb3d_kind_folders[m->kind], m->folder, y.name);
+			if (y.colors) {
+				char f[200];
+				colors_fields(&y, f, sizeof f);
+				snprintf(line, sizeof line, LUA_TEXTURE_COLORS, texture, f);
+			} else if (y.nfiles == 1) {
+				snprintf(line, sizeof line, LUA_TEXTURE_PNG, texture, leaf_of(y.files[0]));
+			} else {
+				try_pictures(&y, false, pics, sizeof pics);
+				snprintf(line, sizeof line, LUA_TEXTURE_LIST, texture, pics);
+			}
+			ui_lua_line(id, line);
+		}
 		try_pictures(&y, y.nfiles > 1, pics, sizeof pics);
 		char entry[1800];
 		snprintf(entry, sizeof entry, LUA_MODEL_TEXTURE, y.name, pics);
@@ -1269,12 +1355,125 @@ static void try_row(const struct rb3d_model *m, int r)
 	free(files);
 }
 
-static void untry_row(int r)
+static void untry_name(const char *name)
 {
 	struct rb3d_tries *t = shown_tries();
-	if (rb3d_tries_untry(t, T.rows.t[r].name))
+	if (rb3d_tries_untry(t, name))
 		reload();
 	T.why_row = -1;
+}
+
+/* Colours by numbers on the texture name ("*": every colour texture), from Colours...'s sliders,
+ * then the model loaded again; a refusal stays under row r. */
+static void set_colors(const struct rb3d_model *m, const char *name, int r)
+{
+	/* the numbers as the sliders show them: whole degrees, factors to the hundredth */
+	double hue = round(T.col[0]), sat = round(T.col[1] * 100.0) / 100.0, light = round(T.col[2] * 100.0) / 100.0;
+	struct rb3d_tries *t = shown_tries();
+	bool fresh = !t;
+	if (fresh)
+		t = rb3d_tries_new(G.h.red, m->path);
+	if (rb3d_tries_colors(t, name, hue, sat, light, T.refusal, sizeof T.refusal)) {
+		if (fresh) {
+			rb3d_view_set_tries(T.v, t);
+			T.warnings_seen = 0;
+		}
+		T.why_row = -1;
+		T.refusal[0] = 0;
+		reload();
+	} else {
+		if (fresh)
+			rb3d_tries_free(t);
+		T.why_row = r;
+	}
+}
+
+/* Colours...: the sliders start from what is tried on the texture name (or "*"'s on it), else from
+ * the game's numbers (0, 1, 1). */
+static void open_colors(const char *name)
+{
+	struct rb3d_tries *t = shown_tries();
+	int k = rb3d_tries_find(t, name);
+	if (k < 0 && strcmp(name, "*") && rb3d_tries_reaches(t, name))
+		k = rb3d_tries_find(t, "*");
+	struct rb3d_try y;
+	if (k >= 0 && rb3d_tries_get(t, k, &y) && y.colors) {
+		T.col[0] = (float)y.hue;
+		T.col[1] = (float)y.saturation;
+		T.col[2] = (float)y.lightness;
+	} else {
+		T.col[0] = 0;
+		T.col[1] = 1;
+		T.col[2] = 1;
+	}
+	igOpenPopup_Str("colours", 0);
+}
+
+/* Colours...'s popup: three sliders, the model loaded again when one is let go. */
+static void colors_popup(const struct rb3d_model *m, const char *name, int r)
+{
+	if (!igBeginPopup("colours", 0))
+		return;
+	if (!strcmp(name, "*"))
+		igTextUnformatted("Colours on every colour texture", NULL);
+	else
+		igText("Colours on %s", name);
+	dim("The game's own picture, each frame, turned as RQ MOD turns it; grey, white and black stay grey.");
+	dim("The model loads again when you let go of a slider.");
+	bool apply = false;
+	igSetNextItemWidth(S(280));
+	igSliderFloat("Hue", &T.col[0], -360, 360, "%.0f degrees", ImGuiSliderFlags_AlwaysClamp);
+	apply |= igIsItemDeactivatedAfterEdit();
+	igSetNextItemWidth(S(280));
+	igSliderFloat("Saturation", &T.col[1], 0, 4, "%.2f", ImGuiSliderFlags_AlwaysClamp);
+	apply |= igIsItemDeactivatedAfterEdit();
+	igSetNextItemWidth(S(280));
+	igSliderFloat("Lightness", &T.col[2], 0, 4, "%.2f", ImGuiSliderFlags_AlwaysClamp);
+	apply |= igIsItemDeactivatedAfterEdit();
+	dim("Ctrl+click a slider to type a number.");
+	if (apply)
+		set_colors(m, name, r);
+	if (T.why_row == r && T.refusal[0])
+		red_text("%s", T.refusal);
+	igEndPopup();
+}
+
+/* The colours on every colour texture ("*"), above the rows: what is tried, Colours... and The game's. */
+static void star_row(const struct rb3d_model *m)
+{
+	bool any = false;
+	for (int r = 0; r < T.rows.n && !any; r++)
+		any = (T.rows.t[r].kinds & RB3D_TEX_COLOR) && !T.rows.t[r].missing;
+	if (!any || !T.ok || T.loaded != T.sel)
+		return;
+	igPushID_Str("star");
+	struct rb3d_tries *t = shown_tries();
+	int k = rb3d_tries_find(t, "*");
+	igAlignTextToFramePadding();
+	dim("Every colour texture:");
+	igSameLine(0, S(6));
+	if (igSmallButton("Colours..."))
+		open_colors("*");
+	if (igIsItemHovered(0))
+		igSetTooltip("The same colours by numbers on each colour texture of the model, as rq.monster.model's\n"
+		             "textures[\"*\"] puts them; a texture tried by its name keeps its own try");
+	colors_popup(m, "*", STAR_ROW);
+	struct rb3d_try y;
+	if (k >= 0 && rb3d_tries_get(t, k, &y)) {
+		igSameLine(0, S(6));
+		if (igSmallButton("The game's"))
+			untry_name("*");
+		if (igIsItemHovered(0))
+			igSetTooltip("The game's own colours again on the textures it reached");
+		char c[160];
+		colors_text(&y, c, sizeof c);
+		igPushStyleColor_Vec4(ImGuiCol_Text, v4(0.45f, 0.85f, 0.5f, 1));
+		igTextWrapped("Tried: colours, %s", c);
+		igPopStyleColor(1);
+	}
+	if (T.why_row == STAR_ROW && T.refusal[0])
+		red_text("%s", T.refusal);
+	igPopID();
 }
 
 static void texture_row(const struct rb3d_model *m, int r)
@@ -1321,11 +1520,17 @@ static void texture_row(const struct rb3d_model *m, int r)
 		for (int i = 0; i < y.nfiles && len < sizeof files; i++)
 			len += snprintf(files + len, sizeof files - len, "%s%s", i ? ", " : "", leaf_of(y.files[i]));
 		igPushStyleColor_Vec4(ImGuiCol_Text, v4(0.45f, 0.85f, 0.5f, 1));
-		if (y.nfiles > 1)
+		if (y.colors) {
+			colors_text(&y, files, sizeof files);
+			igTextWrapped("Tried: colours, %s", files);
+		} else if (y.nfiles > 1) {
 			igTextWrapped("Tried, frame by frame in this order: %s", files);
-		else
+		} else {
 			igTextWrapped("Tried: %s", files);
+		}
 		igPopStyleColor(1);
+	} else if (rb3d_tries_reaches(t, row->name)) {
+		dim("Tried: the colours on every colour texture");
 	}
 	if (!row->missing) {
 		if (igSmallButton("Save as PNG..."))
@@ -1349,10 +1554,19 @@ static void texture_row(const struct rb3d_model *m, int r)
 				else
 					igSetTooltip("A PNG drawn on the model as RQ MOD draws a mod's picture");
 			}
+			if (row->kinds & RB3D_TEX_COLOR) {
+				igSameLine(0, S(6));
+				if (igSmallButton("Colours..."))
+					open_colors(row->name);
+				if (igIsItemHovered(0))
+					igSetTooltip("Colours by numbers on the game's picture%s: hue, saturation and lightness, as\n"
+					             "RQ MOD turns them", row->frames > 1 ? ", each frame" : "");
+				colors_popup(m, row->name, r);
+			}
 			if (k >= 0) {
 				igSameLine(0, S(6));
 				if (igSmallButton("The game's"))
-					untry_row(r);
+					untry_name(row->name);
 				if (igIsItemHovered(0))
 					igSetTooltip("The game's own picture again");
 			}
@@ -1381,6 +1595,7 @@ static void textures(const struct rb3d_model *m)
 	else
 		dim("%d %s its materials use, as RQ MOD lists them; a picture opens in the 3D textures tab.", T.rows.n,
 		    plural(T.rows.n, "texture", "textures"));
+	star_row(m);
 	for (int r = 0; r < T.rows.n; r++)
 		texture_row(m, r);
 	if (T.nother) {

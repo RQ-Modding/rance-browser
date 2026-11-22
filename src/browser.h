@@ -20,19 +20,30 @@ bool font_has_japanese(const char *path);
 /* --decode FILE.png OUT.rgba: RQ MOD's PNG reader (rq_pixels), or libsys4's (libsys4 true); the raw
  * RGBA written to out and "WxH alpha=0|1" printed. 0, or 1 with the reason on stderr. */
 int run_decode(const char *in, const char *out, bool libsys4);
+/* --recolor FILE.png OUT.rgba HUE,SATURATION,LIGHTNESS: the PNG read by RQ MOD's reader, then its
+ * colours turned by RQ MOD's rule, written raw; 1 with RQ MOD's text for numbers out of range. */
+int run_recolor(const char *in, const char *out, double hue, double saturation, double lightness);
 
 /* ---- --export, --uv-map, --save-texture and the tries of the command line (export.c) ---- */
 
-/* --texture NAME=FILE.png[,FILE2.png,...]: PNGs tried on a model's texture, for --shot 3d and
- * --export. */
+/* --texture NAME=FILE.png[,FILE2.png,...]: PNGs tried on a model's texture, and --colors
+ * NAME=HUE[,SATURATION[,LIGHTNESS]]: colours by numbers on it ("*": every colour texture), for
+ * --shot 3d and --export. */
 struct try_arg {
 	const char *arg;      /* as given */
 	char *name;           /* the texture, UTF-8 */
 	char **files;         /* the PNGs, in order */
 	int nfiles;
+	bool colors;          /* --colors: the numbers instead of files */
+	double hue, saturation, lightness;
 };
 /* Splits a --texture argument; false when it is not NAME=FILE[,FILE...]. */
 bool try_arg_parse(const char *arg, struct try_arg *out);
+/* Reads HUE[,SATURATION[,LIGHTNESS]] (saturation and lightness 1 when left out); false when it is not
+ * one to three numbers. */
+bool colors_parse(const char *s, double *hue, double *saturation, double *lightness);
+/* Splits a --colors argument; false when it is not NAME=HUE[,SATURATION[,LIGHTNESS]]. */
+bool colors_arg_parse(const char *arg, struct try_arg *out);
 struct rb3d_tries;
 /* The tries for the model at path (its folder in the archive's bytes), made from the arguments by
  * RQ MOD's rules; NULL with RQ MOD's text in why for the first it would refuse. */

@@ -5,7 +5,8 @@ Each version, newest first. A version in RQ MOD's package is named in RQ MOD's o
 ## 1.3.0 (not released)
 
 Rance Quest's 3D textures as RQ MOD changes them: a model's textures listed as RQ MOD lists them, a
-PNG tried on one and drawn as the game would draw it, and each texture's UV map.
+PNG or colours by numbers tried on one and drawn as the game would draw them, and each texture's UV
+map.
 
 - **Its textures** (the 3D tab) lists what the model's materials use, in the model's order, as RQ
   MOD's `rq.image.textures` does: each texture's name, the maps it is used as (colour, alpha, light,
@@ -25,18 +26,30 @@ PNG tried on one and drawn as the game would draw it, and each texture's UV map.
   RQ MOD's own words (not a PNG, too large, cut off, a frame's name, a count other than the game's).
   **The game's** takes the try away; another model starts with none. A file gone or broken at a later
   load draws the game's picture, said once in the status line, as the engine does.
+- **Colours...** on a colour texture opens three sliders, hue (-360 to 360 degrees), saturation and
+  lightness (factors, 0 to 4), and loads the model again when one is let go: the game's own picture,
+  each frame, turned in HSL by RQ MOD's own rule, as `rq.image.texture`'s `{ hue = ... }` does (grey,
+  white and black stay grey). **Every colour texture: Colours...**, above the rows, puts the same
+  numbers on each colour texture of the model, as `rq.monster.model`'s `textures["*"]`; a texture
+  tried by its name keeps its own try. Colours on another kind of texture are refused, as RQ MOD
+  refuses them.
 - **The Lua lines** follow the tries: `rq.image.texture` for every model that draws each texture (its
-  frames as a list), and for a monster's folder `rq.monster.model` with `textures`, a model of the
-  mod's own; each PNG named in the mod's `textures` folder. The 3D textures tab shows the
+  frames as a list, colours as `{ hue = 200, saturation = 1.5 }`, the numbers not at their defaults),
+  and for a monster's folder `rq.monster.model` with `textures`, a model of the mod's own (colours on
+  every colour texture as `["*"] = { ... }`, which `rq.image.texture` does not take: there, a line per
+  texture); each PNG named in the mod's `textures` folder. The 3D textures tab shows the
   `rq.image.texture` line of a picture a model draws (a frame's as the list on its base), and says so
   of a picture no model draws by its name.
-- **The export** writes a tried PNG as the engine draws it, each frame its own picture, and the
-  game's alpha maps as before.
-- **On the command line:** `--texture NAME=FILE.png[,FILE2.png,...]` (repeatable) with `--shot 3d` and
-  with `--export` of one model, checked before any window opens (a refusal exits 1 with RQ MOD's
-  text); `--view-only`, for `--shot 3d` to save the 3D view's frame alone; `--uv-map NAME OUT.png` and
-  `--save-texture NAME OUT.png` with `--select MODEL`, without a window; `--decode FILE.png OUT.rgba`
-  (RQ MOD's reader) and `--decode-libsys4`, the raw pixels for a check. Exit codes stay 0, 1 and 2.
+- **The export** writes a tried PNG or tried colours as the engine draws them, each frame its own
+  picture, and the game's alpha maps as before.
+- **On the command line:** `--texture NAME=FILE.png[,FILE2.png,...]` and `--colors
+  NAME=HUE[,SATURATION[,LIGHTNESS]]` (`*` as NAME: every colour texture), each repeatable, with
+  `--shot 3d` and with `--export` of one model, checked before any window opens (a refusal exits 1
+  with RQ MOD's text); `--view-only`, for `--shot 3d` to save the 3D view's frame alone; `--uv-map
+  NAME OUT.png` and `--save-texture NAME OUT.png` with `--select MODEL`, without a window; `--decode
+  FILE.png OUT.rgba` (RQ MOD's reader) and `--decode-libsys4`, the raw pixels for a check, and
+  `--recolor FILE.png OUT.rgba HUE,SATURATION,LIGHTNESS`, the same turned by RQ MOD's colours. Exit
+  codes stay 0, 1 and 2.
 - **`--check`** also draws the UV map of every texture of every model and counts its triangles against
   the renderer's meshes, and tries a PNG of its own on the Cockroach, deletes it and loads the model
   again (the game's picture, the warning once). The report's `3d` gains `draw.uv_maps` and `tries`.

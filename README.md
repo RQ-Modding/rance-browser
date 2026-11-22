@@ -100,7 +100,9 @@ picture and **Save the UV map...** the triangles the model draws with it, white 
 picture's size, to paint over. **Try a PNG...** draws a PNG of yours on the model as RQ MOD would
 (a texture with frames takes one per frame, picked together, in their names' order), keeping the
 camera and the motion; a file RQ MOD would refuse is refused there, in RQ MOD's words, and **The
-game's** takes the try away. For Rance Quest the Lua lines follow: `rq.image.texture` for every model
+game's** takes the try away. **Colours...** turns the game's own picture by three numbers, hue,
+saturation and lightness, as RQ MOD's colours by numbers do, and loads the model again when a slider
+is let go; **Every colour texture: Colours...** puts them on each colour texture of the model. For Rance Quest the Lua lines follow: `rq.image.texture` for every model
 that draws the texture, and `rq.monster.model` with `textures` for a monster of a mod's own. The 3D
 textures tab shows the `rq.image.texture` line of each picture a model draws. RQ MOD's guide
 [A monster in new colours](https://rq-modding.github.io/rq-modding-docs/guide/model-textures) paints
@@ -122,12 +124,14 @@ rance-browser [--game DIR] [--scale F] [FILE.aff|FILE.swf]
 rance-browser --check [--game DIR] [--out FILE]
 rance-browser --shot TAB FILE.png [--game DIR] [--select N|NAME] [--grid] [--frame N] [--file PATH]
               [--motion NAME] [--fight BG] [--fight-camera] [--walk] [--bones] [--size WxH] [--scale F]
-              [--texture NAME=FILE.png[,...]]... [--view-only]
+              [--texture NAME=FILE.png[,...]]... [--colors NAME=H[,S[,L]]]... [--view-only]
 rance-browser --export OUT.glb --select NAME [--game DIR] [--texture NAME=FILE.png[,...]]...
+              [--colors NAME=H[,S[,L]]]...
 rance-browser --export DIR (--select NAME | --kind KIND | --all) [--game DIR]
 rance-browser --uv-map NAME OUT.png --select MODEL [--game DIR]
 rance-browser --save-texture NAME OUT.png --select MODEL [--game DIR]
 rance-browser --decode FILE.png OUT.rgba     (or --decode-libsys4)
+rance-browser --recolor FILE.png OUT.rgba HUE[,SATURATION[,LIGHTNESS]]
 ```
 
 - A `.aff` or `.swf` path opens that file in the Flash tab.
@@ -144,22 +148,25 @@ rance-browser --decode FILE.png OUT.rgba     (or --decode-libsys4)
   frame, `--fight` a fight background's folder (`bgA_00_douk`) and `--fight-camera` the fight's camera;
   `--walk` and `--bones` draw the walk mesh and the skeleton. `--texture NAME=FILE.png` tries a PNG
   on the model's texture NAME (a texture with frames: a PNG per frame, in order, after the `=`), as
-  often as there are textures to try, and `--view-only` saves the 3D view's frame alone, see-through
-  where nothing is drawn, instead of the window.
+  often as there are textures to try; `--colors NAME=HUE[,SATURATION[,LIGHTNESS]]` puts colours by
+  numbers on it (hue -360 to 360 degrees, saturation and lightness 0 to 4, each 1 when left out; NAME
+  `*` for every colour texture of the model); `--view-only` saves the 3D view's frame alone,
+  see-through where nothing is drawn, instead of the window.
 - `--export` saves a model as a `.glb` file, or a folder of them: `--kind` takes `chara`, `map`, `bg`
   or `etc` (or a list, `chara,map`) and `--all` takes every model, each written as
   `DIR\<Kind>\<folder>.glb`, with `DIR\export.json`: what each file holds and points of each model as
   the game's renderer places them, to check the files against in another program. With one model,
-  `--texture` tries PNGs on it as for `--shot 3d`.
+  `--texture` and `--colors` try PNGs and colours on it as for `--shot 3d`.
 - `--uv-map NAME OUT.png` saves the UV map of the texture NAME of the model `--select` names (a folder
   or `Kind/folder`), and `--save-texture NAME OUT.png` the game's picture (its first frame), without a
   window; each prints the picture's size.
 - `--decode FILE.png OUT.rgba` reads a PNG with RQ MOD's reader and writes its pixels raw (8-bit RGBA,
-  rows from the top), printing `WxH alpha=0|1`; `--decode-libsys4` reads it with libsys4's. For
-  checks.
+  rows from the top), printing `WxH alpha=0|1`; `--decode-libsys4` reads it with libsys4's; `--recolor
+  FILE.png OUT.rgba HUE,SATURATION,LIGHTNESS` reads it with RQ MOD's reader and turns its colours by
+  RQ MOD's rule. For checks.
 - `--scale` sets the size of the text and the layout (1 to 4; by default the screen's scale).
 - The exit code is 0 when it worked, 1 when it did not (a PNG RQ MOD would refuse, with RQ MOD's text
-  on stderr) and 2 for a command line that does not make sense.
+  on stderr, as for colours out of range) and 2 for a command line that does not make sense.
 
 ## How a game is found
 

@@ -263,21 +263,34 @@ bool rb3d_tries_for(const struct rb3d_tries *t, const char *path);
  * RQ MOD's own text in why when RQ MOD would refuse it; the table is then as it was. */
 bool rb3d_tries_png(struct rb3d_tries *t, const char *name, const char *const *files, const char *const *shown, int n,
                     char *why, size_t wn);
-/* Takes away what was tried on name (NULL: on every texture); false when nothing was. */
+/* Puts colours by numbers on the texture name (UTF-8, any ASCII case), as rq.image.texture's
+ * { hue = ..., saturation = ..., lightness = ... } does: the game's own picture, each frame, turned
+ * in HSL by RQ MOD's rule (rq_pixels_recolor), on a colour texture only. name "*" puts them on every
+ * colour texture of the model, as rq.monster.model's textures["*"] does (a texture tried by its name
+ * keeps its own try). False with RQ MOD's own text in why when RQ MOD would refuse them. */
+bool rb3d_tries_colors(struct rb3d_tries *t, const char *name, double hue, double saturation, double lightness,
+                       char *why, size_t wn);
+/* Takes away what was tried on name ("*" for the colours on every colour texture; NULL: every try);
+ * false when nothing was. */
 bool rb3d_tries_untry(struct rb3d_tries *t, const char *name);
 /* What is tried on a texture. */
 struct rb3d_try {
-	const char *name;                /* the texture, UTF-8, as the .POL names it */
+	const char *name;                /* the texture, UTF-8, as the .POL names it, or "*" */
 	const char *shown;               /* as it was given */
-	int nfiles;
+	int nfiles;                      /* 0 for colours */
 	const char *const *files;        /* the PNGs' paths, UTF-8 */
 	const char *const *given;        /* each as it was given */
+	bool colors;                     /* colours by numbers */
+	double hue, saturation, lightness;
 };
 int rb3d_tries_count(const struct rb3d_tries *t);
 /* The i-th try, in the order they were made; false past the last. */
 bool rb3d_tries_get(const struct rb3d_tries *t, int i, struct rb3d_try *out);
-/* The try on name (UTF-8, any ASCII case), or -1. */
+/* The try on name (UTF-8, any ASCII case; "*" for the colours on every colour texture), or -1. */
 int rb3d_tries_find(const struct rb3d_tries *t, const char *name);
+/* Whether the colours tried on "*" reach the texture name: a colour texture the game has, with no try
+ * of its own. */
+bool rb3d_tries_reaches(const struct rb3d_tries *t, const char *name);
 /* The warnings the loads gave: a tried file gone or broken since it was tried is the game's picture,
  * said once per try. The last one's text, or "". */
 int rb3d_tries_warnings(const struct rb3d_tries *t);

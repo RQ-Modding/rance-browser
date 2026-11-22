@@ -1,8 +1,9 @@
-/* A model's textures, PNGs tried on them, and their UV maps, without OpenGL (rb3d.h).
+/* A model's textures, PNGs and colours tried on them, and their UV maps, without OpenGL (rb3d.h).
  *
  * The rows and the checks are RQ MOD's own, from the copy of its rq_textures.c beside this file, and
- * a tried PNG is read by the copy of its reader (../rq_pixels.c): the browser takes the pictures the
- * game takes and refuses the others with the engine's words. While a view loads a model, the copy of
+ * a tried PNG is read, and tried colours turn the game's picture, by the copy of its reader
+ * (../rq_pixels.c): the browser takes the pictures the game takes and refuses the others with the
+ * engine's words. While a view loads a model, the copy of
  * the engine's model.c asks RE_mod_texture (rb3d.c) for each texture, which asks rb3d_tries_answer
  * here by the engine's rule (rq_textures_answer); model.c then draws the answer with the game's
  * alpha kind, as in the game. Each load reads the files again, as the engine does. */
@@ -26,8 +27,8 @@
 #include "rb3d.h"
 #include "rb3d_private.h"
 
-/* The engine's limits (modloader_texture.c): pictures tried in all (a list counts each frame), and
- * a picture file's bytes. */
+/* The engine's limits (modloader_texture.c): pictures tried in all (a list counts each frame, colours
+ * count one, "*" one per colour texture it reaches), and a picture file's bytes. */
 #define TRY_PICTURES_MAX 4096
 #define TRY_FILE_BYTES (256u << 20)
 #define PATH_MAX_ 1024
@@ -110,13 +111,15 @@ int rb3d_texture_frame(const char *name, char *base, size_t n)
 /* ---- the tries ---- */
 
 struct try {
-	char *name;     /* as the .POL names it (Shift-JIS) */
+	char *name;     /* as the .POL names it (Shift-JIS), or "*" */
 	char *norm;     /* the same in the archive's terms */
 	char *name_utf; /* UTF-8 */
 	char *shown;    /* as it was given (UTF-8) */
-	int nfiles;
+	int nfiles;     /* 0 for colours */
 	char **files;   /* UTF-8 paths, one per frame */
 	char **given;   /* each as it was given */
+	bool colors;    /* colours by numbers, on the game's own picture */
+	double hue, saturation, lightness;
 	bool warned;
 };
 
@@ -126,7 +129,6 @@ struct rb3d_tries {
 	struct rq_texture_list *list;   /* NULL: no model there */
 	struct try *t;
 	int n;
-	int pictures;        /* against TRY_PICTURES_MAX */
 	int warnings;
 	char warning[1200];
 };
@@ -199,6 +201,61 @@ int rb3d_tries_find(const struct rb3d_tries *t, const char *name)
 	int i = find_norm(t, s);
 	free(s);
 	return i;
+}
+
+/* The colour textures "*" reaches: each colour row the archive has, with no try of its own. */
+static bool star_reaches(const struct rb3d_tries *t, const struct rq_texture *r)
+{
+	if (!(r->kinds & RQ_TEXTURE_COLOR) || r->missing)
+		return false;
+	char nm[256];
+	snprintf(nm, sizeof nm, "%s", r->name);
+	norm(nm);
+	return find_norm(t, nm) < 0;
+}
+
+/* The pictures tried in all, as the engine counts them against its limit. */
+static int cost(const struct rb3d_tries *t)
+{
+	int c = 0;
+	bool star = false;
+	for (int i = 0; i < t->n; i++) {
+		if (!strcmp(t->t[i].norm, "*"))
+			star = true;
+		else
+			c += t->t[i].colors ? 1 : t->t[i].nfiles;
+	}
+	for (int i = 0; star && t->list && i < t->list->n; i++)
+		if (star_reaches(t, &t->list->rows[i]))
+			c++;
+	return c;
+}
+
+/* Puts e in the table, in the place of the try on its name; false (the table as it was, e freed)
+ * past the engine's limit. */
+static bool put_try(struct rb3d_tries *t, struct try *e, char *why, size_t wn)
+{
+	int k = find_norm(t, e->norm);
+	struct try old;
+	if (k >= 0) {
+		old = t->t[k];
+		t->t[k] = *e;
+	} else {
+		t->t = xrealloc(t->t, (t->n + 1) * sizeof *t->t);
+		t->t[t->n++] = *e;
+	}
+	if (cost(t) > TRY_PICTURES_MAX) {
+		if (k >= 0)
+			t->t[k] = old;
+		else
+			t->n--;
+		free_try(e);
+		say(why, wn, "too many textures (max %d)", TRY_PICTURES_MAX);
+		return false;
+	}
+	if (k >= 0)
+		free_try(&old);
+	return true;
 }
 
 /* The whole file, read as RQ MOD reads a mod's picture, with its limit: NULL with the engine's
@@ -292,36 +349,61 @@ bool rb3d_tries_png(struct rb3d_tries *t, const char *name, const char *const *f
 	}
 	const struct rq_texture *row = rq_textures_find(t->list, sjis);
 	free(sjis);
-	char *nm = xstrdup(row->name);
-	norm(nm);
-	int k = find_norm(t, nm);
-	int old = k >= 0 ? t->t[k].nfiles : 0;
-	if (t->pictures - old + n > TRY_PICTURES_MAX) {
-		free(nm);
-		say(why, wn, "too many textures (max %d)", TRY_PICTURES_MAX);
-		return false;
-	}
-	if (k >= 0) {
-		free_try(&t->t[k]);
-	} else {
-		t->t = xrealloc(t->t, (t->n + 1) * sizeof *t->t);
-		k = t->n++;
-	}
-	struct try *e = &t->t[k];
-	memset(e, 0, sizeof *e);
-	e->name = xstrdup(row->name);
-	e->norm = nm;
-	e->name_utf = sjis2utf(row->name, 0);
-	e->shown = xstrdup(name);
-	e->nfiles = n;
-	e->files = xcalloc(n, sizeof *e->files);
-	e->given = xcalloc(n, sizeof *e->given);
+	struct try e;
+	memset(&e, 0, sizeof e);
+	e.name = xstrdup(row->name);
+	e.norm = xstrdup(row->name);
+	norm(e.norm);
+	e.name_utf = sjis2utf(row->name, 0);
+	e.shown = xstrdup(name);
+	e.nfiles = n;
+	e.files = xcalloc(n, sizeof *e.files);
+	e.given = xcalloc(n, sizeof *e.given);
 	for (int i = 0; i < n; i++) {
-		e->files[i] = xstrdup(files[i]);
-		e->given[i] = xstrdup(shown && shown[i] ? shown[i] : files[i]);
+		e.files[i] = xstrdup(files[i]);
+		e.given[i] = xstrdup(shown && shown[i] ? shown[i] : files[i]);
 	}
-	t->pictures += n - old;
-	return true;
+	return put_try(t, &e, why, wn);
+}
+
+bool rb3d_tries_colors(struct rb3d_tries *t, const char *name, double hue, double saturation, double lightness,
+                       char *why, size_t wn)
+{
+	if (why && wn)
+		why[0] = 0;
+	if (!rq_pixels_colors_ok(hue, saturation, lightness, why, wn))
+		return false;
+	struct try e;
+	memset(&e, 0, sizeof e);
+	if (!strcmp(name, "*")) {
+		/* every colour texture of the model, as rq.monster.model's "*" (a name tried beside it wins) */
+		if (!t->list) {
+			say(why, wn, "no model in '%s' (rq.image.textures lists a model's textures)", t->shown);
+			return false;
+		}
+		e.name = xstrdup("*");
+	} else {
+		char *sjis = utf2sjis(name, 0);
+		char *full = xmalloc(strlen(t->shown) + strlen(name) + 2);
+		sprintf(full, "%s/%s", t->shown, name);
+		bool ok = rq_textures_check(t->list, t->shown, sjis, full, 0, why, wn);
+		free(full);
+		if (!ok) {
+			free(sjis);
+			return false;
+		}
+		e.name = xstrdup(rq_textures_find(t->list, sjis)->name);
+		free(sjis);
+	}
+	e.norm = xstrdup(e.name);
+	norm(e.norm);
+	e.name_utf = sjis2utf(e.name, 0);
+	e.shown = xstrdup(name);
+	e.colors = true;
+	e.hue = hue;
+	e.saturation = saturation;
+	e.lightness = lightness;
+	return put_try(t, &e, why, wn);
 }
 
 bool rb3d_tries_untry(struct rb3d_tries *t, const char *name)
@@ -333,13 +415,11 @@ bool rb3d_tries_untry(struct rb3d_tries *t, const char *name)
 		for (int i = 0; i < t->n; i++)
 			free_try(&t->t[i]);
 		t->n = 0;
-		t->pictures = 0;
 		return any;
 	}
 	int k = rb3d_tries_find(t, name);
 	if (k < 0)
 		return false;
-	t->pictures -= t->t[k].nfiles;
 	free_try(&t->t[k]);
 	memmove(&t->t[k], &t->t[k + 1], (size_t)(t->n - k - 1) * sizeof *t->t);
 	t->n--;
@@ -361,7 +441,21 @@ bool rb3d_tries_get(const struct rb3d_tries *t, int i, struct rb3d_try *out)
 	out->nfiles = e->nfiles;
 	out->files = (const char *const *)e->files;
 	out->given = (const char *const *)e->given;
+	out->colors = e->colors;
+	out->hue = e->hue;
+	out->saturation = e->saturation;
+	out->lightness = e->lightness;
 	return true;
+}
+
+bool rb3d_tries_reaches(const struct rb3d_tries *t, const char *name)
+{
+	if (!t || !t->list || find_norm(t, "*") < 0)
+		return false;
+	char *s = utf2sjis(name, 0);
+	const struct rq_texture *r = rq_textures_find(t->list, s);
+	free(s);
+	return r && star_reaches(t, r);
 }
 
 int rb3d_tries_warnings(const struct rb3d_tries *t)
@@ -374,11 +468,32 @@ const char *rb3d_tries_warning(const struct rb3d_tries *t)
 	return t ? t->warning : "";
 }
 
+/* "*"'s answer for a name: the try when the name, or a frame's base, is a colour texture it
+ * reaches, as the engine's "*" puts one entry on each (with the frame's number), else -1. */
+static int star_for(const struct rb3d_tries *t, const char *nm, int *frame)
+{
+	int s = find_norm(t, "*");
+	if (s < 0 || !t->list)
+		return -1;
+	const struct rq_texture *r = rq_textures_find(t->list, nm);
+	if (r && star_reaches(t, r)) {
+		*frame = 0;
+		return s;
+	}
+	char base[256];
+	int f = rq_textures_frame(nm, base, sizeof base);
+	if (f > 0 && (r = rq_textures_find(t->list, base)) && star_reaches(t, r)) {
+		*frame = f;
+		return s;
+	}
+	return -1;
+}
+
 /* RE_mod_texture's answer, by the engine's rule (its modloader_texture.c): the try on the name, or
- * on the base of a frame's name; rq_textures_answer picks the picture. */
+ * on the base of a frame's name, else "*"; rq_textures_answer picks the picture, or the game's own
+ * picture recoloured. */
 struct cg *rb3d_tries_answer(struct rb3d_tries *t, struct archive_data *game, const char *path, const char *name, int kind)
 {
-	(void)game;
 	char nm[256], base[256], why[300];
 	if (!t || !t->n || !path || !name || !name[0] || strlen(name) >= sizeof nm || !rb3d_tries_for(t, path))
 		return NULL;
@@ -389,11 +504,36 @@ struct cg *rb3d_tries_answer(struct rb3d_tries *t, struct archive_data *game, co
 	if (k < 0 && (frame = rq_textures_frame(nm, base, sizeof base)) > 0)
 		k = find_norm(t, base);
 	if (k < 0)
+		k = star_for(t, nm, &frame);
+	if (k < 0)
 		return NULL;
 	struct try *e = &t->t[k];
-	int pick = rq_textures_answer(frame, kind, false, e->nfiles);
+	int pick = rq_textures_answer(frame, kind, e->colors, e->nfiles);
 	if (pick == RQ_TEXTURES_GAME)
 		return NULL;
+	if (pick == RQ_TEXTURES_COLORS) {
+		/* the game's own picture (a frame's own file for a frame), recoloured */
+		if (!game)
+			return NULL;
+		struct cg *cg = cg_load_data(game);
+		if (cg && (!cg->pixels || cg->metrics.w <= 0 || cg->metrics.h <= 0)) {
+			cg_free(cg);
+			cg = NULL;
+		}
+		if (!cg) {
+			if (!e->warned) {
+				e->warned = true;
+				t->warnings++;
+				char *u = sjis2utf(name, 0);
+				snprintf(t->warning, sizeof t->warning, "texture %s/%s: the game's picture cannot be read; drawn as it is",
+				         t->shown, u);
+				free(u);
+			}
+			return NULL;
+		}
+		rq_pixels_recolor(cg, e->hue, e->saturation, e->lightness);
+		return cg;
+	}
 	size_t size;
 	bool found;
 	uint8_t *data = read_file(e->files[pick], &size, &found, why, sizeof why);

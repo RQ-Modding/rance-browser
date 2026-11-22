@@ -496,6 +496,37 @@ int run_decode(const char *in, const char *out, bool libsys4)
 	return ok ? 0 : 1;
 }
 
+int run_recolor(const char *in, const char *out, double hue, double saturation, double lightness)
+{
+	char why[300] = "";
+	if (!rq_pixels_colors_ok(hue, saturation, lightness, why, sizeof why)) {
+		fprintf(stderr, APP_EXE ": %s\n", why);
+		return 1;
+	}
+	size_t size = 0;
+	uint8_t *data = file_exists(in) && file_size(in) == 0 ? xcalloc(16, 1) : file_read(in, &size);
+	if (!data) {
+		fprintf(stderr, APP_EXE ": %s cannot be read\n", in);
+		return 1;
+	}
+	struct cg *cg = rq_pixels_png(data, size, RQ_PIXELS_TEXTURE_SIDE, why, sizeof why);
+	free(data);
+	if (!cg || !cg->pixels) {
+		fprintf(stderr, APP_EXE ": %s: %s\n", in, why);
+		cg_free(cg);
+		return 1;
+	}
+	rq_pixels_recolor(cg, hue, saturation, lightness);
+	bool ok = save_bytes(out, cg->pixels, (size_t)cg->metrics.w * cg->metrics.h * 4);
+	if (ok)
+		printf("%dx%d alpha=%d\n", cg->metrics.w, cg->metrics.h, cg->metrics.has_alpha ? 1 : 0);
+	else
+		fprintf(stderr, APP_EXE ": could not write %s\n", out);
+	fflush(stdout);
+	cg_free(cg);
+	return ok ? 0 : 1;
+}
+
 int run_check(const char *dir, const char *out_path)
 {
 	failures = cJSON_CreateArray();

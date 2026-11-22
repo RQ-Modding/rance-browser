@@ -15,6 +15,7 @@
  *
  * Exit 0 when every model asked for was written, 1 otherwise, 2 for a command line that does not
  * make sense. */
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,6 +54,41 @@ bool try_arg_parse(const char *arg, struct try_arg *out)
 			break;
 		s = end + 1;
 	}
+	return true;
+}
+
+bool colors_parse(const char *s, double *hue, double *saturation, double *lightness)
+{
+	double v[3] = { 0, 1, 1 };
+	int n = 0;
+	for (;;) {
+		char *end;
+		if (n == 3 || !*s || *s == ',' || isspace((unsigned char)*s))
+			return false;
+		v[n++] = strtod(s, &end);
+		if (end == s)
+			return false;
+		s = end;
+		if (!*s)
+			break;
+		if (*s++ != ',')
+			return false;
+	}
+	*hue = v[0];
+	*saturation = v[1];
+	*lightness = v[2];
+	return true;
+}
+
+bool colors_arg_parse(const char *arg, struct try_arg *out)
+{
+	memset(out, 0, sizeof *out);
+	out->arg = arg;
+	const char *eq = strchr(arg, '=');
+	if (!eq || eq == arg || !colors_parse(eq + 1, &out->hue, &out->saturation, &out->lightness))
+		return false;
+	out->name = dup_n(arg, eq - arg);
+	out->colors = true;
 	return true;
 }
 
@@ -96,7 +132,8 @@ struct rb3d_tries *tries_from_args(const char *path, const struct try_arg *a, in
 {
 	struct rb3d_tries *t = rb3d_tries_new(G.h.red, path);
 	for (int i = 0; i < n; i++) {
-		if (!rb3d_tries_png(t, a[i].name, (const char *const *)a[i].files, NULL, a[i].nfiles, why, wn)) {
+		if (a[i].colors ? !rb3d_tries_colors(t, a[i].name, a[i].hue, a[i].saturation, a[i].lightness, why, wn)
+		                : !rb3d_tries_png(t, a[i].name, (const char *const *)a[i].files, NULL, a[i].nfiles, why, wn)) {
 			rb3d_tries_free(t);
 			return NULL;
 		}
@@ -228,7 +265,7 @@ int run_export(const char *dir, const struct export_args *a)
 		return 2;
 	}
 	if (a->ntries && (!a->select || kinds || a->all)) {
-		fprintf(stderr, APP_EXE ": --texture takes one model (--select NAME), not --kind or --all\n");
+		fprintf(stderr, APP_EXE ": --texture and --colors take one model (--select NAME), not --kind or --all\n");
 		return 2;
 	}
 

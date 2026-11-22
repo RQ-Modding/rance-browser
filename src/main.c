@@ -9,15 +9,16 @@
  *                                            file, print the counts as JSON
  *   rance-browser --shot TAB FILE.png [--select N|NAME] [--grid] [--frame N] [--file PATH]
  *                 [--motion NAME] [--fight BG] [--fight-camera] [--walk] [--bones] [--size WxH] [--scale F]
- *                 [--texture NAME=FILE.png[,...]]... [--view-only]
+ *                 [--texture NAME=FILE.png[,...]]... [--colors NAME=H[,S[,L]]]... [--view-only]
  *                                            draw one tab offscreen and save it (the guides' pictures)
- *   rance-browser --export OUT.glb --select NAME [--texture NAME=FILE.png[,...]]...
+ *   rance-browser --export OUT.glb --select NAME [--texture NAME=FILE.png[,...]]... [--colors ...]...
  *   rance-browser --export DIR (--select NAME | --kind KIND | --all)
  *                                            3D models as glTF files, a folder's with export.json
  *   rance-browser --uv-map NAME OUT.png --select MODEL
  *   rance-browser --save-texture NAME OUT.png --select MODEL
  *                                            a 3D texture's UV map, or the game's picture
  *   rance-browser --decode FILE.png OUT.rgba    RQ MOD's PNG reader on a file (--decode-libsys4: libsys4's)
+ *   rance-browser --recolor FILE.png OUT.rgba H,S,L   the same, then RQ MOD's colours by numbers
  *
  * Exit 0 when it worked, 1 when it did not, 2 for a command line that does not make sense.
  *
@@ -62,13 +63,15 @@ static struct {
 	const char *export_out;    /* --export: a .glb file or a folder */
 	const char *kind;          /* --kind, for --export */
 	bool all;                  /* --all, for --export */
-	struct try_arg tries[64];  /* --texture, for --shot 3d and --export */
+	struct try_arg tries[64];  /* --texture and --colors, for --shot 3d and --export */
 	int ntries;
 	bool view_only;            /* --view-only: --shot 3d saves the 3D view's frame */
 	const char *tex_name, *tex_out;   /* --uv-map or --save-texture NAME OUT.png */
 	bool uv_map;
 	const char *decode_in, *decode_out;   /* --decode or --decode-libsys4 FILE.png OUT.rgba */
 	bool decode_libsys4;
+	bool recolor;                         /* --recolor FILE.png OUT.rgba H,S,L: decode_in, decode_out */
+	double hue, saturation, lightness;
 } A = { .shot_tab = -1, .select = -1, .w = 1440, .h = 860 };
 
 static void usage(void)
@@ -91,17 +94,23 @@ static void usage(void)
 		       "      --walk, --bones: the walk mesh's and the skeleton's lines (3d)\n"
 	       "      --texture NAME=FILE.png[,FILE2.png,...]: a PNG tried on the model's texture NAME as RQ MOD\n"
 	       "      draws it (a texture's frames: a PNG each, in order); repeatable (3d)\n"
+	       "      --colors NAME=HUE[,SATURATION[,LIGHTNESS]]: colours by numbers on the texture NAME as RQ MOD\n"
+	       "      turns them (hue -360 to 360 degrees, saturation and lightness 0 to 4, default 1; NAME *:\n"
+	       "      every colour texture); repeatable (3d)\n"
 	       "      --view-only: the 3D view's frame alone, see-through where nothing is drawn (3d)\n"
 	       "  " APP_EXE " --export OUT.glb --select NAME [--game DIR] [--texture NAME=FILE.png[,...]]...\n"
+	       "            [--colors NAME=H[,S[,L]]]...\n"
 	       "  " APP_EXE " --export DIR (--select NAME | --kind KIND | --all) [--game DIR]\n"
 	       "      a 3D model as a glTF file (NAME as for --shot 3d); to a folder, each as DIR\\Kind\\folder.glb\n"
-	       "      with DIR\\export.json (KIND: chara, map, bg or etc, or a list: chara,map); --texture with\n"
-	       "      one model only\n"
+	       "      with DIR\\export.json (KIND: chara, map, bg or etc, or a list: chara,map); --texture and\n"
+	       "      --colors with one model only\n"
 	       "  " APP_EXE " --uv-map NAME OUT.png --select MODEL [--game DIR]\n"
 	       "  " APP_EXE " --save-texture NAME OUT.png --select MODEL [--game DIR]\n"
 	       "      the UV map of a model's texture NAME at its size, or the game's picture (its first frame)\n"
 	       "  " APP_EXE " --decode FILE.png OUT.rgba    (--decode-libsys4 FILE.png OUT.rgba)\n"
 	       "      a PNG read by RQ MOD's reader (or libsys4's), its RGBA written raw; prints WxH alpha=0|1\n"
+	       "  " APP_EXE " --recolor FILE.png OUT.rgba HUE[,SATURATION[,LIGHTNESS]]\n"
+	       "      the same, then its colours turned by RQ MOD's colours by numbers\n"
 	       "  --scale F: the size of the text and the layout, 1 to 4 (default: the display's scale;\n"
 	       "      1 for --shot)\n"
 	       "  Exit 0 when it worked, 1 when it did not, 2 for a command line that does not make sense.\n");
@@ -220,6 +229,22 @@ static void parse_args(int argc, char **argv)
 				exit(2);
 			}
 			A.ntries++;
+		} else if (!strcmp(a, "--colors") && i + 1 < argc) {
+			if (A.ntries == (int)(sizeof A.tries / sizeof A.tries[0]) || !colors_arg_parse(argv[++i], &A.tries[A.ntries])) {
+				win_attach_console();
+				fprintf(stderr, APP_EXE ": --colors takes NAME=HUE[,SATURATION[,LIGHTNESS]]: %s\n", argv[i]);
+				exit(2);
+			}
+			A.ntries++;
+		} else if (!strcmp(a, "--recolor") && i + 3 < argc) {
+			A.recolor = true;
+			A.decode_in = argv[++i];
+			A.decode_out = argv[++i];
+			if (!colors_parse(argv[++i], &A.hue, &A.saturation, &A.lightness)) {
+				win_attach_console();
+				fprintf(stderr, APP_EXE ": --recolor takes FILE.png OUT.rgba HUE[,SATURATION[,LIGHTNESS]]: %s\n", argv[i]);
+				exit(2);
+			}
 		} else if (!strcmp(a, "--view-only")) {
 			A.view_only = true;
 		} else if ((!strcmp(a, "--uv-map") || !strcmp(a, "--save-texture")) && i + 2 < argc) {
@@ -534,6 +559,8 @@ int main(int argc, char **argv)
 		usage();
 		return 2;
 	}
+	if (A.decode_in && A.recolor)
+		return run_recolor(A.decode_in, A.decode_out, A.hue, A.saturation, A.lightness);
 	if (A.decode_in)
 		return run_decode(A.decode_in, A.decode_out, A.decode_libsys4);
 

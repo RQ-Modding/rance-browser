@@ -41,10 +41,22 @@
 /* a PNG of the mod's, in a list of frames or as a model's own texture */
 #define LUA_TEXTURE_ITEM    "\"textures/%s\""
 /* rq.monster.model(def): a mod's monster's model with textures of its own (the entries:
- * LUA_MODEL_TEXTURE) */
+ * LUA_MODEL_TEXTURE; textures[*]: rq.TextureColors) */
 #define LUA_MONSTER_TEXTURES "rq.monster.model({ id = \"mymod:%s\", base = %d, textures = { %s } })"
-/* an entry of rq.monster.model's textures: a texture's name and its picture (LUA_TEXTURE_ITEM, or a
- * list of them) */
+/* an entry of rq.monster.model's textures: a texture's name and its picture (LUA_TEXTURE_ITEM, a
+ * list of them, or colours: LUA_COLORS) */
 #define LUA_MODEL_TEXTURE   "[\"%s\"] = %s"
+/* rq.image.texture(texture, picture): colours by numbers on one of the game's 3D textures, wherever
+ * a model draws it (the numbers: LUA_COLOR_HUE, LUA_COLOR_SATURATION, LUA_COLOR_LIGHTNESS) */
+#define LUA_TEXTURE_COLORS  "rq.image.texture(\"%s\", { %s })"
+/* rq.TextureColors: colours by numbers as a value of rq.monster.model's textures (the numbers as
+ * for LUA_TEXTURE_COLORS) */
+#define LUA_COLORS          "{ %s }"
+/* rq.TextureColors: the degrees added to each point's hue */
+#define LUA_COLOR_HUE       "hue = %s"
+/* rq.TextureColors: the factor on each point's saturation */
+#define LUA_COLOR_SATURATION "saturation = %s"
+/* rq.TextureColors: the factor on each point's lightness */
+#define LUA_COLOR_LIGHTNESS "lightness = %s"
 
 #endif

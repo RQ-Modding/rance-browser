@@ -48,6 +48,7 @@ bool tab3d_texture_line(const char *raw, char *out, size_t n)
 	(void)n;
 	return false;
 }
+bool tab3d_has_view(void) { return false; }
 const char *tab3d_model_folder(int model) { (void)model; return NULL; }
 struct thumb *tab3d_model_pic(int model, int px) { (void)model; (void)px; return NULL; }
 void tab3d_pics_make(void) { }
@@ -215,19 +216,37 @@ static const struct rb3d_entry *shown_entry(void)
 	return T.entry > 0 ? rb3d_list_entry(&T.l, T.entry) : NULL;
 }
 
-/* A warning the view's tries gave at a load (a tried file gone or broken since it was tried: the
- * game's picture drawn), once: on stderr for a shot, in the status line otherwise. */
-static void tell_warnings(void)
+/* The warnings the view's tries gave since the last told (a tried file gone or broken since it was
+ * tried: the game's picture drawn), each once: on stderr for a shot, else in the status line, after
+ * lead when one is given. True when there was one. */
+static bool tell_warnings_after(const char *lead)
 {
 	struct rb3d_tries *t = T.v ? rb3d_view_tries(T.v) : NULL;
 	int n = rb3d_tries_warnings(t);
-	if (n > T.warnings_seen) {
-		if (T.shot)
-			fprintf(stderr, APP_EXE ": warning: %s\n", rb3d_tries_warning(t));
-		else
-			ui_status("%s", rb3d_tries_warning(t));
+	bool any = n > T.warnings_seen;
+	if (any) {
+		char text[4096];
+		size_t len = 0;
+		text[0] = 0;
+		if (lead && lead[0])
+			len = (size_t)snprintf(text, sizeof text, "%s; ", lead);
+		for (int i = T.warnings_seen; i < n; i++) {
+			if (T.shot)
+				fprintf(stderr, APP_EXE ": warning: %s\n", rb3d_tries_warning(t, i));
+			else if (len < sizeof text)
+				len += (size_t)snprintf(text + len, sizeof text - len, "%s%s", i > T.warnings_seen ? " · " : "",
+				                        rb3d_tries_warning(t, i));
+		}
+		if (!T.shot)
+			ui_status("%s", text);
 	}
 	T.warnings_seen = n;
+	return any;
+}
+
+static void tell_warnings(void)
+{
+	tell_warnings_after(NULL);
 }
 
 /* ---- the model's entries, motions and textures (from the list, no GL) ---- */
@@ -1044,10 +1063,14 @@ static void export_model(const struct rb3d_model *m)
 	snprintf(name, sizeof name, "%s.glb", m->folder);
 	if (!win_pick_save("Export the model as glTF", name, "glb", path, sizeof path))
 		return;
+	char said[2300];
 	if (rb3d_export_glb(T.v, &T.l, m, path, APP_NAME " " BROWSER_VERSION, NULL, err, sizeof err))
-		ui_status("Exported %s", path);
+		snprintf(said, sizeof said, "Exported %s", path);
 	else
-		ui_status("Could not export %s: %s", m->folder, err);
+		snprintf(said, sizeof said, "Could not export %s: %s", m->folder, err);
+	/* the export reads each tried file again: one gone or broken since is the game's picture, said */
+	if (!tell_warnings_after(said))
+		ui_status("%s", said);
 }
 
 /* A model's folder as a mod's id part: gokiburi. */
@@ -1135,6 +1158,31 @@ static void try_pictures(const struct rb3d_try *y, bool list, char *out, size_t 
 		snprintf(out + len, n - len, " }");
 }
 
+/* A file's name two tried PNGs share while their folders differ (Windows' names: any ASCII case),
+ * or NULL. */
+static const char *same_leaf(const struct rb3d_tries *t)
+{
+	int n = rb3d_tries_count(t);
+	for (int i = 0; i < n; i++) {
+		struct rb3d_try a;
+		if (!rb3d_tries_get(t, i, &a))
+			continue;
+		for (int fa = 0; fa < a.nfiles; fa++) {
+			for (int j = i; j < n; j++) {
+				struct rb3d_try b;
+				if (!rb3d_tries_get(t, j, &b))
+					continue;
+				for (int fb = j == i ? fa + 1 : 0; fb < b.nfiles; fb++) {
+					if (!strcasecmp(leaf_of(a.files[fa]), leaf_of(b.files[fb])) &&
+					    strcasecmp(a.files[fa], b.files[fb]))
+						return leaf_of(a.files[fa]);
+				}
+			}
+		}
+	}
+	return NULL;
+}
+
 /* The tries' Lua lines: every use of each texture, and for a monster's folder its own model. */
 static void try_lines(const struct rb3d_model *m, const struct rb3d_entry *e)
 {
@@ -1209,6 +1257,12 @@ static void try_lines(const struct rb3d_model *m, const struct rb3d_entry *e)
 		snprintf(line, sizeof line, LUA_MONSTER_TEXTURES, id, 100000 + e->no, entries);
 		ui_lua_line("try-model", line);
 	}
+	/* the lines name each PNG by its file's name alone: two files of one name from two folders would
+	 * be one file in the mod's textures folder */
+	const char *same = same_leaf(t);
+	if (same)
+		red_text("Two tried PNGs from different folders are both named %s: give one another name in your mod's "
+		         "textures folder, and in its line.", same);
 }
 
 static void lua_lines(const struct rb3d_model *m)
@@ -1944,6 +1998,11 @@ static struct {
 	struct rb3d_textures rows;
 	bool ok;
 } TL;
+
+bool tab3d_has_view(void)
+{
+	return true;
+}
 
 bool tab3d_texture_line(const char *raw, char *out, size_t n)
 {

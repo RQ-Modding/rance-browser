@@ -479,7 +479,7 @@ static void details(struct plist *p)
 		snprintf(line, sizeof line, LUA_CG_REPLACE, c->no, c->no);
 		ui_lua_line("cg", line);
 		note("Put your PNG at that path in your mod's folder. The Pictures guide on RQ MOD's docs site explains the fit and moving pictures.");
-	} else if (p->kind == PK_TEX && G.rq) {
+	} else if (p->kind == PK_TEX && G.rq && tab3d_has_view()) {
 		char line[2048];
 		if (tab3d_texture_line(entry(p, p->sel)->raw, line, sizeof line)) {
 			igSeparatorText("Change it from a mod");

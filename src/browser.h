@@ -162,6 +162,8 @@ bool tab3d_save_view(const char *path, char *err, size_t n);
  * Shift-JIS), when a model draws it; false (out empty) when no model's .POL names it, or without the
  * 3D view. */
 bool tab3d_texture_line(const char *raw, char *out, size_t n);
+/* Whether this build has the 3D view (the meson option 3d), so tab3d_texture_line can answer. */
+bool tab3d_has_view(void);
 /* For the Names tab, a model by its number (rq.Chara's model: 100000 plus its MonsterInfo entry):
  * its folder ("gokiburi"), or NULL when no folder of Chara or Etc draws it (or no 3D view). */
 const char *tab3d_model_folder(int model);

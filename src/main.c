@@ -93,10 +93,10 @@ static void usage(void)
 	       "      --fight BG: a monster on a fight background (a BG folder), --fight-camera: the game's camera;\n"
 		       "      --walk, --bones: the walk mesh's and the skeleton's lines (3d)\n"
 	       "      --texture NAME=FILE.png[,FILE2.png,...]: a PNG tried on the model's texture NAME as RQ MOD\n"
-	       "      draws it (a texture's frames: a PNG each, in order); repeatable (3d)\n"
+	       "      draws it (a texture's frames: a PNG each, in order); repeatable, 64 in all (3d)\n"
 	       "      --colors NAME=HUE[,SATURATION[,LIGHTNESS]]: colours by numbers on the texture NAME as RQ MOD\n"
 	       "      turns them (hue -360 to 360 degrees, saturation and lightness 0 to 4, default 1; NAME *:\n"
-	       "      every colour texture); repeatable (3d)\n"
+	       "      every colour texture); repeatable, 64 in all with --texture (3d)\n"
 	       "      --view-only: the 3D view's frame alone, see-through where nothing is drawn (3d)\n"
 	       "  " APP_EXE " --export OUT.glb --select NAME [--game DIR] [--texture NAME=FILE.png[,...]]...\n"
 	       "            [--colors NAME=H[,S[,L]]]...\n"
@@ -222,15 +222,21 @@ static void parse_args(int argc, char **argv)
 			A.kind = argv[++i];
 		} else if (!strcmp(a, "--all")) {
 			A.all = true;
+		} else if ((!strcmp(a, "--texture") || !strcmp(a, "--colors")) && i + 1 < argc &&
+		           A.ntries == (int)(sizeof A.tries / sizeof A.tries[0])) {
+			win_attach_console();
+			fprintf(stderr, APP_EXE ": at most %d --texture and --colors: %s %s\n",
+			        (int)(sizeof A.tries / sizeof A.tries[0]), a, argv[i + 1]);
+			exit(2);
 		} else if (!strcmp(a, "--texture") && i + 1 < argc) {
-			if (A.ntries == (int)(sizeof A.tries / sizeof A.tries[0]) || !try_arg_parse(argv[++i], &A.tries[A.ntries])) {
+			if (!try_arg_parse(argv[++i], &A.tries[A.ntries])) {
 				win_attach_console();
 				fprintf(stderr, APP_EXE ": --texture takes NAME=FILE.png[,FILE2.png,...]: %s\n", argv[i]);
 				exit(2);
 			}
 			A.ntries++;
 		} else if (!strcmp(a, "--colors") && i + 1 < argc) {
-			if (A.ntries == (int)(sizeof A.tries / sizeof A.tries[0]) || !colors_arg_parse(argv[++i], &A.tries[A.ntries])) {
+			if (!colors_arg_parse(argv[++i], &A.tries[A.ntries])) {
 				win_attach_console();
 				fprintf(stderr, APP_EXE ": --colors takes NAME=HUE[,SATURATION[,LIGHTNESS]]: %s\n", argv[i]);
 				exit(2);

@@ -148,7 +148,7 @@ rance-browser --recolor FILE.png OUT.rgba HUE[,SATURATION[,LIGHTNESS]]
   frame, `--fight` a fight background's folder (`bgA_00_douk`) and `--fight-camera` the fight's camera;
   `--walk` and `--bones` draw the walk mesh and the skeleton. `--texture NAME=FILE.png` tries a PNG
   on the model's texture NAME (a texture with frames: a PNG per frame, in order, after the `=`), as
-  often as there are textures to try; `--colors NAME=HUE[,SATURATION[,LIGHTNESS]]` puts colours by
+  often as there are textures to try (64 `--texture` and `--colors` in all); `--colors NAME=HUE[,SATURATION[,LIGHTNESS]]` puts colours by
   numbers on it (hue -360 to 360 degrees, saturation and lightness 0 to 4, each 1 when left out; NAME
   `*` for every colour texture of the model); `--view-only` saves the 3D view's frame alone,
   see-through where nothing is drawn, instead of the window.

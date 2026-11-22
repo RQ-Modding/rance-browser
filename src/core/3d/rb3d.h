@@ -292,9 +292,9 @@ int rb3d_tries_find(const struct rb3d_tries *t, const char *name);
  * of its own. */
 bool rb3d_tries_reaches(const struct rb3d_tries *t, const char *name);
 /* The warnings the loads gave: a tried file gone or broken since it was tried is the game's picture,
- * said once per try. The last one's text, or "". */
+ * said once per try. How many, and the text of the i-th (from 0, in the order given), or "". */
 int rb3d_tries_warnings(const struct rb3d_tries *t);
-const char *rb3d_tries_warning(const struct rb3d_tries *t);
+const char *rb3d_tries_warning(const struct rb3d_tries *t, int i);
 
 /* The view's tries, for its next rb3d_view_load of the model they are for (and the export of it),
  * in the place of the ones it had (freed); NULL takes them away. The view frees them. A fight

@@ -141,14 +141,15 @@ struct rb3d_tries *tries_from_args(const char *path, const struct try_arg *a, in
 	return t;
 }
 
-/* A warning the load gave (a tried file gone or broken since it was checked), on stderr once. */
+/* The warnings the load gave (a tried file gone or broken since it was checked), each on stderr once. */
 static void tell_warnings(struct rb3d_view *v, int *seen)
 {
 	struct rb3d_tries *t = rb3d_view_tries(v);
-	if (rb3d_tries_warnings(t) > *seen) {
-		fprintf(stderr, APP_EXE ": warning: %s\n", rb3d_tries_warning(t));
-		*seen = rb3d_tries_warnings(t);
-	}
+	int n = rb3d_tries_warnings(t);
+	for (int i = *seen; i < n; i++)
+		fprintf(stderr, APP_EXE ": warning: %s\n", rb3d_tries_warning(t, i));
+	if (n > *seen)
+		*seen = n;
 }
 
 static bool ends_with(const char *s, const char *end)

@@ -25,25 +25,27 @@ map.
   before frame10), the order shown under it. A file RQ MOD would refuse is refused under its row with
   RQ MOD's own words (not a PNG, too large, cut off, a frame's name, a count other than the game's).
   **The game's** takes the try away; another model starts with none. A file gone or broken at a later
-  load draws the game's picture, said once in the status line, as the engine does.
+  load, or when the model is exported, draws the game's picture, each file said once in the status
+  line (several at once on one line), as the engine logs each. Two tried PNGs of one name from two
+  folders, which the lines would name as one file, are pointed out under the lines.
 - **Colours...** on a colour texture opens three sliders, hue (-360 to 360 degrees), saturation and
   lightness (factors, 0 to 4), and loads the model again when one is let go: the game's own picture,
   each frame, turned in HSL by RQ MOD's own rule, as `rq.image.texture`'s `{ hue = ... }` does (grey,
   white and black stay grey). **Every colour texture: Colours...**, above the rows, puts the same
   numbers on each colour texture of the model, as `rq.monster.model`'s `textures["*"]`; a texture
-  tried by its name keeps its own try. Colours on another kind of texture are refused, as RQ MOD
-  refuses them.
+  tried by its name keeps its own try. Colours on another kind of texture, and `*` on a model with
+  no colour texture or given a PNG, are refused, as RQ MOD refuses them.
 - **The Lua lines** follow the tries: `rq.image.texture` for every model that draws each texture (its
   frames as a list, colours as `{ hue = 200, saturation = 1.5 }`, the numbers not at their defaults),
   and for a monster's folder `rq.monster.model` with `textures`, a model of the mod's own (colours on
   every colour texture as `["*"] = { ... }`, which `rq.image.texture` does not take: there, a line per
   texture); each PNG named in the mod's `textures` folder. The 3D textures tab shows the
   `rq.image.texture` line of a picture a model draws (a frame's as the list on its base), and says so
-  of a picture no model draws by its name.
+  of a picture no model draws by its name (a build without the 3D view says neither).
 - **The export** writes a tried PNG or tried colours as the engine draws them, each frame its own
   picture, and the game's alpha maps as before.
 - **On the command line:** `--texture NAME=FILE.png[,FILE2.png,...]` and `--colors
-  NAME=HUE[,SATURATION[,LIGHTNESS]]` (`*` as NAME: every colour texture), each repeatable, with
+  NAME=HUE[,SATURATION[,LIGHTNESS]]` (`*` as NAME: every colour texture), 64 of them in all, with
   `--shot 3d` and with `--export` of one model, checked before any window opens (a refusal exits 1
   with RQ MOD's text); `--view-only`, for `--shot 3d` to save the 3D view's frame alone; `--uv-map
   NAME OUT.png` and `--save-texture NAME OUT.png` with `--select MODEL`, without a window; `--decode

@@ -340,7 +340,7 @@ static cJSON *check_gone_file(const struct rb3d_list *l)
 				warnings = rb3d_tries_warnings(t);
 				again = load_and_draw(v, path, &w, &h, why, sizeof why);
 				after = rb3d_tries_warnings(t);
-				cJSON_AddStringToObject(o, "warning", rb3d_tries_warning(t));
+				cJSON_AddStringToObject(o, "warning", rb3d_tries_warning(t, rb3d_tries_warnings(t) - 1));
 			}
 		} else {
 			rb3d_tries_free(t);

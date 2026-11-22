@@ -130,7 +130,7 @@ struct rb3d_tries {
 	struct try *t;
 	int n;
 	int warnings;
-	char warning[1200];
+	char **warning;      /* each warning's text, in the order given */
 };
 
 struct rb3d_tries *rb3d_tries_new(struct aar_archive *red, const char *path)
@@ -166,6 +166,9 @@ void rb3d_tries_free(struct rb3d_tries *t)
 	for (int i = 0; i < t->n; i++)
 		free_try(&t->t[i]);
 	free(t->t);
+	for (int i = 0; i < t->warnings; i++)
+		free(t->warning[i]);
+	free(t->warning);
 	rq_textures_free(t->list);
 	free(t->path);
 	free(t->shown);
@@ -326,6 +329,10 @@ bool rb3d_tries_png(struct rb3d_tries *t, const char *name, const char *const *f
 {
 	if (why && wn)
 		why[0] = 0;
+	if (!strcmp(name, "*")) {
+		say(why, wn, "'*' takes colors");
+		return false;
+	}
 	if (n < 1 || !files) {
 		say(why, wn, "texture '%s': give a PNG, a list of PNGs or colors", name);
 		return false;
@@ -379,6 +386,15 @@ bool rb3d_tries_colors(struct rb3d_tries *t, const char *name, double hue, doubl
 		/* every colour texture of the model, as rq.monster.model's "*" (a name tried beside it wins) */
 		if (!t->list) {
 			say(why, wn, "no model in '%s' (rq.image.textures lists a model's textures)", t->shown);
+			return false;
+		}
+		/* as the engine's rq.monster.model: "*" with no colour texture the archive has changes nothing */
+		int colors = 0;
+		for (int i = 0; i < t->list->n; i++)
+			if ((t->list->rows[i].kinds & RQ_TEXTURE_COLOR) && !t->list->rows[i].missing)
+				colors++;
+		if (!colors) {
+			say(why, wn, "'*': the model in '%s' has no colour texture", t->shown);
 			return false;
 		}
 		e.name = xstrdup("*");
@@ -463,9 +479,21 @@ int rb3d_tries_warnings(const struct rb3d_tries *t)
 	return t ? t->warnings : 0;
 }
 
-const char *rb3d_tries_warning(const struct rb3d_tries *t)
+const char *rb3d_tries_warning(const struct rb3d_tries *t, int i)
 {
-	return t ? t->warning : "";
+	return t && i >= 0 && i < t->warnings ? t->warning[i] : "";
+}
+
+/* A warning of a try, kept with the others (each try warns once). */
+static void add_warning(struct rb3d_tries *t, const char *fmt, ...)
+{
+	char text[1200];
+	va_list ap;
+	va_start(ap, fmt);
+	vsnprintf(text, sizeof text, fmt, ap);
+	va_end(ap);
+	t->warning = xrealloc(t->warning, (t->warnings + 1) * sizeof *t->warning);
+	t->warning[t->warnings++] = xstrdup(text);
 }
 
 /* "*"'s answer for a name: the try when the name, or a frame's base, is a colour texture it
@@ -523,10 +551,8 @@ struct cg *rb3d_tries_answer(struct rb3d_tries *t, struct archive_data *game, co
 		if (!cg) {
 			if (!e->warned) {
 				e->warned = true;
-				t->warnings++;
 				char *u = sjis2utf(name, 0);
-				snprintf(t->warning, sizeof t->warning, "texture %s/%s: the game's picture cannot be read; drawn as it is",
-				         t->shown, u);
+				add_warning(t, "texture %s/%s: the game's picture cannot be read; drawn as it is", t->shown, u);
 				free(u);
 			}
 			return NULL;
@@ -542,9 +568,8 @@ struct cg *rb3d_tries_answer(struct rb3d_tries *t, struct archive_data *game, co
 	if (!cg) {
 		if (!e->warned) {
 			e->warned = true;
-			t->warnings++;
-			snprintf(t->warning, sizeof t->warning, "texture %s/%s: %s cannot be read now (%s); the game's picture is drawn",
-			         t->shown, e->name_utf, e->given[pick], why);
+			add_warning(t, "texture %s/%s: %s cannot be read now (%s); the game's picture is drawn", t->shown,
+			            e->name_utf, e->given[pick], why);
 		}
 		return NULL;
 	}

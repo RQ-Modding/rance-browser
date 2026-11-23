@@ -79,6 +79,9 @@ struct material {
 	GLuint light_map;
 	GLuint normal_map;
 	GLuint blend_texture;
+	// The plugin's Texture Filtering mode its textures were last set to, plus one; 0 as loaded
+	// (trilinear, the bilinear mode's look).
+	int filter_mode;
 	float specular_strength;
 	float specular_shininess;
 	float shadow_darkness;

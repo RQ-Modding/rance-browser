@@ -96,6 +96,15 @@ enum RE_draw_options {
 	RE_DRAW_OPTION_MAX
 };
 
+// Config's 3D tab, Texture Filtering (RE_plugin.texture_filter_mode).
+enum RE_texture_filter {
+	RE_TEXTURE_FILTER_POINT = 0,
+	RE_TEXTURE_FILTER_BILINEAR = 1,
+	RE_TEXTURE_FILTER_ANISOTROPIC_4X = 2,
+	RE_TEXTURE_FILTER_ANISOTROPIC_8X = 3,
+	RE_TEXTURE_FILTER_ANISOTROPIC_16X = 4,
+};
+
 struct RE_options {
 	int anti_aliasing;
 	int wait_vsync;

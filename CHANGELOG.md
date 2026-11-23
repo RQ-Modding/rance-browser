@@ -29,8 +29,10 @@ found in its sound archive with each track's loop, and voices have a tab of thei
 - **On the command line:** `--shot voices`; `--check` reads the first, middle and last voice of each
   folder, and its report gains `voices`.
 - **The copy of RQ MOD's 3D renderer** follows RQ MOD 2.65.3, which draws the 3D with the game's
-  anti-aliasing when the game's 3D setting asks for it. The browser's views keep it off, so nothing
-  they draw changes.
+  anti-aliasing when the game's 3D setting asks for it, and 2.66.1, which filters the models'
+  textures as the game's Texture Filtering asks (point sampling, bilinear, or anisotropic 4X, 8X or
+  16X). The browser's views keep anti-aliasing off and the textures bilinear, so nothing they draw
+  changes.
 
 ## 1.3.0 (2026-11-22)
 

@@ -444,6 +444,69 @@ static bool is_nolighting(struct RE_plugin *plugin, struct mesh *mesh)
 	return lighting_disabled(plugin) || (mesh->flags & MESH_NOLIGHTING);
 }
 
+#ifndef GL_TEXTURE_MAX_ANISOTROPY_EXT
+#define GL_TEXTURE_MAX_ANISOTROPY_EXT 0x84FE
+#endif
+#ifndef GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT
+#define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
+#endif
+
+// The most anisotropy the driver allows; 0 when it has none (GL_EXT_texture_filter_anisotropic,
+// core since GL 4.6, in every desktop driver).
+static float max_anisotropy(void)
+{
+	static float max = -1.f;
+	if (max < 0.f) {
+		while (glGetError() != GL_NO_ERROR)
+			;
+		GLfloat v = 0.f;
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &v);
+		max = glGetError() == GL_NO_ERROR && v >= 1.f ? v : 0.f;
+	}
+	return max;
+}
+
+static void set_texture_filter(GLuint texture, int mode)
+{
+	if (!texture)
+		return;
+	static const float anisotropy[] = { 1.f, 1.f, 4.f, 8.f, 16.f };
+	glBindTexture(GL_TEXTURE_2D, texture);
+	bool point = mode == RE_TEXTURE_FILTER_POINT;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, point ? GL_NEAREST : GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, point ? GL_NEAREST_MIPMAP_NEAREST : GL_LINEAR_MIPMAP_LINEAR);
+	float max = max_anisotropy();
+	if (max >= 1.f)
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+				anisotropy[mode] < max ? anisotropy[mode] : max);
+}
+
+// The game's Texture Filtering (Config's 3D tab) on a material's textures: point sampling, bilinear
+// (drawn trilinear, as the engine always drew), or anisotropic 4X, 8X or 16X, which keeps a surface
+// seen at a slant, as a floor, sharp into the distance. Set again only when the mode changes.
+static void apply_texture_filter(struct material *material, int mode)
+{
+	if (mode < RE_TEXTURE_FILTER_POINT || mode > RE_TEXTURE_FILTER_ANISOTROPIC_16X)
+		mode = RE_TEXTURE_FILTER_BILINEAR;
+	if (material->filter_mode == mode + 1)
+		return;
+	if (material->filter_mode == 0 && mode == RE_TEXTURE_FILTER_BILINEAR) {
+		material->filter_mode = mode + 1;  // as loaded
+		return;
+	}
+	material->filter_mode = mode + 1;
+	GLint bound = 0;
+	glGetIntegerv(GL_TEXTURE_BINDING_2D, &bound);
+	for (int i = 0; i < material->nr_color_maps; i++)
+		set_texture_filter(material->color_maps[i], mode);
+	set_texture_filter(material->specular_map, mode);
+	set_texture_filter(material->alpha_map, mode);
+	set_texture_filter(material->light_map, mode);
+	set_texture_filter(material->normal_map, mode);
+	set_texture_filter(material->blend_texture, mode);
+	glBindTexture(GL_TEXTURE_2D, (GLuint)bound);
+}
+
 static void render_model(struct RE_instance *inst, struct RE_renderer *r, enum draw_phase phase)
 {
 	struct model *model = inst->model;
@@ -483,6 +546,7 @@ static void render_model(struct RE_instance *inst, struct RE_renderer *r, enum d
 		if (mesh->hidden)
 			continue;
 		struct material *material = &model->materials[mesh->material];
+		apply_texture_filter(material, inst->plugin->texture_filter_mode);
 
 		const struct mpr_track_set *mt = mpr ? mpr->mesh_tracks[i] : NULL;
 		struct mpr_modulation mesh_mod;

@@ -275,6 +275,8 @@ struct RE_plugin *RE_plugin_new(enum RE_plugin_version version)
 	if (version == RE_TAPIR_PLUGIN)
 		plugin->draw_options[RE_DRAW_OPTION_EDGE] = 1;
 	plugin->draw_options[RE_DRAW_OPTION_LIGHTING] = 1;
+	// Bilinear until the game sets its own (Config's 3D tab), as the textures are made.
+	plugin->texture_filter_mode = RE_TEXTURE_FILTER_BILINEAR;
 	plugin->edge_length = 0.02f;
 	plugin->fog_type = RE_FOG_NONE;
 	plugin->fog_near = 1.0f;

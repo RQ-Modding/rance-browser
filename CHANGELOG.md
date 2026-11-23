@@ -2,7 +2,7 @@
 
 Each version, newest first. A version in RQ MOD's package is named in RQ MOD's own CHANGELOG.
 
-## 1.4.0 (not released)
+## 1.4.0 (2026-11-23)
 
 Four more games with profiles: Sengoku Rance, Rance 01, Rance 02 and Rance 03, each with English
 labels for its CG groups. The newer games' archives are read by their folders, Rance 03's music is

@@ -436,6 +436,10 @@ void RE_renderer_free(struct RE_renderer *r)
 {
 	glDeleteProgram(r->program);
 	glDeleteRenderbuffers(1, &r->depth_buffer);
+	if (r->hires.depth)
+		glDeleteRenderbuffers(1, &r->hires.depth);
+	if (r->hires.read_fbo)
+		glDeleteFramebuffers(1, &r->hires.read_fbo);
 	free_msaa(r);
 	ht_foreach_value(r->billboard_textures_by_no, free_billboard_texture);
 	ht_free_int(r->billboard_textures_by_no);
@@ -1359,13 +1363,56 @@ static void render_outlines(struct RE_plugin *plugin, mat4 view_transform)
 	glUseProgram(plugin->renderer->program);
 }
 
-static void render_back_cg(struct texture *dst, struct RE_back_cg *bcg, struct RE_renderer *r)
+// scale: the target's pixels over the sprite's (above 1 at the window's size, RQ MOD 2.67.0).
+static void render_back_cg(struct texture *dst, struct RE_back_cg *bcg, struct RE_renderer *r, float scale)
 {
 	if (!bcg->show || !bcg->texture.handle)
 		return;
 	int sw = bcg->texture.w;
 	int sh = bcg->texture.h;
-	gfx_copy_stretch_blend_amap_alpha(dst, bcg->x, bcg->y, sw * bcg->mag, sh * bcg->mag, &bcg->texture, 0, 0, sw, sh, bcg->blend_rate * 255);
+	if (scale == 1.f) {
+		gfx_copy_stretch_blend_amap_alpha(dst, bcg->x, bcg->y, sw * bcg->mag, sh * bcg->mag, &bcg->texture, 0, 0, sw, sh, bcg->blend_rate * 255);
+		return;
+	}
+	gfx_copy_stretch_blend_amap_alpha(dst, (int)lroundf(bcg->x * scale), (int)lroundf(bcg->y * scale),
+		(int)lroundf(sw * bcg->mag * scale), (int)lroundf(sh * bcg->mag * scale),
+		&bcg->texture, 0, 0, sw, sh, bcg->blend_rate * 255);
+}
+
+// The depth buffer for drawing at the window's size, at w by h (RQ MOD 2.67.0).
+static bool hires_depth(struct RE_renderer *r, int w, int h)
+{
+	if (r->hires.depth && r->hires.w == w && r->hires.h == h)
+		return true;
+	while (glGetError() != GL_NO_ERROR)
+		;
+	if (!r->hires.depth)
+		glGenRenderbuffers(1, &r->hires.depth);
+	glBindRenderbuffer(GL_RENDERBUFFER, r->hires.depth);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	if (glGetError() != GL_NO_ERROR) {
+		r->hires.w = r->hires.h = 0;
+		return false;
+	}
+	r->hires.w = w;
+	r->hires.h = h;
+	return true;
+}
+
+// The picture drawn at the window's size, scaled down into the sprite's own (RQ MOD 2.67.0), so
+// what reads the sprite or the game's picture sees it as before.
+static void copy_down(struct RE_renderer *r, struct texture *src, struct texture *dst)
+{
+	if (!r->hires.read_fbo)
+		glGenFramebuffers(1, &r->hires.read_fbo);
+	GLuint fbo = gfx_set_framebuffer(GL_DRAW_FRAMEBUFFER, dst, 0, 0, dst->w, dst->h);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, r->hires.read_fbo);
+	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, src->handle, 0);
+	glBlitFramebuffer(0, 0, src->w, src->h, 0, 0, dst->w, dst->h, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+	gfx_reset_framebuffer(GL_READ_FRAMEBUFFER, fbo);
+	gfx_reset_framebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 }
 
 static void setup_light_scattering(struct RE_plugin *plugin)
@@ -1575,6 +1622,17 @@ void RE_render(struct sact_sprite *sp)
 
 	sprite_dirty(sp);
 	struct texture *texture = sprite_get_texture(sp);
+	// RQ MOD (2.67.0): with a window larger than the game, the 3D is drawn at the window's size
+	// into gfx's picture for it, then copied down into the sprite.
+	struct texture *target = texture;
+	float scale = gfx_sharp_3d_scale();
+	if (scale > 1.f && texture->w > 0 && texture->h > 0) {
+		struct texture *t = gfx_sharp_3d_target((int)lroundf(texture->w * scale),
+			(int)lroundf(texture->h * scale));
+		if (t && hires_depth(r, t->w, t->h))
+			target = t;
+	}
+	float back_scale = target == texture ? 1.f : (float)target->w / texture->w;
 
 	mat4 shadow_transform;
 	if (plugin->shadow_mode)
@@ -1582,11 +1640,12 @@ void RE_render(struct sact_sprite *sp)
 	else
 		glm_mat4_identity(shadow_transform);
 
-	GLuint fbo = gfx_set_framebuffer(GL_DRAW_FRAMEBUFFER, texture, 0, 0, texture->w, texture->h);
-	bool msaa = prepare_msaa(r, msaa_samples_wanted(), texture->w, texture->h);
+	GLuint fbo = gfx_set_framebuffer(GL_DRAW_FRAMEBUFFER, target, 0, 0, target->w, target->h);
+	bool msaa = prepare_msaa(r, msaa_samples_wanted(), target->w, target->h);
 	r->msaa.on = msaa;
 	if (!msaa) {
-		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, r->depth_buffer);
+		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER,
+			target == texture ? r->depth_buffer : r->hires.depth);
 		if (glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			ERROR("Incomplete framebuffer");
 	}
@@ -1597,7 +1656,7 @@ void RE_render(struct sact_sprite *sp)
 	// Draw background CGs.
 	glDisable(GL_DEPTH_TEST);
 	for (int i = 0; i < RE_NR_BACK_CGS; i++)
-		render_back_cg(texture, &plugin->back_cg[i], r);
+		render_back_cg(target, &plugin->back_cg[i], r, back_scale);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 
 	// With anti-aliasing the background CGs are copied into every sample of the multisampled
@@ -1608,7 +1667,7 @@ void RE_render(struct sact_sprite *sp)
 				;
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, r->msaa.fbo);
-		glBlitFramebuffer(0, 0, texture->w, texture->h, 0, 0, texture->w, texture->h,
+		glBlitFramebuffer(0, 0, target->w, target->h, 0, 0, target->w, target->h,
 				GL_COLOR_BUFFER_BIT, GL_NEAREST);
 		glClear(GL_DEPTH_BUFFER_BIT);
 	}
@@ -1688,7 +1747,7 @@ void RE_render(struct sact_sprite *sp)
 		// Each pixel's samples averaged into the sprite's texture.
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, r->msaa.fbo);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-		glBlitFramebuffer(0, 0, texture->w, texture->h, 0, 0, texture->w, texture->h,
+		glBlitFramebuffer(0, 0, target->w, target->h, 0, 0, target->w, target->h,
 				GL_COLOR_BUFFER_BIT, GL_NEAREST);
 		gfx_reset_framebuffer(GL_READ_FRAMEBUFFER, fbo);
 		if (!r->msaa.checked) {
@@ -1705,6 +1764,10 @@ void RE_render(struct sact_sprite *sp)
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
 	}
 	gfx_reset_framebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	if (target != texture) {
+		copy_down(r, target, texture);
+		gfx_sharp_3d_drawn(sp);
+	}
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	rq_prof_end(RQ_PROF_TAPIR);
 }

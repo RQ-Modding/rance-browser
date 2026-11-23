@@ -186,6 +186,25 @@ void gfx_reset_framebuffer(GLenum target, GLuint fbo)
 	glViewport(saved_vp[0], saved_vp[1], saved_vp[2], saved_vp[3]);
 }
 
+/* The engine's 3D at the window's size (RQ MOD 2.67.0) is the game window's: the browser's views
+ * are drawn at their own size, so the renderer never asks for another picture. */
+float gfx_sharp_3d_scale(void)
+{
+	return 1.f;
+}
+
+struct texture *gfx_sharp_3d_target(int w, int h)
+{
+	(void)w;
+	(void)h;
+	return NULL;
+}
+
+void gfx_sharp_3d_drawn(void *key)
+{
+	(void)key;
+}
+
 void gfx_init_texture_with_cg(struct texture *t, struct cg *cg)
 {
 	GLint prev = 0;

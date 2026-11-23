@@ -161,6 +161,12 @@ struct RE_renderer {
 		bool checked;        // the first frame's copies checked for a GL error
 		bool on;             // the frame being drawn goes into it
 	} msaa;
+	// The 3D at the window's size (RQ MOD 2.67.0): the depth buffer for the picture gfx gives
+	// (gfx_sharp_3d_target), and a framebuffer to read that picture from.
+	struct {
+		GLuint depth, read_fbo;
+		int w, h;
+	} hires;
 	struct shadow_renderer shadow;
 	struct outline_renderer outline;
 

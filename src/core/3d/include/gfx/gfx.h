@@ -100,6 +100,44 @@ int gfx_scaling_from_name(const char *name);
 void gfx_get_window_pos_size(int *x, int *y, int *w, int *h);
 bool gfx_handle_syscommand(unsigned cmd);
 
+/*
+ * RQ MOD (2.67.0): the 3D at the window's size. A 3D view is drawn into the window's own pixels
+ * (gfx_sharp_3d_target), and the frame's scene twice, with that view black then white
+ * (gfx_layer_pass), so the window shows the 2D filtered as before and the 3D at its pixels.
+ */
+void gfx_set_sharp_3d(bool on);
+bool gfx_get_sharp_3d(void);
+// The scale a 3D view is drawn at: the window's pixels over the game's, or 1 (the setting off, a
+// window no larger than the game, a movie shown).
+float gfx_sharp_3d_scale(void);
+// The picture a 3D view is drawn into at that scale, made at this size; NULL when there is none.
+struct texture *gfx_sharp_3d_target(int w, int h);
+// A 3D view drew into the target this frame; key names it (its sprite).
+void gfx_sharp_3d_drawn(void *key);
+// The view that drew alone since the last call, or NULL (none, or more than one).
+void *gfx_sharp_3d_take(void);
+// The frame's passes: 0 the scene with the view black, 1 white. Then gfx_layer_finish writes the
+// game's picture from them and the view's own (x, at the game's size, drawn at rect) and has the
+// next gfx_swap show the view at the window's size.
+bool gfx_layer_pass(int pass);
+void gfx_layer_finish(struct texture *x, Rectangle *rect);
+void gfx_layer_cancel(void);
+// The scene was drawn: a frame drawn outside the passes is shown as before.
+void gfx_layer_scene_drawn(void);
+// The window as shown, at its pixels, saved as a PNG before the next swap's picture goes.
+int gfx_save_window(const char *path);
+struct gfx_window_info {
+	int w, h;                            // the window's size in points
+	int px_w, px_h;                      // its drawable in pixels
+	int view_x, view_y, view_w, view_h;  // the game's picture in the drawable
+	bool fullscreen;
+	bool sharp_3d;                       // the setting
+	bool sharp_3d_shown;                 // the last frame showed the 3D at the window's size
+	int sharp_3d_w, sharp_3d_h;          // the 3D's picture then
+};
+void gfx_window_info(struct gfx_window_info *info);
+bool gfx_set_window_size(int w, int h);
+
 void gfx_load_shader(struct shader *dst, const char *vertex_shader_path, const char *fragment_shader_path);
 GLuint gfx_load_shader_file(const char *path, GLenum type, const char *defines);
 

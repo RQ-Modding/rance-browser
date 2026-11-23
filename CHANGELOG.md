@@ -32,9 +32,10 @@ found in its sound archive with each track's loop, and voices have a tab of thei
   anti-aliasing when the game's 3D setting asks for it, and 2.66.1, which filters the models'
   textures as the game's Texture Filtering asks (point sampling, bilinear, or anisotropic 4X, 8X or
   16X), and 2.66.2, which sizes the shadow map and softens the shadow's edge as the game's shadow
-  settings ask, and smooths the edges of shapes cut out of their pictures under anti-aliasing. The
-  browser's views keep anti-aliasing off, the textures bilinear and medium shadows on a map of 512,
-  so nothing they draw changes.
+  settings ask, and smooths the edges of shapes cut out of their pictures under anti-aliasing, and
+  2.67.0, which can draw the game window's 3D at the window's own size. The browser's views keep
+  anti-aliasing off, the textures bilinear and medium shadows on a map of 512, and are drawn at their
+  own size, so nothing they draw changes.
 
 ## 1.3.0 (2026-11-22)
 

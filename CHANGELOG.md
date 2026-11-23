@@ -31,8 +31,10 @@ found in its sound archive with each track's loop, and voices have a tab of thei
 - **The copy of RQ MOD's 3D renderer** follows RQ MOD 2.65.3, which draws the 3D with the game's
   anti-aliasing when the game's 3D setting asks for it, and 2.66.1, which filters the models'
   textures as the game's Texture Filtering asks (point sampling, bilinear, or anisotropic 4X, 8X or
-  16X). The browser's views keep anti-aliasing off and the textures bilinear, so nothing they draw
-  changes.
+  16X), and 2.66.2, which sizes the shadow map and softens the shadow's edge as the game's shadow
+  settings ask, and smooths the edges of shapes cut out of their pictures under anti-aliasing. The
+  browser's views keep anti-aliasing off, the textures bilinear and medium shadows on a map of 512,
+  so nothing they draw changes.
 
 ## 1.3.0 (2026-11-22)
 

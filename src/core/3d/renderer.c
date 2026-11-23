@@ -30,9 +30,41 @@
 
 #define BONE_TRANSFORMS_BINDING 0
 
-// TODO: Respect RE_plugin.shadow_map_resolution_level
-#define SHADOW_WIDTH 512
-#define SHADOW_HEIGHT 512
+// The shadow map's size follows the game's Shadow Map Resolution (Config's 3D tab), 512 until
+// the game sets it; the height map (RE_renderer_create_height_detector) keeps 512.
+#define SHADOW_MAP_DEFAULT_SIZE 512
+#define HEIGHT_MAP_WIDTH 512
+#define HEIGHT_MAP_HEIGHT 512
+
+#ifndef GL_SAMPLE_ALPHA_TO_COVERAGE
+#define GL_SAMPLE_ALPHA_TO_COVERAGE 0x809E
+#endif
+#ifndef GL_SAMPLE_ALPHA_TO_ONE
+#define GL_SAMPLE_ALPHA_TO_ONE 0x809F
+#endif
+
+// The shadow map's width and height for RE_plugin.shadow_map_resolution_level: the game's 1 high,
+// 2 medium, 3 low.
+static int shadow_map_size(int level)
+{
+	switch (level) {
+	case 1:
+		return 2048;
+	case 2:
+		return 1024;
+	default:
+		return SHADOW_MAP_DEFAULT_SIZE;
+	}
+}
+
+// How far the shadow's edge is softened, in texels each way, for RE_plugin.shadow_mode (Config's
+// 3D tab, Shadows: 1 low, 2 medium, 3 high): one sample, 3 by 3 or 5 by 5.
+static int shadow_kernel(int mode)
+{
+	if (mode <= 1)
+		return 0;
+	return mode == 2 ? 1 : 2;
+}
 
 enum {
 	COLOR_TEXTURE_UNIT,
@@ -124,7 +156,8 @@ static void init_shadow_renderer(struct shadow_renderer *sr)
 	glGenFramebuffers(1, &sr->fbo);
 	glGenTextures(1, &sr->texture);
 	glBindTexture(GL_TEXTURE_2D, sr->texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, NULL);
+	sr->size = SHADOW_MAP_DEFAULT_SIZE;
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, sr->size, sr->size, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -135,6 +168,19 @@ static void init_shadow_renderer(struct shadow_renderer *sr)
 	glReadBuffer(GL_NONE);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, orig_fbo);
+}
+
+// The shadow map at this size, made again when it changes (the texture stays on its framebuffer).
+static void resize_shadow_map(struct shadow_renderer *sr, int size)
+{
+	if (sr->size == size)
+		return;
+	GLint bound = 0;
+	glGetIntegerv(GL_TEXTURE_BINDING_2D, &bound);
+	glBindTexture(GL_TEXTURE_2D, sr->texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, size, size, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, NULL);
+	glBindTexture(GL_TEXTURE_2D, (GLuint)bound);
+	sr->size = size;
 }
 
 static void destroy_shadow_renderer(struct shadow_renderer *sr)
@@ -270,6 +316,8 @@ struct RE_renderer *RE_renderer_new(void)
 	r->shadow_transform = glGetUniformLocation(r->program, "shadow_transform");
 	r->shadow_texture = glGetUniformLocation(r->program, "shadow_texture");
 	r->shadow_bias = glGetUniformLocation(r->program, "shadow_bias");
+	r->shadow_kernel = glGetUniformLocation(r->program, "shadow_kernel");
+	r->alpha_to_coverage = glGetUniformLocation(r->program, "alpha_to_coverage");
 	r->fog_type = glGetUniformLocation(r->program, "fog_type");
 	r->fog_near = glGetUniformLocation(r->program, "fog_near");
 	r->fog_far = glGetUniformLocation(r->program, "fog_far");
@@ -658,6 +706,18 @@ static void render_model(struct RE_instance *inst, struct RE_renderer *r, enum d
 			material->uv_tiling[0], material->uv_tiling[1],
 			material->blend_uv_tiling[0], material->blend_uv_tiling[1]);
 
+		// Under the game's anti-aliasing, an opaque mesh whose edges are cut by alpha (hair,
+		// leaves) takes its edges' coverage from the alpha instead of a hard cut, so they are
+		// smoothed as the polygons' edges are.
+		bool a2c = r->msaa.on && !is_transparent && material->has_alpha;
+		glUniform1i(r->alpha_to_coverage, a2c);
+#ifndef USE_GLES
+		if (a2c) {
+			glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+			glEnable(GL_SAMPLE_ALPHA_TO_ONE);
+		}
+#endif
+
 		glBindVertexArray(mesh->vao);
 
 		if (mesh->flags & MESH_BOTH)
@@ -674,6 +734,14 @@ static void render_model(struct RE_instance *inst, struct RE_renderer *r, enum d
 			glDepthMask(GL_TRUE);
 		if (mesh->flags & MESH_BOTH)
 			glEnable(GL_CULL_FACE);
+		if (a2c) {
+#ifndef USE_GLES
+			glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+			glDisable(GL_SAMPLE_ALPHA_TO_ONE);
+#endif
+			// The other draws with this program cut their edges as before.
+			glUniform1i(r->alpha_to_coverage, GL_FALSE);
+		}
 		glBindVertexArray(0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
@@ -1200,8 +1268,9 @@ static void render_shadow_map(struct RE_plugin *plugin, mat4 light_space_transfo
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &orig_fbo);
 	glGetIntegerv(GL_VIEWPORT, orig_viewport);
 
+	resize_shadow_map(&r->shadow, shadow_map_size(plugin->shadow_map_resolution_level));
 	glBindFramebuffer(GL_FRAMEBUFFER, r->shadow.fbo);
-	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	glViewport(0, 0, r->shadow.size, r->shadow.size);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glUseProgram(r->shadow.program);
 
@@ -1515,6 +1584,7 @@ void RE_render(struct sact_sprite *sp)
 
 	GLuint fbo = gfx_set_framebuffer(GL_DRAW_FRAMEBUFFER, texture, 0, 0, texture->w, texture->h);
 	bool msaa = prepare_msaa(r, msaa_samples_wanted(), texture->w, texture->h);
+	r->msaa.on = msaa;
 	if (!msaa) {
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, r->depth_buffer);
 		if (glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -1563,6 +1633,7 @@ void RE_render(struct sact_sprite *sp)
 	glUniformMatrix4fv(r->proj_transform, 1, GL_FALSE, plugin->proj_transform[0]);
 	glUniformMatrix4fv(r->shadow_transform, 1, GL_FALSE, shadow_transform[0]);
 	glUniform1f(r->shadow_bias, plugin->shadow_bias);
+	glUniform1i(r->shadow_kernel, shadow_kernel(plugin->shadow_mode));
 	if (plugin->fog_mode) {
 		switch (plugin->fog_type) {
 		case RE_FOG_NONE:
@@ -1670,7 +1741,7 @@ struct height_detector *RE_renderer_create_height_detector(struct RE_renderer *r
 	GLuint color_texture;
 	glGenTextures(1, &color_texture);
 	glBindTexture(GL_TEXTURE_2D, color_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16UI, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16UI, HEIGHT_MAP_WIDTH, HEIGHT_MAP_HEIGHT, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT, NULL);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, r->shadow.fbo);
 	GLenum draw_buffers[1] = { GL_COLOR_ATTACHMENT0 };
@@ -1678,7 +1749,7 @@ struct height_detector *RE_renderer_create_height_detector(struct RE_renderer *r
 	glReadBuffer(GL_COLOR_ATTACHMENT0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color_texture, 0);
 
-	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	glViewport(0, 0, HEIGHT_MAP_WIDTH, HEIGHT_MAP_HEIGHT);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glUseProgram(r->shadow.program);
 	glUniformMatrix4fv(r->shadow.local_transform, 1, GL_FALSE, view_matrix[0]);
@@ -1704,8 +1775,8 @@ struct height_detector *RE_renderer_create_height_detector(struct RE_renderer *r
 	glBindVertexArray(0);
 	glFinish();
 
-	hd->buf = xmalloc(SHADOW_WIDTH * SHADOW_HEIGHT * sizeof(GLushort));
-	glReadPixels(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT, GL_RED_INTEGER, GL_UNSIGNED_SHORT, hd->buf);
+	hd->buf = xmalloc(HEIGHT_MAP_WIDTH * HEIGHT_MAP_HEIGHT * sizeof(GLushort));
+	glReadPixels(0, 0, HEIGHT_MAP_WIDTH, HEIGHT_MAP_HEIGHT, GL_RED_INTEGER, GL_UNSIGNED_SHORT, hd->buf);
 
 	glDisable(GL_DEPTH_TEST);
 	glDrawBuffers(0, NULL);
@@ -1735,9 +1806,9 @@ bool RE_renderer_detect_height(struct height_detector *hd, float x, float z, flo
 	float maxz = hd->aabb[1][2];
 	if (x < minx || x > maxx || z < minz || z > maxz)
 		return false;
-	int px = glm_percent(minx, maxx, x) * SHADOW_WIDTH;
-	int pz = glm_percent(maxz, minz, z) * SHADOW_HEIGHT;
-	GLushort val = hd->buf[pz * SHADOW_WIDTH + px];
+	int px = glm_percent(minx, maxx, x) * HEIGHT_MAP_WIDTH;
+	int pz = glm_percent(maxz, minz, z) * HEIGHT_MAP_HEIGHT;
+	GLushort val = hd->buf[pz * HEIGHT_MAP_WIDTH + px];
 	if (!val)
 		return false;
 	*y_out = glm_lerp(maxy, miny, val / 65535.0f);

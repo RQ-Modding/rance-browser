@@ -142,6 +142,8 @@ uniform vec3 diffuse_mod;
 uniform int diffuse_type;
 uniform float shadow_darkness;
 uniform float shadow_bias;
+uniform int shadow_kernel;      // the edge's softening, in texels each way (the game's Shadows)
+uniform bool alpha_to_coverage;  // an alpha-cut edge's coverage from its alpha (anti-aliasing)
 uniform int alpha_mode;
 
 in vec2 tex_coord;
@@ -224,14 +226,16 @@ void main() {
 	if (shadow_darkness > 0.0) {
 		vec3 shadow_coords = shadow_frag_pos.xyz / shadow_frag_pos.w * 0.5 + 0.5;
 		shadow_coords.z = min(1.0, shadow_coords.z - shadow_bias);
-		// PCF with 9 samples.
+		// PCF over (2k+1)^2 samples (k = shadow_kernel), at most as dark as 9 samples of 0.05.
 		float brightness = 1.0;
 		vec2 texel_size = 1.0 / vec2(textureSize(shadow_texture, 0));
-		for (int x = -1; x <= 1; ++x) {
-			for (int y = -1; y <= 1; ++y) {
+		float side = float(2 * shadow_kernel + 1);
+		float step_dark = 0.45 * shadow_darkness / (side * side);
+		for (int x = -shadow_kernel; x <= shadow_kernel; ++x) {
+			for (int y = -shadow_kernel; y <= shadow_kernel; ++y) {
 				float depth = texture(shadow_texture, shadow_coords.xy + vec2(x, y) * texel_size).r;
 				if (depth < shadow_coords.z)
-					brightness -= 0.05 * shadow_darkness;
+					brightness -= step_dark;
 			}
 		}
 		frag_rgb *= brightness;
@@ -248,12 +252,25 @@ void main() {
 	// Alpha mapping
 	float alpha = texel.a * color_mod.a * alpha_mod;
 	if (alpha_mode == ALPHA_TEST) {
-		if (alpha < 0.75)
+		if (alpha_to_coverage) {
+			// The cut at 0.75 as a ramp one pixel wide: the samples it covers.
+			alpha = clamp((alpha - 0.75) / max(fwidth(alpha), 0.0001) + 0.5, 0.0, 1.0);
+			if (alpha <= 0.0)
+				discard;
+		} else if (alpha < 0.75)
 			discard;
 	} else if (alpha_mode == ALPHA_MAP_BLEND) {
 		alpha *= texture(alpha_texture, tex_coord).r;
 	} else if (alpha_mode == ALPHA_MAP_TEST) {
-		if (texture(alpha_texture, tex_coord).r < 0.1)
+		float cut = texture(alpha_texture, tex_coord).r;
+		if (alpha_to_coverage) {
+			// The coverage from the alpha map alone, so the colour's own alpha leaves the
+			// inside solid, as without anti-aliasing.
+			cut = clamp((cut - 0.1) / max(fwidth(cut), 0.0001) + 0.5, 0.0, 1.0);
+			if (cut <= 0.0)
+				discard;
+			alpha = cut;
+		} else if (cut < 0.1)
 			discard;
 	}
 

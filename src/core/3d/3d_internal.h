@@ -70,6 +70,8 @@ struct mesh {
 struct material {
 	uint32_t flags;
 	bool is_transparent;
+	// The colour map has alpha or there is an alpha map: an opaque mesh's edges are cut by alpha.
+	bool has_alpha;
 	vec2 uv_tiling;
 	vec2 blend_uv_tiling;
 	int nr_color_maps;
@@ -124,6 +126,7 @@ struct shadow_renderer {
 	GLuint program;
 	GLuint fbo;
 	GLuint texture;
+	int size;  // the texture's width and height
 
 	// Uniform variable locations
 	GLint local_transform;
@@ -156,6 +159,7 @@ struct RE_renderer {
 		int samples, w, h;
 		int failed_samples;  // a count the driver refused, not tried again
 		bool checked;        // the first frame's copies checked for a GL error
+		bool on;             // the frame being drawn goes into it
 	} msaa;
 	struct shadow_renderer shadow;
 	struct outline_renderer outline;
@@ -193,6 +197,8 @@ struct RE_renderer {
 	GLint shadow_transform;
 	GLint shadow_texture;
 	GLint shadow_bias;
+	GLint shadow_kernel;
+	GLint alpha_to_coverage;
 	GLint fog_type;
 	GLint fog_near;
 	GLint fog_far;

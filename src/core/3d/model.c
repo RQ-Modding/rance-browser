@@ -194,6 +194,7 @@ static bool init_material(struct material *material, struct pol_material *m, str
 		material->normal_map = load_texture(aar, path, m->textures[NORMAL_MAP], NULL, NORMAL_MAP);
 
 	material->is_transparent = (has_alpha || material->alpha_map) && is_transparent_material(m);
+	material->has_alpha = has_alpha || material->alpha_map;
 	material->shadow_darkness = 1.0f;
 
 	struct amt_material *amt_m = amt ? amt_find_material(amt, m->name) : NULL;
